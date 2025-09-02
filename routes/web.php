@@ -14,5 +14,4 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/admin-dashboard', [ViewController::class, 'adminDashboard'])->name('admin.dashboard');
     Route::get('/user-dashboard', [ViewController::class, 'userDashboard'])->name('user.dashboard');
 
-
 });

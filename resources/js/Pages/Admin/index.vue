@@ -1,5 +1,56 @@
 <template>
-    <h2>Admin Dashboard</h2>
+    <div class="admin-body">
+        <Sidebar
+            :userRole="userRole"
+            @selectPage="selectActivePage"
+        />
+        <div class="admin-main-body">
+            <Header/>
+            <Dashboard
+                v-if="activePage === 'dashboard'"
+            />
+            <Agency
+                v-else-if="activePage === 'agency'"
+            />
+            <Spots v-else-if="activePage === 'spots'" />
+        </div>
+    </div>
 </template>
 <script setup>
+    import { computed, ref } from "vue";
+    import Sidebar from "../../Components/Sidebar.vue";
+    import Header from "../../Components/Header.vue";
+    import Dashboard from "./dashboard.vue";
+    import Agency from "./agency.vue";
+    import Spots from "./spots.vue";
+
+    const props = defineProps({
+        userInformation: Object,
+    })
+    const userRole = computed(() => props.userInformation.role);
+
+    const activePage = ref('dashboard');
+
+    const selectActivePage = (pageName) => {
+        activePage.value = pageName;
+    }
+
+
+
 </script>
+<style scoped>
+    .admin-body {
+        width: 100%;
+        height: 100vh;
+        overflow: hidden;
+        display: flex;
+        flex-direction: row;
+    }
+    .admin-main-body {
+        width: 85%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        background: linear-gradient(to bottom, #6ABBE4, #EEF8F9);
+    }
+</style>

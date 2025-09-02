@@ -6,6 +6,7 @@
         <input
             placeholder="Email"
             type="email"
+            id="email"
             v-model="loginForm.email"
             required
         />
@@ -17,6 +18,7 @@
         <input
             placeholder="Password"
             type="password"
+            id="password"
             v-model="loginForm.password"
             required
         />

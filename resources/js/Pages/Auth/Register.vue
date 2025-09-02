@@ -3,7 +3,11 @@
         <h2>register</h2>
 
         <label>Email</label>
-        <input placeholder="Email" type="email" v-model="registerForm.email" />
+        <input
+            placeholder="Email"
+            type="email"
+            id="email"
+            v-model="registerForm.email" />
         <span v-if="errors.email && errors.email.length" class="error">
             {{ errors.email[0] }}
         </span>
@@ -12,6 +16,7 @@
         <input
             placeholder="Password"
             type="password"
+            id="password"
             v-model="registerForm.password"
         />
         <span v-if="errors.password && errors.password.length" class="error">
@@ -20,8 +25,16 @@
 
         <label>Personal Information</label>
         <div class="register-group">
-            <input placeholder="First Name" v-model="registerForm.firstName" />
-            <input placeholder="Last Name" v-model="registerForm.lastName" />
+            <input
+                placeholder="First Name"
+                v-model="registerForm.firstName"
+                id="firstName"
+            />
+            <input
+                placeholder="Last Name"
+                v-model="registerForm.lastName"
+                id="lastName"
+            />
         </div>
         <span v-if="errors.firstName && errors.firstName.length" class="error">
             {{ errors.firstName[0] }}
@@ -35,6 +48,7 @@
                 placeholder="Phone Number"
                 v-model="registerForm.phone_num"
                 type="tel"
+                id="phoneNumber"
             />
             <select v-model="registerForm.gender">
                 <option disabled value="">Select Gender</option>
