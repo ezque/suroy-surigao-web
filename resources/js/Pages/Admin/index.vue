@@ -11,8 +11,14 @@
             />
             <Agency
                 v-else-if="activePage === 'agency'"
+                @selectPage="selectActivePage"
             />
-            <Spots v-else-if="activePage === 'spots'" />
+            <AgencyAddForm
+                v-else-if="activePage === 'agencyAddForm'"
+            />
+            <Spots
+                v-else-if="activePage === 'spots'"
+            />
         </div>
     </div>
 </template>
@@ -22,6 +28,7 @@
     import Header from "../../Components/Header.vue";
     import Dashboard from "./dashboard.vue";
     import Agency from "./agency.vue";
+    import AgencyAddForm from "./agencyAddForm.vue";
     import Spots from "./spots.vue";
 
     const props = defineProps({

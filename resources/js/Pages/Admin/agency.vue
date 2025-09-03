@@ -1,6 +1,9 @@
 <template>
     <div class="agency-main-body">
-        <button class="add-agency">
+        <button
+            class="add-agency"
+            @click="$emit('selectPage', 'agencyAddForm')"
+        >
             <i class="material-icons-outlined">add</i>
             Add Agency
         </button>
@@ -32,7 +35,7 @@
                 <tr>
                     <td>2</td>
                     <td>Island Adventures</td>
-                    <td>Cebu, PH</td>
+                    <td>Cebu City, PH</td>
                     <td>+63 987 654 3210</td>
                     <td>Inactive</td>
                     <td>
@@ -58,62 +61,75 @@
 </template>
 
 <script setup>
-// Static rows for now; can replace with v-for later
+
+    const emit = defineEmits(["selectPage"]);
 </script>
 
 <style scoped>
-.agency-main-body {
-    width: 100%;
-    padding: 20px;
-    box-sizing: border-box;
-}
+    .agency-main-body {
+        width: 100%;
+        height: 100%;
+        display: flex;
+        align-items: center;
+        flex-direction: column;
+        box-sizing: border-box;
+    }
 
-.add-agency {
-    margin-bottom: 15px;
-    padding: 10px 16px;
-    border-radius: 6px;
-    border: 1px solid #4a90e2;
-    background-color: #4a90e2;
-    color: white;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
+    .add-agency {
+        margin-bottom: 15px;
+        padding: 10px 16px;
+        border-radius: 6px;
+        border: 1px solid #4a90e2;
+        background-color: #4a90e2;
+        color: white;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 10px;
+        margin-left: 10px;
+        width: 180px;
+        align-self: flex-start;
+    }
 
-.agency-table-container {
-    width: 100%;
-    overflow-x: auto;
-}
+    .agency-table-container {
+        width: 90%;
+        overflow-x: auto;
+        background-color: white;
+    }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-}
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
 
-th, td {
-    padding: 10px;
-    text-align: center;
-    border: 1px solid #ccc;
-}
+    th, td {
+        padding: 10px;
+        text-align: center;
+        border: 1px solid black;
+    }
+    td:nth-child(2), td:nth-child(3) {
+        width: 20%;
+    }
 
-th {
-    background-color: #f0f0f0;
-    font-weight: bold;
-}
+    th {
+        background-color: #f0f0f0;
+        font-weight: bold;
+    }
 
-.action-btn {
-    padding: 5px 10px;
-    border-radius: 4px;
-    border: none;
-    cursor: pointer;
-    font-size: 0.85rem;
-    margin-right: 5px;
-    color: white;
-    background-color: #4a90e2;
-}
+    .action-btn {
+        padding: 5px 5px;
+        width: 100px;
+        border-radius: 4px;
+        border: none;
+        cursor: pointer;
+        font-size: 0.85rem;
+        margin-right: 5px;
+        color: white;
+        background-color: #4a90e2;
+    }
 
-.action-btn.delete {
-    background-color: #d32f2f;
-}
+    .action-btn.delete {
+        background-color: #d32f2f;
+    }
 </style>
