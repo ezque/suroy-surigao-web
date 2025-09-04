@@ -1,30 +1,55 @@
 <template>
-    <div class="sidebar-container">
-        <div class="side-label-container">
-            <h2 v-if="userRole === '1'">admin</h2>
-            <h2 v-else-if="userRole === '2'">agency</h2>
-        </div>
-        <div class="sidebar-button-container">
-            <button
-                @click="$emit('selectPage', 'dashboard')"
-            >
-                <span class="material-icons-outlined">home</span>
-                Dashboard
-            </button>
-            <button
-                @click="$emit('selectPage', 'agency')"
-            >
-                <span class="material-icons-outlined">groups</span>
-                Agencies
-            </button>
-            <button
-                @click="$emit('selectPage', 'spots')"
-            >
-                <span class="material-icons-outlined">groups</span>
-                Spots
-            </button>
-        </div>
-    </div>
+<div class="sidebar-container">
+  <div class="side-label-container">
+    <h2 v-if="userRole === '1'">Admin</h2>
+    <h2 v-else-if="userRole === '2'">Agency</h2>
+  </div>
+
+  <div class="sidebar-button-container">
+    <!-- Dashboard -->
+    <button @click="$emit('selectPage', 'dashboard')">
+      <span class="material-icons-outlined">home</span>
+      Dashboard
+    </button>
+
+    <!-- Agencies -->
+    <button @click="$emit('selectPage', 'agency')">
+      <span class="material-icons-outlined">business</span>
+      Agencies
+    </button>
+
+    <!-- Spots -->
+    <button @click="$emit('selectPage', 'spots')">
+      <span class="material-icons-outlined">place</span>
+      Spots
+    </button>
+
+    <!-- Manage Posts -->
+    <button @click="$emit('selectPage', 'posts')">
+      <span class="material-icons-outlined">article</span>
+      Manage Posts
+    </button>
+
+    <!-- Manage Users -->
+    <button @click="$emit('selectPage', 'users')">
+      <span class="material-icons-outlined">group</span>
+      Manage Users
+    </button>
+
+    <!-- Reviews & Feedbacks -->
+    <button @click="$emit('selectPage', 'reviews')">
+      <span class="material-icons-outlined">rate_review</span>
+      Reviews & Feedbacks
+    </button>
+
+    <!-- Settings -->
+    <button @click="$emit('selectPage', 'settings')">
+      <span class="material-icons-outlined">settings</span>
+      Settings
+    </button>
+  </div>
+</div>
+
 </template>
 <script setup>
 
@@ -38,7 +63,7 @@
     .sidebar-container {
         width: 15%;
         height: 100%;
-        background-color: white;
+        background-color: rgb(249, 249, 250);
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -68,7 +93,7 @@
         border-radius: 5px;
         display: flex;
         align-items: center;
-        background-color: gray;
+        background-color: rgb(246, 249, 252);
         cursor: pointer;
         text-transform: capitalize;
 
