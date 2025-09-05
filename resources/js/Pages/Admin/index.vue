@@ -18,6 +18,17 @@
             />
             <Spots
                 v-else-if="activePage === 'spots'"
+                @selectPage="selectActivePage"
+            />
+            <AddSpots
+                v-else-if="activePage === 'addSpots'"
+            />
+            <ManagePost
+                v-else-if="activePage === 'managePost'"
+                @selectPage="selectActivePage"
+            />
+            <ManageUser
+                v-else-if="activePage === 'manageUser'"
             />
         </div>
     </div>
@@ -27,9 +38,14 @@
     import Sidebar from "../../Components/Sidebar.vue";
     import Header from "../../Components/Header.vue";
     import Dashboard from "./dashboard.vue";
-    import Agency from "./agency.vue";
     import AgencyAddForm from "./agencyAddForm.vue";
+    import AddPost from "./addPost.vue";
+    import AddSpots from "./addSpots.vue";
+    import Agency from "./agency.vue";
+    import ManagePost from "./managePost.vue";
+    import ManageUser from "./manageUser.vue";
     import Spots from "./spots.vue";
+
 
     const props = defineProps({
         userInformation: Object,

@@ -18,31 +18,27 @@
       Agencies
     </button>
 
-    <!-- Spots -->
     <button @click="$emit('selectPage', 'spots')">
       <span class="material-icons-outlined">place</span>
       Spots
     </button>
 
     <!-- Manage Posts -->
-    <button @click="$emit('selectPage', 'posts')">
+    <button @click="$emit('selectPage', 'managePost')">
       <span class="material-icons-outlined">article</span>
       Manage Posts
     </button>
 
-    <!-- Manage Users -->
-    <button @click="$emit('selectPage', 'users')">
+    <button @click="$emit('selectPage', 'manageUser')">
       <span class="material-icons-outlined">group</span>
       Manage Users
     </button>
 
-    <!-- Reviews & Feedbacks -->
     <button @click="$emit('selectPage', 'reviews')">
       <span class="material-icons-outlined">rate_review</span>
       Reviews & Feedbacks
     </button>
 
-    <!-- Settings -->
     <button @click="$emit('selectPage', 'settings')">
       <span class="material-icons-outlined">settings</span>
       Settings

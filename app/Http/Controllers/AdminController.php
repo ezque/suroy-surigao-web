@@ -39,7 +39,7 @@ class AdminController extends Controller
                 'image_path'       => null,
             ]);
 
-            return [$agency, $user]; // just return data
+            return [$agency, $user];
         });
 
         return response()->json([
