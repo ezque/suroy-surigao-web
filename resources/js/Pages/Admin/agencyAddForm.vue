@@ -16,10 +16,10 @@
           type="text"
           id="agencyName"
           class="form-control"
-          v-model="agency.name"
+          v-model="form.agency_name"
           placeholder="Enter agency name"
         />
-        <div class="error-message" v-if="errors.name">{{ errors.name }}</div>
+        <div class="error-message" v-if="errors.agency_name">{{ errors.agency_name }}</div>
       </div>
 
       <!-- Description -->
@@ -28,34 +28,22 @@
         <textarea
           id="description"
           class="form-control"
-          v-model="agency.description"
+          v-model="form.description"
           placeholder="Describe your agency"
         ></textarea>
       </div>
 
       <!-- Contact -->
       <div class="form-group">
-        <label for="contactInfo">Contact Information <span class="required">*</span></label>
+        <label for="contact_number">Contact Information <span class="required">*</span></label>
         <input
           type="text"
-          id="contactInfo"
+          id="contact_number"
           class="form-control"
-          v-model="agency.contactInfo"
-          placeholder="Email, phone, or address"
+          v-model="form.contact_number"
+          placeholder="Phone"
         />
-        <div class="error-message" v-if="errors.contactInfo">{{ errors.contactInfo }}</div>
-      </div>
-
-      <!-- Status -->
-      <div class="form-group">
-        <label for="status">Status <span class="required">*</span></label>
-        <select id="status" class="form-control" v-model="agency.status">
-          <option value="">Select status</option>
-          <option value="active">Active</option>
-          <option value="inactive">Inactive</option>
-          <option value="pending">Pending</option>
-        </select>
-        <div class="error-message" v-if="errors.status">{{ errors.status }}</div>
+        <div class="error-message" v-if="errors.contact_number">{{ errors.contact_number }}</div>
       </div>
 
       <!-- Location -->
@@ -65,70 +53,73 @@
           type="text"
           id="location"
           class="form-control"
-          v-model="agency.location"
+          v-model="form.location_address"
           placeholder="City, country"
         />
       </div>
 
       <!-- Buttons -->
       <div class="btn-group">
-        <button type="button" class="btn btn-outline" @click="cancelForm">Cancel</button>
-        <button type="submit" class="btn btn-primary" @click="saveForm">Save</button>
+        <button type="button" class="btn btn-outline">Cancel</button>
+        <button type="submit" class="btn btn-primary" @click="store">Save</button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
+    import { ref, reactive } from "vue";
+    import axios from "axios";
 
-const agency = reactive({
-  name: "",
-  description: "",
-  contactInfo: "",
-  status: "",
-  location: "",
-});
+    const form = reactive({
+        agency_name: "",
+        description: "",
+        contact_number: "",
+        location_address: "",
+    });
 
-const errors = reactive({});
-const submitted = ref(false);
+    const errors = reactive({});
+    const submitted = ref(false);
 
-const validateForm = () => {
-  Object.keys(errors).forEach((key) => delete errors[key]);
-  let isValid = true;
+    const validateForm = () => {
+        errors.agency_name = form.agency_name ? "" : "Agency name is required.";
+        errors.contact_number = form.contact_number ? "" : "Contact information is required.";
+        return !errors.agency_name && !errors.contact_number;
+    };
 
-  if (!agency.name) {
-    errors.name = "Agency name is required";
-    isValid = false;
-  }
-  if (!agency.contactInfo) {
-    errors.contactInfo = "Contact information is required";
-    isValid = false;
-  }
-  if (!agency.status) {
-    errors.status = "Status is required";
-    isValid = false;
-  }
-  return isValid;
-};
+    const store = async () => {
+        try {
+            const formData = new FormData();
 
-const saveForm = () => {
-  if (validateForm()) {
-    console.log("Agency data:", agency);
-    submitted.value = true;
+            formData.append('agency_name', form.agency_name);
+            formData.append('description', form.description);
+            formData.append('contact_number', form.contact_number);
+            formData.append('location_address', form.location_address);
 
-    // Reset message
-    setTimeout(() => {
-      submitted.value = false;
-    }, 2000);
-  }
-};
+            const response = await axios.post('/add-agency', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
 
-const cancelForm = () => {
-  Object.keys(agency).forEach((key) => (agency[key] = ""));
-  Object.keys(errors).forEach((key) => delete errors[key]);
-  submitted.value = false;
-};
+            submitted.value = true;
+
+            form.agency_name = "";
+            form.description = "";
+            form.contact_number = "";
+            form.location_address = "";
+
+            alert('Agency added successfully!');
+        } catch (error) {
+            console.error(error);
+            if (error.response && error.response.data && error.response.data.errors) {
+                Object.assign(errors, error.response.data.errors);
+            }
+            alert('Failed to submit Agency.');
+        }
+    };
+
+
 </script>
 
 <style scoped>
