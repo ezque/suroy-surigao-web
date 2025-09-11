@@ -16,5 +16,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-dashboard', [ViewController::class, 'userDashboard'])->name('user.dashboard');
 
     Route::post('/add-agency', [AdminController::class, 'addAgency'])->name('add.agency');
+    Route::post('/add-new-spot', [AdminController::class, 'addSpot']);
 
 });

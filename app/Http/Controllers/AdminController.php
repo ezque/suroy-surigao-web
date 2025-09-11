@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use App\Models\User;
 use App\Models\Agency;
+use App\Models\Spot;
+use App\Models\SpotImage;
 
 class AdminController extends Controller
 {
@@ -48,6 +50,58 @@ class AdminController extends Controller
             'user'    => $user,
         ], 201);
     }
+
+    public function addSpot(Request $request)
+    {
+        \Log::info('Incoming request data:', $request->all());
+
+        try {
+            $request->validate([
+                'spot_name'   => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'location'    => 'nullable|string|max:255',
+                'category'    => 'nullable|string|max:255',
+                'images.*'    => 'image|mimes:jpeg,png,jpg,gif|max:40000'
+            ]);
+            \Log::info('Validation passed.');
+
+            // Create spot
+            $spot = Spot::create([
+                'spot_name'   => $request->spot_name,
+                'description' => $request->description,
+                'location'    => $request->location,
+                'category'    => $request->category,
+                'status'      => '1'
+            ]);
+            \Log::info('Spot created successfully:', $spot->toArray());
+
+            // Save images if available
+            if ($request->hasFile('images')) {
+                \Log::info('Images found:', ['count' => count($request->file('images'))]);
+
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('spots', 'public');
+                    \Log::info('Image stored:', ['path' => $path]);
+
+                    SpotImage::create([
+                        'spot_id'     => $spot->id,
+                        'spot_image' => $path
+                    ]);
+                }
+            } else {
+                \Log::info('No images uploaded.');
+            }
+
+            return response()->json(['message' => 'Spot created successfully!'], 201);
+
+        } catch (\Exception $e) {
+            \Log::error('Error adding spot: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Something went wrong. Check logs for details.'], 500);
+        }
+    }
+
 
 
 }

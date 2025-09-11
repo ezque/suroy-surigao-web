@@ -9,7 +9,6 @@
         <i class="fas fa-check-circle"></i> Spot added successfully!
       </div>
 
-      <!-- Spot Name -->
       <div class="form-group">
         <label for="spotName">Spot Name <span class="required">*</span></label>
         <input
@@ -22,7 +21,6 @@
         <div class="error-message" v-if="errors.spot_name">{{ errors.spot_name }}</div>
       </div>
 
-      <!-- Description -->
       <div class="form-group">
         <label for="description">Description</label>
         <textarea
@@ -33,7 +31,6 @@
         ></textarea>
       </div>
 
-      <!-- Location -->
       <div class="form-group">
         <label for="location">Location</label>
         <input
@@ -45,17 +42,6 @@
         />
       </div>
 
-      <!-- Related Tours / Packages -->
-      <div class="form-group">
-        <label for="relatedTours">Related Tours/Packages</label>
-        <select id="relatedTours" v-model="form.related_tours" multiple class="form-control">
-          <option v-for="tour in tours" :key="tour.id" :value="tour.id">
-            {{ tour.name }}
-          </option>
-        </select>
-      </div>
-
-      <!-- Category -->
       <div class="form-group">
         <label for="category">Category</label>
         <select id="category" v-model="form.category" class="form-control">
@@ -68,7 +54,6 @@
         </select>
       </div>
 
-      <!-- Multiple Images -->
       <div class="form-group">
         <label for="images">Upload Images</label>
         <input
@@ -80,86 +65,81 @@
         />
       </div>
 
-      <!-- Buttons -->
       <div class="btn-group">
-        <button type="button" class="btn btn-outline">Cancel</button>
-        <button type="submit" class="btn btn-primary" @click="store">Save</button>
+        <button type="button" class="btn btn-outline" @click="resetForm">Cancel</button>
+          <button
+              type="button"
+              class="btn btn-primary"
+              :disabled="loading"
+              @click="store"
+          >
+              {{ loading ? "Saving..." : "Save" }}
+          </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import axios from "axios";
+    import { ref, reactive } from "vue";
+    import axios from "axios";
 
-const form = reactive({
-  spot_name: "",
-  description: "",
-  location: "",
-  related_tours: [],
-  category: "",
-  images: [],
-});
-
-const tours = ref([
-  { id: 1, name: "Island Hopping Package" },
-  { id: 2, name: "Mountain Trekking Tour" },
-  { id: 3, name: "Historical Landmarks Tour" },
-]);
-
-const errors = reactive({});
-const submitted = ref(false);
-
-const handleFileUpload = (event) => {
-  form.images = Array.from(event.target.files);
-};
-
-const validateForm = () => {
-  errors.spot_name = form.spot_name ? "" : "Spot name is required.";
-  return !errors.spot_name;
-};
-
-const store = async () => {
-  if (!validateForm()) return;
-
-  try {
-    const formData = new FormData();
-    formData.append("spot_name", form.spot_name);
-    formData.append("description", form.description);
-    formData.append("location", form.location);
-    formData.append("category", form.category);
-
-    form.related_tours.forEach((tour) => {
-      formData.append("related_tours[]", tour);
+    const form = reactive({
+        spot_name: "",
+        description: "",
+        location: "",
+        category: "",
+        images: []
     });
 
-    form.images.forEach((file) => {
-      formData.append("images[]", file);
-    });
+    const errors = reactive({});
+    const submitted = ref(false);
+    const loading = ref(false);
 
-    await axios.post("/add-spot", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const handleFileUpload = (event) => {
+        form.images = Array.from(event.target.files);
+    };
 
-    submitted.value = true;
+    const validateForm = () => {
+        errors.spot_name = form.spot_name ? "" : "Spot name is required.";
+        return !errors.spot_name;
+    };
+    const resetForm = () => {
+        Object.keys(form).forEach((key) => (form[key] = key === "images" ? [] : ""));
+        submitted.value = false;
+        Object.keys(errors).forEach((key) => (errors[key] = ""));
+    };
 
-    form.spot_name = "";
-    form.description = "";
-    form.location = "";
-    form.category = "";
-    form.related_tours = [];
-    form.images = [];
+    const store = async () => {
+        if (!validateForm() || loading.value) return;
 
-    alert("Spot added successfully!");
-  } catch (error) {
-    console.error(error);
-    if (error.response?.data?.errors) {
-      Object.assign(errors, error.response.data.errors);
-    }
-    alert("Failed to submit spot.");
-  }
-};
+        loading.value = true;
+
+        try {
+            let formData = new FormData();
+            formData.append("spot_name", form.spot_name);
+            formData.append("description", form.description);
+            formData.append("location", form.location);
+            formData.append("category", form.category);
+
+            form.images.forEach((file, index) => {
+                formData.append(`images[${index}]`, file);
+            });
+
+            await axios.post("/add-new-spot", formData, {
+                headers: { "Content-Type": "multipart/form-data" }
+            });
+
+            submitted.value = true;
+            Object.keys(form).forEach((key) => (form[key] = key === "images" ? [] : ""));
+        } catch (err) {
+            if (err.response?.status === 422) {
+                Object.assign(errors, err.response.data.errors);
+            }
+        } finally {
+            loading.value = false;
+        }
+    };
 </script>
 
 <style scoped>
