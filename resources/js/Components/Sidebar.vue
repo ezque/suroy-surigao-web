@@ -7,40 +7,41 @@
 
   <div class="sidebar-button-container">
     <!-- Dashboard -->
-    <button @click="$emit('selectPage', 'dashboard')">
-      <span class="material-icons-outlined">home</span>
-      Dashboard
-    </button>
+      <button @click="$emit('selectPage', 'dashboard')">
+        <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
+        Dashboard
+      </button>
+
 
     <!-- Agencies -->
     <button @click="$emit('selectPage', 'agency')">
-      <span class="material-icons-outlined">business</span>
+      <img src="/public/images/agency.png" alt="Dashboard" class="icon-img" />
       Agencies
     </button>
 
-    <button @click="$emit('selectPage', 'spots')">
-      <span class="material-icons-outlined">place</span>
-      Spots
-    </button>
+     <button @click="$emit('selectPage', 'spots')">
+        <img src="/public/images/manage-spots.png" alt="Dashboard" class="icon-img" />
+        Manage Spots
+      </button>
 
     <!-- Manage Posts -->
-    <button @click="$emit('selectPage', 'managePost')">
-      <span class="material-icons-outlined">article</span>
-      Manage Posts
-    </button>
+     <button @click="$emit('selectPage', 'post')">
+        <img src="/public/images/manage-post.png" alt="Dashboard" class="icon-img" />
+        Manage Post
+      </button>
 
     <button @click="$emit('selectPage', 'manageUser')">
-      <span class="material-icons-outlined">group</span>
+      <img src="/public/images/manage-users.png" alt="Dashboard" class="icon-img" />
       Manage Users
     </button>
 
     <button @click="$emit('selectPage', 'reviews')">
-      <span class="material-icons-outlined">rate_review</span>
+      <img src="/public/images/manage-feedbacks.png" alt="Dashboard" class="icon-img" />
       Reviews & Feedbacks
     </button>
 
     <button @click="$emit('selectPage', 'settings')">
-      <span class="material-icons-outlined">settings</span>
+      <img src="/public/images/settings.png" alt="Dashboard" class="icon-img" />
       Settings
     </button>
   </div>
@@ -99,5 +100,29 @@
         margin-right: 20px;
         margin-left: 10px;
     }
+    .sidebar-button-container button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border: none;
+  background: none;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background 0.2s;
+  width: 100%;
+  text-align: left;
+}
+
+.sidebar-button-container button:hover {
+  background: #f0f0f0;
+  border-radius: 6px;
+}
+
+.icon-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
+}
 
 </style>
