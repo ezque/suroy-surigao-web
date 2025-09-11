@@ -22,6 +22,7 @@
             />
             <AddSpots
                 v-else-if="activePage === 'addSpots'"
+                @selectPage="selectActivePage"
             />
             <ManagePost
                 v-else-if="activePage === 'managePost'"

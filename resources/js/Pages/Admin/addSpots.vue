@@ -66,7 +66,7 @@
       </div>
 
       <div class="btn-group">
-        <button type="button" class="btn btn-outline" @click="resetForm">Cancel</button>
+        <button type="button" class="btn btn-outline" @click="$emit('selectPage', 'spots')">Cancel</button>
           <button
               type="button"
               class="btn btn-primary"
@@ -91,6 +91,7 @@
         category: "",
         images: []
     });
+    const emit = defineEmits(["selectPage"])
 
     const errors = reactive({});
     const submitted = ref(false);
@@ -103,11 +104,6 @@
     const validateForm = () => {
         errors.spot_name = form.spot_name ? "" : "Spot name is required.";
         return !errors.spot_name;
-    };
-    const resetForm = () => {
-        Object.keys(form).forEach((key) => (form[key] = key === "images" ? [] : ""));
-        submitted.value = false;
-        Object.keys(errors).forEach((key) => (errors[key] = ""));
     };
 
     const store = async () => {

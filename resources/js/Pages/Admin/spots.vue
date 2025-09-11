@@ -37,7 +37,7 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["selectPage"])
+    const emit = defineEmits(["selectPage"])
 
 const spots = [
   {
