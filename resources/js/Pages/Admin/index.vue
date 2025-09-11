@@ -5,7 +5,7 @@
             @selectPage="selectActivePage"
         />
         <div class="admin-main-body">
-            <Header/>
+            <Header v-if="activePage !== 'dashboard'"/>
             <Dashboard
                 v-if="activePage === 'dashboard'"
             />
