@@ -80,7 +80,7 @@
         padding: 10px 16px;
         border-radius: 6px;
         border: 1px solid #4a90e2;
-        background-color: #4a90e2;
+        background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
         color: white;
         cursor: pointer;
         display: flex;

@@ -14,26 +14,28 @@
       </div>
     </div>
 
-    <!-- Navigation Items -->
-    <div class="nav-items">
-      <!-- Messages -->
-      <div class="icon-button">
-        <i class="fas fa-envelope"></i>
-        <div class="notification-badge">{{ messages }}</div>
-      </div>
+      <!-- Navigation Items -->
+ <div class="nav-items">
+    <!-- Messages -->
+    <div class="icon-button">
+      <img src="/public/images/message.png" alt="Messages" class="icon-img" />
+      <div class="notification-badge">{{ messages }}</div>
+    </div>
 
-      <!-- Notifications -->
-      <div class="icon-button">
-        <i class="fas fa-bell"></i>
-        <div class="notification-badge">{{ notifications }}</div>
-      </div>
+    <!-- Notifications -->
+    <div class="icon-button">
+      <img src="/public/images/bell.png" alt="Notifications" class="icon-img" />
+      <div class="notification-badge">{{ notifications }}</div>
+    </div>
+  </div>
+
+
 
       <!-- Profile -->
       <div class="profile-button">
         <div class="profile-img">{{ initials }}</div>
         <span>{{ userName }}</span>
       </div>
-    </div>
   </header>
 </template>
 
@@ -65,7 +67,7 @@ const initials = computed(() =>
 .header-container {
   width: 100%;
   height: 70px;
-  background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+  background: linear-gradient(135deg, #075574 0%, #2575fc 100%);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -195,6 +197,12 @@ const initials = computed(() =>
   top: 50%;
   transform: translateY(-50%);
   color: rgba(255, 255, 255, 0.7);
+}
+
+.icon-img {
+  width: 22px;
+  height: 22px;
+  object-fit: contain;
 }
 
 @media (max-width: 768px) {
