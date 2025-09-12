@@ -133,7 +133,6 @@ function editSpot(spot) {
   height: 100%;
   display: flex;
   flex-direction: column;
-  background-color: white;
   padding: 25px;
   overflow-y: auto; /* 👈 enables scrolling */
 }

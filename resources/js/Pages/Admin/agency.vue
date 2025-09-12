@@ -21,46 +21,38 @@
                 </tr>
                 </thead>
                 <tbody>
-                <tr>
-                    <td>1</td>
-                    <td>Sunset Travel Tours</td>
-                    <td>Manila, PH</td>
-                    <td>+63 912 345 6789</td>
-                    <td>Active</td>
-                    <td>
-                        <button class="action-btn">View</button>
-                        <button class="action-btn delete">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Island Adventures</td>
-                    <td>Cebu City, PH</td>
-                    <td>+63 987 654 3210</td>
-                    <td>Inactive</td>
-                    <td>
-                        <button class="action-btn">View</button>
-                        <button class="action-btn delete">Delete</button>
-                    </td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>GlowHub</td>
-                    <td>Davao, PH</td>
-                    <td>+63 923 456 7890</td>
-                    <td>Active</td>
-                    <td>
-                        <button class="action-btn">View</button>
-                        <button class="action-btn delete">Delete</button>
-                    </td>
-                </tr>
+                    <tr v-for="user in agencyDetails" :key="user.id">
+                        <td>{{ user.id }}</td>
+                        <td>{{ user.agency?.agency_name }}</td>
+                        <td>{{ user.agency?.location_address }}</td>
+                        <td>{{ user.agency?.contact_number }}</td>
+                        <td>
+                            {{ user.status === '1' ? 'Active' : user.agency?.status === '2' ? 'Inactive' : 'Unknown' }}
+                        </td>
+
+                        <td>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn delete">Delete</button>
+                        </td>
+                    </tr>
+
+                    <tr v-if="agencyDetails.length === 0">
+                        <td colspan="6">No agencies found.</td>
+                    </tr>
                 </tbody>
+
             </table>
         </div>
     </div>
 </template>
 
 <script setup>
+
+    const props = defineProps({
+        agencyDetails: Array,
+    })
+    console.log(props.agencyDetails)
+    console.log(JSON.stringify(props.agencyDetails, null, 2));
 
     const emit = defineEmits(["selectPage"]);
 </script>
