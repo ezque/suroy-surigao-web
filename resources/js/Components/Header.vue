@@ -7,37 +7,31 @@
     </div>
 
     <!-- Search -->
-    <div class="search-container">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search..." v-model="searchQuery" />
+    <div class="search-container"></div>
+
+    <!-- Right Section (messages + notifications + profile) -->
+    <div class="right-section">
+      <!-- Messages -->
+      <div class="icon-button">
+        <img src="/public/images/message.png" alt="Messages" class="icon-img" />
+        <div class="notification-badge">{{ messages }}</div>
       </div>
-    </div>
 
-      <!-- Navigation Items -->
- <div class="nav-items">
-    <!-- Messages -->
-    <div class="icon-button">
-      <img src="/public/images/message.png" alt="Messages" class="icon-img" />
-      <div class="notification-badge">{{ messages }}</div>
-    </div>
-
-    <!-- Notifications -->
-    <div class="icon-button">
-      <img src="/public/images/bell.png" alt="Notifications" class="icon-img" />
-      <div class="notification-badge">{{ notifications }}</div>
-    </div>
-  </div>
-
-
+      <!-- Notifications -->
+      <div class="icon-button">
+        <img src="/public/images/bell.png" alt="Notifications" class="icon-img" />
+        <div class="notification-badge">{{ notifications }}</div>
+      </div>
 
       <!-- Profile -->
       <div class="profile-button">
         <div class="profile-img">{{ initials }}</div>
         <span>{{ userName }}</span>
       </div>
+    </div>
   </header>
 </template>
+
 
 <script setup>
 import { ref, computed } from "vue";
@@ -204,6 +198,32 @@ const initials = computed(() =>
   height: 22px;
   object-fit: contain;
 }
+
+.right-section {
+  display: flex;
+  align-items: center;
+  gap: 15px; /* controls spacing between icons and profile */
+}
+
+.icon-button {
+  position: relative;
+  background: rgba(245, 240, 240, 0.418);
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  transition: all 0.3s ease;
+  cursor: pointer;
+}
+
+.icon-button:hover {
+  background: rgba(255, 255, 255, 0.25);
+  transform: translateY(-2px);
+}
+
 
 @media (max-width: 768px) {
   .search-container {
