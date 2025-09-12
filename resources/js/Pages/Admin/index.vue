@@ -12,6 +12,7 @@
             <Agency
                 v-else-if="activePage === 'agency'"
                 @selectPage="selectActivePage"
+                :agencyDetails="agencyDetails"
             />
             <AgencyAddForm
                 v-else-if="activePage === 'agencyAddForm'"
@@ -50,6 +51,7 @@
 
     const props = defineProps({
         userInformation: Object,
+        agencyDetails: Array,
     })
     const userRole = computed(() => props.userInformation.role);
 

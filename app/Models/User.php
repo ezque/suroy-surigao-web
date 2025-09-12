@@ -34,4 +34,12 @@ class User extends Authenticatable
     {
         return $this->hasOne(UserInfo::class, 'user_ID', 'id');
     }
+    // User.php
+    public function agency()
+    {
+        return $this->hasOne(Agency::class, 'user_ID', 'id');
+    }
+
+
+
 }

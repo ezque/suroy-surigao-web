@@ -16,4 +16,10 @@ class Agency extends Model
         'location_address',
         'contact_number',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_ID', 'id');
+    }
+
+
 }

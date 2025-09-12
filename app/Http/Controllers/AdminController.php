@@ -71,7 +71,7 @@ class AdminController extends Controller
                 'description' => $request->description,
                 'location'    => $request->location,
                 'category'    => $request->category,
-                'status'      => '1'
+                'status'      => 1
             ]);
             \Log::info('Spot created successfully:', $spot->toArray());
 
