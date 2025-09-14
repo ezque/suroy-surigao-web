@@ -20,12 +20,15 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(user, index) in 5" :key="index">
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                    <tr
+                        v-for="(user, index) in allUsers"
+                        :key="user.id || index"
+                    >
+                        <td> {{ user.id }} </td>
+                        <td>{{ getFullName(user) }}</td>
+                        <td> {{ user.email }} </td>
+                        <td>{{ user.role == 3 ? 'User' : user.role }}</td>
+                        <td>{{ userStatus(user) }}</td>
 
                         <td>
                             <button class="action-btn">View</button>
@@ -40,9 +43,27 @@
 
 <script setup>
 
+    const props = defineProps({
+        allUsers: Array,
+    });
+    const getFullName = (user) => {
+        return user.user_info
+            ? `${user.user_info.firstName} ${user.user_info.lastName}`
+            : '';
+    };
+    const userStatus = (user) => {
+        if (user.status === '1') {
+            return "Active";
+        } else if (user.status === '2') {
+            return "Inactive";
+        } else if (user.status === '3') {
+            return "Pending";
+        }
+        return "Unknown";
+    };
+
 
 </script>
-
 
 
 <style scoped>

@@ -31,6 +31,7 @@
             />
             <ManageUser
                 v-else-if="activePage === 'manageUser'"
+                :allUsers="allUsers"
             />
         </div>
     </div>
@@ -52,6 +53,7 @@
     const props = defineProps({
         userInformation: Object,
         agencyDetails: Array,
+        allUsers: Array,
     })
     const userRole = computed(() => props.userInformation.role);
 

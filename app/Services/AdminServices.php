@@ -15,6 +15,12 @@ class AdminServices
             ->whereHas('agency')
             ->get();
     }
+    public function getAllUsers()
+    {
+        return User::with(['userInfo', 'agency'])
+            ->where('role', 3)
+            ->get();
+    }
 
 
 }
