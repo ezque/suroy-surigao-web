@@ -6,13 +6,6 @@
       <span>Suroy Surigao</span>
     </div>
 
-    <!-- Search -->
-    <div class="search-container">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search..." v-model="searchQuery" />
-      </div>
-    </div>
 
       <!-- Navigation Items -->
  <div class="nav-items">

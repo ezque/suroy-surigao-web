@@ -2,39 +2,6 @@
     <div class="admin-dashboard-body">
 
     </div>
-
-      <header class="header-container">
-    <!-- Logo -->
-    <div class="logo">
-      <i class="fas fa-rocket"></i>
-      <span>Suroy Surigao</span>
-    </div>
-
-  
-
-      <!-- Navigation Items -->
- <div class="nav-items">
-    <!-- Messages -->
-    <div class="icon-button">
-      <img src="/public/images/message.png" alt="Messages" class="icon-img" />
-      <div class="notification-badge">{{ messages }}</div>
-    </div>
-
-    <!-- Notifications -->
-    <div class="icon-button">
-      <img src="/public/images/bell.png" alt="Notifications" class="icon-img" />
-      <div class="notification-badge">{{ notifications }}</div>
-    </div>
-  </div>
-
-
-
-      <!-- Profile -->
-      <div class="profile-button">
-        <div class="profile-img">{{ initials }}</div>
-        <span>{{ userName }}</span>
-      </div>
-  </header>
 </template>
 <script setup>
 
@@ -163,5 +130,5 @@
     padding: 8px;
   }
 }
-    
+
 </style>

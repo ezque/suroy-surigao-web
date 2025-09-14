@@ -25,5 +25,9 @@ class ViewController extends Controller
     {
         return Inertia::render('User/index');
     }
+    public function agencyDashboard(): \Inertia\Response
+    {
+        return Inertia::render('Agency/index');
+    }
 
 }
