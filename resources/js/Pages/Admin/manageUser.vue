@@ -20,7 +20,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="(user, index) in 5" :key="index">
+                    <tr v-for="(user, index) in 15" :key="index">
                         <td></td>
                         <td></td>
                         <td></td>
@@ -75,6 +75,7 @@
 .user-table-container {
     width: 90%;
     overflow-x: auto;
+    max-height: 80%;
     background-color: white;
 }
 
