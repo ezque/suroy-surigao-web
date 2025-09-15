@@ -1,12 +1,5 @@
 <template>
     <div class="manage-user-body">
-        <button
-            class="add-user"
-        >
-            <i class="material-icons-outlined">add</i>
-            Add User
-        </button>
-
         <div class="user-table-container">
             <table>
                 <thead>
@@ -20,87 +13,73 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>1</td>
-                        <td>John Doe</td>
-                        <td>john.doe@example.com</td>
-                        <td>Admin</td>
-                        <td><span class="status active">Active</span></td>
+                    <tr v-for="(user, index) in 5" :key="index">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <td></td>
+
                         <td>
-                            <button class="action-btn view"> View</button>
-                            <button class="action-btn delete">🗑 Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2</td>
-                        <td>Jane Smith</td>
-                        <td>jane.smith@example.com</td>
-                        <td>User</td>
-                        <td><span class="status inactive">Inactive</span></td>
-                        <td>
-                            <button class="action-btn view">  View</button>
-                            <button class="action-btn delete">🗑 Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>3</td>
-                        <td>Michael Johnson</td>
-                        <td>michael.j@example.com</td>
-                        <td>Moderator</td>
-                        <td><span class="status active">Active</span></td>
-                        <td>
-                            <button class="action-btn view">  View</button>
-                            <button class="action-btn delete">🗑 Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>4</td>
-                        <td>Emily Davis</td>
-                        <td>emily.davis@example.com</td>
-                        <td>User</td>
-                        <td><span class="status pending">Pending</span></td>
-                        <td>
-                            <button class="action-btn view">  View</button>
-                            <button class="action-btn delete">🗑 Delete</button>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>5</td>
-                        <td>Chris Wilson</td>
-                        <td>chris.wilson@example.com</td>
-                        <td>User</td>
-                        <td><span class="status active">Active</span></td>
-                        <td>
-                            <button class="action-btn view">  View</button>
-                            <button class="action-btn delete">🗑 Delete</button>
+                            <button class="action-btn">View</button>
+                            <button class="action-btn delete">Delete</button>
                         </td>
                     </tr>
                 </tbody>
             </table>
         </div>
+
+        <div
+            class="users-all-information-card"
+            v-if="selectedUser"
+        >
+            <h3>User Information</h3>
+            <div class="user-info-content">
+                <p><strong>ID:</strong> {{ selectedUser.id }}</p>
+                <p><strong>Full Name:</strong> {{ getFullName(selectedUser) }}</p>
+                <p><strong>Email:</strong> {{ selectedUser.email }}</p>
+                <p><strong>Role:</strong> {{ selectedUser.role == 3 ? 'User' : selectedUser.role }}</p>
+                <p><strong>Phone Number:</strong> {{ selectedUser.user_info.phone_num }}</p>
+                <p><strong>Status: </strong>
+                    <span :class="{
+                        'status-badge': true,
+                        'status-active': userStatus(selectedUser) === 'Active',
+                        'status-inactive': userStatus(selectedUser) === 'Inactive',
+                        'status-pending': userStatus(selectedUser) === 'Pending',
+                        'status-unknown': userStatus(selectedUser) === 'Unknown'
+                    }">
+                        {{ userStatus(selectedUser) }}
+                    </span>
+                </p>
+            </div>
+            <button class="close-btn" @click="closeCard">Close</button>
+            <button class="close-btn" @click="closeCard">Block</button>
+        </div>
     </div>
 </template>
 
 <script setup>
+
+
 </script>
 
 <style scoped>
 .manage-user-body {
     width: 100%;
-    height: 100%;
+    min-height: 100vh;
     display: flex;
-    align-items: center;
     flex-direction: column;
+    align-items: center;
+    padding: 24px;
+    background-color: #f8fafc;
     box-sizing: border-box;
-    background: #f8f9fc;
-    padding: 20px;
 }
 
 .add-user {
     margin-bottom: 15px;
     padding: 10px 16px;
     border-radius: 6px;
-    border: none;
+    border: 1px solid #4a90e2;
     background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
     color: white;
     cursor: pointer;
@@ -111,92 +90,61 @@
     margin-left: 10px;
     width: 180px;
     align-self: flex-start;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    transition: 0.3s;
-}
-.add-user:hover {
-    opacity: 0.9;
-    transform: scale(1.05);
 }
 
 .user-table-container {
     width: 90%;
-    max-height: 400px; /* fixed height */
-    overflow-y: auto;  /* vertical scroll */
-    overflow-x: auto;  /* keep horizontal scroll too */
+    overflow-x: auto;
     background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    border-radius: 8px;
-    overflow: hidden;
 }
 
 th, td {
-    padding: 12px;
+    padding: 10px;
     text-align: center;
-    border-bottom: 1px solid #e0e0e0;
+    border: 1px solid black;
 }
-td:nth-child(2), td:nth-child(3) {
-    width: 20%;
+
+td {
+    color: #374151;
+}
+
+tr:hover {
+    background-color: #f9fafb;
+    transition: background-color 0.25s ease;
+}
+
+/* STATUS BADGES */
+.status-badge {
+    display: inline-block;
+    padding: 5px 10px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
 }
 
 th {
-    background-color: #2575fc;
-    color: white;
+    background-color: #f0f0f0;
     font-weight: bold;
-    text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
-tbody tr:nth-child(even) {
-    background-color: #f9f9f9;
-}
-tbody tr:hover {
-    background-color: #eef4ff;
-    transition: 0.2s;
-}
-
-/* Status styles */
-.status {
-    padding: 5px 10px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: bold;
-    color: white;
-}
-.status.active {
-    background-color: #4caf50;
-}
-.status.inactive {
-    background-color: #9e9e9e;
-}
-.status.pending {
-    background-color: #ff9800;
-}
-
-/* Action buttons */
 .action-btn {
-    padding: 6px 10px;
-    border-radius: 6px;
+    padding: 5px 5px;
+    width: 100px;
+    border-radius: 4px;
     border: none;
     cursor: pointer;
     font-size: 0.85rem;
     margin-right: 5px;
     color: white;
-    transition: 0.3s;
+    background-color: #4a90e2;
 }
-.action-btn.view {
-    background-color: #2196f3;
-}
-.action-btn.view:hover {
-    background-color: #1976d2;
-    transform: scale(1.05);
-}
+
 .action-btn.delete {
     background-color: #d32f2f;
 }
@@ -205,3 +153,4 @@ tbody tr:hover {
     transform: scale(1.05);
 }
 </style>
+

@@ -55,7 +55,7 @@
 
     const handleLogin = async () => {
         loading.value = true;
-        errors.value = {}; // reset errors
+        errors.value = {};
 
         try {
             const response = await axios.post("/login", loginForm, {

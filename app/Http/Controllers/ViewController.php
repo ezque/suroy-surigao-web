@@ -11,19 +11,24 @@ class ViewController extends Controller
 {
     public function adminDashboard(UserServices $userServices, AdminServices $adminServices): \Inertia\Response
     {
-        $userInformation =$userServices->getUserInformation();
+        $userInformation = $userServices->getUserInformation();
+        $allUsers = $adminServices->getAllUsers();
         $agencyDetails = $adminServices->getAgencyDetails();
 
-        return Inertia::render('Admin/index',
-            [
-                'userInformation'=>$userInformation,
-                'agencyDetails'=>$agencyDetails
-            ]
-        );
+        return Inertia::render('Admin/index', [
+            'userInformation' => $userInformation,
+            'agencyDetails'   => $agencyDetails,
+            'allUsers'        => $allUsers,
+        ]);
     }
+
     public function userDashboard(): \Inertia\Response
     {
         return Inertia::render('User/index');
+    }
+    public function agencyDashboard(): \Inertia\Response
+    {
+        return Inertia::render('Agency/index');
     }
 
 }
