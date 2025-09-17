@@ -40,22 +40,22 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+    import { ref, computed } from "vue";
 
-const searchQuery = ref("");
-const messages = ref(3);
-const notifications = ref(7);
+    const searchQuery = ref("");
+    const messages = ref(3);
+    const notifications = ref(7);
 
-const userName = ref("John Smith");
+    const userName = ref("John Smith");
 
-// get initials (for avatar)
-const initials = computed(() =>
-  userName.value
-    .split(" ")
-    .map((n) => n[0])
-    .join("")
-    .toUpperCase()
-);
+    // get initials (for avatar)
+    const initials = computed(() =>
+      userName.value
+        .split(" ")
+        .map((n) => n[0])
+        .join("")
+        .toUpperCase()
+    );
 </script>
 
 <style scoped>

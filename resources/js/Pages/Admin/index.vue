@@ -55,6 +55,7 @@
         agencyDetails: Array,
         allUsers: Array,
     })
+
     const userRole = computed(() => props.userInformation.role);
 
     const activePage = ref('dashboard');

@@ -6,49 +6,42 @@
     </div>
 
     <div class="sidebar-button-container">
-      <!-- Dashboard -->
-      <button @click="$emit('selectPage', 'dashboard')">
-        <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
-        Dashboard
-      </button>
+          <button @click="$emit('selectPage', 'dashboard')" v-if="userRole === '1'">
+            <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
+            Dashboard
+          </button>
+          <button @click="$emit('selectPage', 'agency')" v-if="userRole === '1'">
+            <img src="/public/images/agency.png" alt="Agencies" class="icon-img" />
+            Agencies
+          </button>
+          <button @click="$emit('selectPage', 'spots')" v-if="userRole === '1'">
+            <img src="/public/images/manage-spots.png" alt="Spots" class="icon-img" />
+            Manage Spots
+          </button>
+          <button @click="$emit('selectPage', 'post')" v-if="userRole === '1'">
+            <img src="/public/images/manage-post.png" alt="Posts" class="icon-img" />
+            Manage Post
+          </button>
+          <button @click="$emit('selectPage', 'manageUser')" v-if="userRole === '1'">
+            <img src="/public/images/manage-users.png" alt="Users" class="icon-img" />
+            Manage Users
+          </button>
+          <button @click="$emit('selectPage', 'reviews')" v-if="userRole === '1'">
+            <img src="/public/images/manage-feedbacks.png" alt="Reviews" class="icon-img" />
+            Reviews & Feedbacks
+          </button>
+          <button @click="$emit('selectPage', 'settings')" v-if="userRole === '1'">
+            <img src="/public/images/settings.png" alt="Settings" class="icon-img" />
+            Settings
+          </button>
+        <button @click="$emit('selectPage', 'agencyDashboard')" v-if="userRole === '2'">
+            <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
+            Dashboard
+        </button>
 
-      <!-- Agencies -->
-      <button @click="$emit('selectPage', 'agency')">
-        <img src="/public/images/agency.png" alt="Agencies" class="icon-img" />
-        Agencies
-      </button>
-
-      <button @click="$emit('selectPage', 'spots')">
-        <img src="/public/images/manage-spots.png" alt="Spots" class="icon-img" />
-        Manage Spots
-      </button>
-
-      <!-- Manage Posts -->
-      <button @click="$emit('selectPage', 'post')">
-        <img src="/public/images/manage-post.png" alt="Posts" class="icon-img" />
-        Manage Post
-      </button>
-
-      <button @click="$emit('selectPage', 'manageUser')">
-        <img src="/public/images/manage-users.png" alt="Users" class="icon-img" />
-        Manage Users
-      </button>
-
-      <button @click="$emit('selectPage', 'reviews')">
-        <img src="/public/images/manage-feedbacks.png" alt="Reviews" class="icon-img" />
-        Reviews & Feedbacks
-      </button>
-
-      <button @click="$emit('selectPage', 'settings')">
-        <img src="/public/images/settings.png" alt="Settings" class="icon-img" />
-        Settings
-      </button>
-
-      <!-- Spacer pushes logout to bottom -->
       <div class="sidebar-spacer"></div>
 
-      <!-- Logout button -->
-      <button class="logout-btn" @click="$emit('selectPage', 'logout')">
+      <button class="logout-btn" @click="handleLogout">
         <img src="/public/images/exit.png" alt="Logout" class="icon-img" />
         Logout
       </button>
@@ -57,10 +50,20 @@
 </template>
 
 <script setup>
-const props = defineProps({
-  userRole: String
-})
-const emit = defineEmits(["selectPage"])
+    import {Inertia} from "@inertiajs/inertia";
+    const props = defineProps({
+      userRole: String
+    })
+    const emit = defineEmits(["selectPage"])
+    const handleLogout = () => {
+        if (confirm('Are you sure you want to logout?')) {
+            Inertia.post('/logout', {}, {
+                onFinish: () => {
+                    window.location.reload();
+                }
+            });
+        }
+    };
 </script>
 
 <style scoped>
