@@ -5,12 +5,32 @@
             @selectPage="selectActivePage"
         />
         <div class="agency-main-body">
-
+            <AgencyDashboard
+                v-if="activePage === 'agencyDashboard'"
+            />
+            <AddPackage
+                v-if="activePage === 'agencyAddPackage'"
+            />
+            <AgencySettings
+                v-if="activePage === 'agencySettings'"
+            />
+            <ManageBooking
+                v-if="activePage === 'agencyManageBooking'"
+            />
+            <Packages
+                v-if="activePage === 'agencyPackages'"
+            />
         </div>
     </div>
 </template>
 <script setup>
     import Sidebar from "../../Components/Sidebar.vue";
+    import AddPackage from "./addPackages.vue";
+    import AgencyDashboard from "./agencyDashboard.vue";
+    import AgencySettings from "./agencySettings.vue";
+    import ManageBooking from "./manageBookings.vue";
+    import Packages from "./Packages.vue";
+
     import {computed, ref} from "vue";
 
     const props = defineProps({
