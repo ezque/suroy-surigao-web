@@ -38,6 +38,22 @@
             <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
             Dashboard
         </button>
+        <button @click="$emit('selectPage', 'ManageTours')" v-if="userRole === '2'">
+            <img src="/public/images/manage-tours.png" alt="Dashboard" class="icon-img" />
+            Manage Tours & Package
+        </button>
+        <button @click="$emit('selectPage', 'ManageBookings')" v-if="userRole === '2'">
+            <img src="/public/images/manage-booking.png" alt="Dashboard" class="icon-img" />
+            Manage Bookings
+        </button>
+        <button @click="$emit('selectPage', 'ReviewsFedback')" v-if="userRole === '2'">
+            <img src="/public/images/manage-feedbacks.png" alt="Dashboard" class="icon-img" />
+            Reviews and Feedback
+        </button>
+        <button @click="$emit('selectPage', 'Settings')" v-if="userRole === '2'">
+            <img src="/public/images/settings.png" alt="Dashboard" class="icon-img" />
+            Settings
+        </button>
 
       <div class="sidebar-spacer"></div>
 
