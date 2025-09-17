@@ -15,10 +15,10 @@
                 v-if="activePage === 'agencySettings'"
             />
             <ManageBooking
-                v-if="activePage === 'agencyManageBooking'"
+                v-if="activePage === 'ManageBookings'"
             />
             <Packages
-                v-if="activePage === 'agencyPackages'"
+                v-if="activePage === 'ManageTours'"
             />
         </div>
     </div>
