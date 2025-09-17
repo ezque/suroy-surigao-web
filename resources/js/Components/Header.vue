@@ -6,13 +6,7 @@
       <span>Suroy Surigao</span>
     </div>
 
-    <!-- Search -->
-    <div class="search-container">
-      <div class="search-box">
-        <i class="fas fa-search"></i>
-        <input type="text" placeholder="Search..." v-model="searchQuery" />
-      </div>
-    </div>
+  
 
       <!-- Navigation Items -->
  <div class="nav-items">
@@ -41,10 +35,8 @@
 
 <script setup>
     import { ref, computed } from "vue";
-
-    const searchQuery = ref("");
-    const messages = ref(3);
-    const notifications = ref(7);
+const messages = ref(3);
+const notifications = ref(7);
 
     const userName = ref("John Smith");
 
@@ -159,45 +151,6 @@
       font-weight: bold;
     }
 
-    .search-container {
-      flex: 1;
-      max-width: 400px;
-      margin: 0 20px;
-    }
-
-    .search-box {
-      position: relative;
-      width: 100%;
-    }
-
-    .search-box input {
-      width: 100%;
-      padding: 12px 20px 12px 45px;
-      border-radius: 25px;
-      border: none;
-      background: rgba(255, 255, 255, 0.2);
-      color: white;
-      font-size: 1rem;
-      transition: all 0.3s ease;
-    }
-
-    .search-box input:focus {
-      outline: none;
-      background: rgba(255, 255, 255, 0.3);
-      box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.5);
-    }
-
-    .search-box input::placeholder {
-      color: rgba(255, 255, 255, 0.7);
-    }
-
-    .search-box i {
-      position: absolute;
-      left: 15px;
-      top: 50%;
-      transform: translateY(-50%);
-      color: rgba(255, 255, 255, 0.7);
-    }
 
     .icon-img {
       width: 22px;
@@ -206,9 +159,7 @@
     }
 
     @media (max-width: 768px) {
-      .search-container {
-        display: none;
-      }
+     
 
       .header-container {
         padding: 0 15px;

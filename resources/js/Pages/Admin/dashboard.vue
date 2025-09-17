@@ -1,134 +1,75 @@
 <template>
-    <div class="admin-dashboard-body">
+  <div class="admin-dashboard-body">
+    <!-- Dashboard Content -->
+    <main class="dashboard-content">
+      <div class="card">
+        <img src="/public/images/users.png" alt="Users" class="card-icon" />
+        <h3>Total Users</h3>
+        <p>1,245</p>
+      </div>
 
-    </div>
+      <div class="card">
+        <img src="/public/images/agency.png" alt="Agencies" class="card-icon" />
+        <h3>Total Agencies</h3>
+        <p>48</p>
+      </div>
+
+      <div class="card">
+        <img src="/public/images/manage-spots.png" alt="Spots" class="card-icon" />
+        <h3>Total Spots</h3>
+        <p>136</p>
+      </div>
+
+      
+    </main>
+  </div>
 </template>
+
 <script setup>
-
 </script>
+
 <style scoped>
-   * {
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+/* Content Grid */
+.dashboard-content {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 30px;
+  padding: 40px;
+  align-items: start;
 }
 
-.header-container {
-  width: 100%;
-  height: 70px;
-  background: linear-gradient(135deg, #075574 0%, #2575fc 100%);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 0 25px;
-  border-radius: 12px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
-  position: relative;
+/* Cards */
+.card {
+  background: #fff;
+  border-radius: 16px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  padding: 50px;
+  text-align: center;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  margin-top: 45%;
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  color: white;
-  font-weight: 700;
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+}
+
+.card-icon {
+  width: 50px;
+  height: 50px;
+  margin-bottom: 15px;
+}
+
+.card h3 {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.card p {
   font-size: 1.5rem;
-}
-
-.logo i {
-  margin-right: 10px;
-  font-size: 1.8rem;
-}
-
-.nav-items {
-  display: flex;
-  align-items: center;
-  gap: 25px;
-}
-
-.icon-button {
-  position: relative;
-  background: rgba(255, 255, 255, 0.15);
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: all 0.3s ease;
-  cursor: pointer;
-}
-
-.icon-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-  transform: translateY(-2px);
-}
-
-.notification-badge {
-  position: absolute;
-  top: -5px;
-  right: -5px;
-  background: #ff4757;
-  color: white;
-  font-size: 0.7rem;
-  font-weight: 600;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #6a11cb;
-}
-
-.profile-button {
-  display: flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.15);
-  padding: 8px 15px;
-  border-radius: 25px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.profile-button:hover {
-  background: rgba(255, 255, 255, 0.25);
-}
-
-.profile-img {
-  width: 35px;
-  height: 35px;
-  border-radius: 50%;
-  margin-right: 10px;
-  background: linear-gradient(45deg, #ff9a9e, #fad0c4);
-  display: flex;
-  align-items: center;
-  justify-content: center;
   font-weight: bold;
+  color: #2575fc;
 }
-
-.icon-img {
-  width: 22px;
-  height: 22px;
-  object-fit: contain;
-}
-
-@media (max-width: 768px) {
-  .search-container {
-    display: none;
-  }
-
-  .header-container {
-    padding: 0 15px;
-  }
-
-  .profile-button span {
-    display: none;
-  }
-
-  .profile-button {
-    padding: 8px;
-  }
-}
-
 </style>
