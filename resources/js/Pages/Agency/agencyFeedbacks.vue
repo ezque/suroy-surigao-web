@@ -1,5 +1,5 @@
 <template>
-    <div class="Packages-body">
+    <div class="agencyFeedbacks-body">
 
     </div>
 </template>

@@ -6,32 +6,29 @@
       <span>Suroy Surigao</span>
     </div>
 
-  
+    <!-- Right-side controls -->
+    <div class="right-controls">
+      <!-- Messages -->
+      <div class="icon-button">
+        <img src="/public/images/message.png" alt="Messages" class="icon-img" />
+        <div class="notification-badge">{{ messages }}</div>
+      </div>
 
-      <!-- Navigation Items -->
- <div class="nav-items">
-    <!-- Messages -->
-    <div class="icon-button">
-      <img src="/public/images/message.png" alt="Messages" class="icon-img" />
-      <div class="notification-badge">{{ messages }}</div>
-    </div>
-
-    <!-- Notifications -->
-    <div class="icon-button">
-      <img src="/public/images/bell.png" alt="Notifications" class="icon-img" />
-      <div class="notification-badge">{{ notifications }}</div>
-    </div>
-  </div>
-
-
+      <!-- Notifications -->
+      <div class="icon-button">
+        <img src="/public/images/bell.png" alt="Notifications" class="icon-img" />
+        <div class="notification-badge">{{ notifications }}</div>
+      </div>
 
       <!-- Profile -->
       <div class="profile-button">
         <div class="profile-img">{{ initials }}</div>
         <span>{{ userName }}</span>
       </div>
+    </div>
   </header>
 </template>
+
 
 <script setup>
     import { ref, computed } from "vue";
@@ -59,12 +56,12 @@ const notifications = ref(7);
     .header-container {
       width: 100%;
       height: 70px;
-      background: linear-gradient(135deg, #075574 0%, #2575fc 100%);
+      background: linear-gradient(135deg, #477979b6 0%, #00798c52 100%);
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0 25px;
-      border-radius: 12px;
+      border-radius: 1px;
       box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
       position: relative;
     }
@@ -172,5 +169,18 @@ const notifications = ref(7);
       .profile-button {
         padding: 8px;
       }
+    }
+    /* New right-side wrapper */
+    .right-controls {
+      display: flex;
+      align-items: center;
+      gap: 15px; /* smaller spacing than before */
+    }
+
+    /* Remove old nav-items gap */
+    .nav-items {
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 </style>
