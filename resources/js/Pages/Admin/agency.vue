@@ -1,14 +1,26 @@
-<template>
-    <div class="manage-agency-body">
-        <button
-            class="add-agency"
-            @click="$emit('selectPage', 'agencyAddForm')"
-        >
-            <i class="material-icons-outlined">add</i>
-            Add Agency
-        </button>
+        <template>
+        <div class="manage-agency-body">
+            <!-- Top controls -->
+            <div class="top-controls">
+            <button
+                class="add-agency"
+                @click="$emit('selectPage', 'agencyAddForm')"
+            >
+                <i class="material-icons-outlined">add</i>
+                Add Agency
+            </button>
 
-        <div class="agency-table-container">
+            <!-- Search bar -->
+            <input
+                type="text"
+                v-model="searchQuery"
+                placeholder="Search agencies..."
+                class="search-bar"
+            />
+            </div>
+
+            <!-- Table -->
+            <div class="agency-table-container">
             <table>
                 <thead>
                 <tr>
@@ -21,48 +33,68 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="user in agencyDetails" :key="user.id">
-                        <td>{{ user.id }}</td>
-                        <td>{{ user.agency?.agency_name }}</td>
-                        <td>{{ user.agency?.location_address }}</td>
-                        <td>{{ user.agency?.contact_number }}</td>
-                        <td>
-                            <span 
-                                class="status"
-                                :class="{
-                                    active: user.status === '1',
-                                    inactive: user.status === '2',
-                                    pending: user.status === '0'
-                                }"
-                            >
-                                {{ 
-                                    user.status === '1' ? 'Active' : 
-                                    user.status === '2' ? 'Inactive' : 'Pending' 
-                                }}
-                            </span>
-                        </td>
-                        <td>
-                            <button class="action-btn view">View</button>
-                            <button class="action-btn delete">🗑 Delete</button>
-                        </td>
-                    </tr>
+                <tr v-for="user in filteredAgencies" :key="user.id">
+                    <td>{{ user.id }}</td>
+                    <td>{{ user.agency?.agency_name }}</td>
+                    <td>{{ user.agency?.location_address }}</td>
+                    <td>{{ user.agency?.contact_number }}</td>
+                    <td>
+                    <span
+                        class="status"
+                        :class="{
+                        active: user.status === '1',
+                        inactive: user.status === '2',
+                        pending: user.status === '0'
+                        }"
+                    >
+                        {{ 
+                        user.status === '1' ? 'Active' : 
+                        user.status === '2' ? 'Inactive' : 'Pending' 
+                        }}
+                    </span>
+                    </td>
+                    <td>
+                    <button class="action-btn view">View</button>
+                    <button class="action-btn delete">🗑 Delete</button>
+                    </td>
+                </tr>
 
-                    <tr v-if="agencyDetails.length === 0">
-                        <td colspan="6">No agencies found.</td>
-                    </tr>
+                <tr v-if="filteredAgencies.length === 0">
+                    <td colspan="6">No agencies found.</td>
+                </tr>
                 </tbody>
             </table>
+            </div>
         </div>
-    </div>
-</template>
+        </template>
 
-<script setup>
-const props = defineProps({
-    agencyDetails: Array,
-})
 
-const emit = defineEmits(["selectPage"]);
-</script>
+        <script setup>
+        import { ref, computed } from "vue";
+
+        const props = defineProps({
+        agencyDetails: Array,
+        });
+
+        const emit = defineEmits(["selectPage"]);
+
+        // search state
+        const searchQuery = ref("");
+
+        // computed filter
+        const filteredAgencies = computed(() => {
+        if (!searchQuery.value) return props.agencyDetails;
+        return props.agencyDetails.filter((user) => {
+            const name = user.agency?.agency_name?.toLowerCase() || "";
+            const location = user.agency?.location_address?.toLowerCase() || "";
+            return (
+            name.includes(searchQuery.value.toLowerCase()) ||
+            location.includes(searchQuery.value.toLowerCase())
+            );
+        });
+        });
+        </script>
+
 
 <style scoped>
 .manage-agency-body {
@@ -185,4 +217,29 @@ tbody tr:hover {
     background-color: #b71c1c;
     transform: scale(1.05);
 }
+.top-controls {
+  width: 90%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+/* Search bar styling */
+.search-bar {
+  background-color: #e0e0e0;
+  padding: 10px 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 250px;
+  font-size: 0.9rem;
+  transition: 0.3s;
+}
+
+.search-bar:focus {
+  border-color: #2575fc;
+  outline: none;
+  box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+}
+
 </style>

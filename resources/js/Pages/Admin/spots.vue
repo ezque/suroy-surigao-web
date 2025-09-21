@@ -1,124 +1,85 @@
 <template>
-    <div class="admin-spots-body">
-          <div class="page-label">
-                <h2>Spots Management</h2>
-                <button class="add-spots-btn" @click="$emit('selectPage', 'addSpots')">
-                    <i class="fas fa-plus"></i> Add New Spot
-                </button>
-          </div>
-
-          <div class="spots-grid scrollable">
-                <div class="spot-card" v-for="(spot, index) in spots" :key="index">
-                      <div class="spot-image">
-                            <img :src="spot.image" :alt="spot.name" />
-                            <div
-                              class="spot-status"
-                              :class="spot.active ? 'status-active' : 'status-inactive'"
-                            >
-                              {{ spot.active ? "Active" : "Inactive" }}
-                            </div>
-                      </div>
-                      <div class="spot-info">
-                        <h3 class="spot-name">{{ spot.name }}</h3>
-                        <div class="spot-location">
-                          <i class="fas fa-map-marker-alt"></i> {{ spot.location }}
-                        </div>
-                        <div class="spot-actions">
-                          <button class="edit-btn" @click="editSpot(spot)">
-                            <i class="fas fa-edit"></i> Edit
-                          </button>
-                        </div>
-                      </div>
-                </div>
-          </div>
+  <div class="admin-spots-body">
+    <div class="page-label">
+      <h2>Spots Management</h2>
+      <button class="add-spots-btn" @click="$emit('selectPage', 'addSpots')">
+        <i class="fas fa-plus"></i> Add New Spot
+      </button>
     </div>
+
+    <!-- 🔍 Search Bar -->
+    <div class="search-bar">
+      <input 
+        type="text" 
+        v-model="searchQuery" 
+        placeholder="Search spots by name or location..."
+      />
+    </div>
+
+    <div class="spots-grid scrollable">
+      <div 
+        class="spot-card" 
+        v-for="(spot, index) in filteredSpots" 
+        :key="index"
+      >
+        <div class="spot-image">
+          <img :src="spot.image" :alt="spot.name" />
+          <div
+            class="spot-status"
+            :class="spot.active ? 'status-active' : 'status-inactive'"
+          >
+            {{ spot.active ? "Active" : "Inactive" }}
+          </div>
+        </div>
+        <div class="spot-info">
+          <h3 class="spot-name">{{ spot.name }}</h3>
+          <div class="spot-location">
+            <i class="fas fa-map-marker-alt"></i> {{ spot.location }}
+          </div>
+          <div class="spot-actions">
+            <button class="edit-btn" @click="editSpot(spot)">
+              <i class="fas fa-edit"></i> Edit
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- No Results -->
+      <div v-if="filteredSpots.length === 0" class="no-results">
+        No spots found.
+      </div>
+    </div>
+  </div>
 </template>
 
 <script setup>
-    const emit = defineEmits(["selectPage"])
+import { ref, computed } from "vue"
+
+const emit = defineEmits(["selectPage"])
+
+const searchQuery = ref("")
 
 const spots = [
-  {
-    name: "Mountain Viewpoint",
-    location: "Colorado, USA",
-    price: "$120/night",
-    image:
-      "https://images.unsplash.com/photo-1506744038136-46273834b3fb",
-    active: true,
-  },
-  {
-    name: "Beach House",
-    location: "California, USA",
-    price: "$210/night",
-    image:
-      "https://images.unsplash.com/photo-1519885277449-12eee5564d68",
-    active: true,
-  },
-  {
-    name: "Forest Cabin",
-    location: "Oregon, USA",
-    price: "$95/night",
-    image:
-      "https://images.unsplash.com/photo-1566073771259-6a8506099945",
-    active: false,
-  },
-  {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
-   {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
-   {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
-   {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
-   {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
-   {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
-   {
-    name: "Luxury Villa",
-    location: "Miami, USA",
-    price: "$350/night",
-    image:
-      "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4",
-    active: true,
-  },
+  { name: "Mountain Viewpoint", location: "Colorado, USA", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb", active: true },
+  { name: "Beach House", location: "California, USA", image: "https://images.unsplash.com/photo-1519885277449-12eee5564d68", active: true },
+  { name: "Forest Cabin", location: "Oregon, USA", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945", active: false },
+  { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+   { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+    { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+     { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+      { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+       { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+        { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+         { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
+          { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
 ]
+
+const filteredSpots = computed(() => {
+  return spots.filter(spot => 
+    spot.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+    spot.location.toLowerCase().includes(searchQuery.value.toLowerCase())
+  )
+})
 
 function editSpot(spot) {
   alert(`Edit functionality for: ${spot.name}`)
@@ -132,9 +93,8 @@ function editSpot(spot) {
   display: flex;
   flex-direction: column;
   padding: 25px;
-  overflow-y: auto; /* 👈 enables scrolling */
+  overflow-y: auto;
 }
-
 
 .page-label {
   display: flex;
@@ -170,6 +130,24 @@ function editSpot(spot) {
 .add-spots-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgba(106, 17, 203, 0.35);
+}
+
+/* 🔍 Search bar styles */
+.search-bar {
+  margin-bottom: 20px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.search-bar input {
+  background-color: #e0e0e0;
+  padding: 10px 14px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  width: 300px;
+  max-width: 100%;
+  font-size: 1rem;
 }
 
 .spots-grid {
@@ -261,11 +239,6 @@ function editSpot(spot) {
   border-top: 1px solid #f1f1f1;
 }
 
-.spot-price {
-  font-weight: 700;
-  color: #6a11cb;
-}
-
 .edit-btn {
   background: #f5f7fa;
   border: none;
@@ -285,6 +258,15 @@ function editSpot(spot) {
   color: white;
 }
 
+.no-results {
+  grid-column: span 4;
+  text-align: center;
+  font-size: 1rem;
+  color: #7f8c8d;
+  margin-top: 20px;
+}
+
+/* Responsive grid */
 @media (max-width: 1024px) {
   .spots-grid {
     grid-template-columns: repeat(3, 1fr);
@@ -306,26 +288,6 @@ function editSpot(spot) {
     width: 100%;
     justify-content: center;
   }
- .spots-grid.scrollable {
-  max-height: 500px; /* adjust as needed */
-  overflow-y: auto;
-  padding-right: 8px; /* avoids scrollbar overlap */
-}
-
-/* Optional scrollbar styling */
-.spots-grid.scrollable::-webkit-scrollbar {
-  width: 8px;
-}
-
-.spots-grid.scrollable::-webkit-scrollbar-thumb {
-  background: #bbb;
-  border-radius: 4px;
-}
-
-.spots-grid.scrollable::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
 }
 
 @media (max-width: 480px) {

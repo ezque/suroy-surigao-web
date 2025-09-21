@@ -6,118 +6,108 @@
     </div>
 
     <div class="sidebar-button-container">
-          <button @click="$emit('selectPage', 'dashboard')" v-if="userRole === '1'">
-            <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
+         <button @click="$emit('selectPage', 'dashboard')" v-if="userRole === '1'">
+            <Home class="icon" />
             Dashboard
           </button>
           <button @click="$emit('selectPage', 'agency')" v-if="userRole === '1'">
-            <img src="/public/images/agency.png" alt="Agencies" class="icon-img" />
+            <Building2 class="icon" />
             Agencies
           </button>
           <button @click="$emit('selectPage', 'spots')" v-if="userRole === '1'">
-            <img src="/public/images/manage-spots.png" alt="Spots" class="icon-img" />
+            <MapPin class="icon" />
             Manage Spots
           </button>
           <button @click="$emit('selectPage', 'post')" v-if="userRole === '1'">
-            <img src="/public/images/manage-post.png" alt="Posts" class="icon-img" />
+            <FileText class="icon" />
             Manage Post
           </button>
           <button @click="$emit('selectPage', 'manageUser')" v-if="userRole === '1'">
-            <img src="/public/images/manage-users.png" alt="Users" class="icon-img" />
+            <Users class="icon" />
             Manage Users
           </button>
           <button @click="$emit('selectPage', 'reviews')" v-if="userRole === '1'">
-            <img src="/public/images/manage-feedbacks.png" alt="Reviews" class="icon-img" />
+            <MessageSquare class="icon" />
             Reviews & Feedbacks
           </button>
           <button @click="$emit('selectPage', 'settings')" v-if="userRole === '1'">
-            <img src="/public/images/settings.png" alt="Settings" class="icon-img" />
+            <Settings class="icon" />
             Settings
           </button>
-        <button @click="$emit('selectPage', 'agencyDashboard')" v-if="userRole === '2'">
-            <img src="/public/images/home.png" alt="Dashboard" class="icon-img" />
+
+          <!-- Agency Sidebar -->
+          <button @click="$emit('selectPage', 'agencyDashboard')" v-if="userRole === '2'">
+            <Home class="icon" />
             Dashboard
-        </button>
-        <button @click="$emit('selectPage', 'ManageTours')" v-if="userRole === '2'">
-            <img src="/public/images/manage-tours.png" alt="Dashboard" class="icon-img" />
+          </button>
+          <button @click="$emit('selectPage', 'ManageTours')" v-if="userRole === '2'">
+            <Briefcase class="icon" />
             Manage Tours & Package
-        </button>
-        <button @click="$emit('selectPage', 'ManageBookings')" v-if="userRole === '2'">
-            <img src="/public/images/manage-booking.png" alt="Dashboard" class="icon-img" />
+          </button>
+          <button @click="$emit('selectPage', 'ManageBookings')" v-if="userRole === '2'">
+            <Book class="icon" />
             Manage Bookings
-        </button>
-        <button @click="$emit('selectPage', 'ReviewsFedback')" v-if="userRole === '2'">
-            <img src="/public/images/manage-feedbacks.png" alt="Dashboard" class="icon-img" />
+          </button>
+          <button @click="$emit('selectPage', 'ReviewsFedback')" v-if="userRole === '2'">
+            <Star class="icon" />
             Reviews and Feedback
-        </button>
-        <button @click="$emit('selectPage', 'agencySettings')" v-if="userRole === '2'">
-            <img src="/public/images/settings.png" alt="Dashboard" class="icon-img" />
+          </button>
+          <button @click="$emit('selectPage', 'agencySettings')" v-if="userRole === '2'">
+            <Settings class="icon" />
             Settings
-        </button>
+          </button>
 
-      <div class="sidebar-spacer"></div>
+          <!-- Logout -->
+          <button class="logout-btn" @click="handleLogout">
+            <LogOut class="icon" />
+            Logout
+          </button>
 
-      <button class="logout-btn" @click="handleLogout">
-        <img src="/public/images/exit.png" alt="Logout" class="icon-img" />
-        Logout
-      </button>
     </div>
   </div>
 </template>
 
 <script setup>
-    import {Inertia} from "@inertiajs/inertia";
-    const props = defineProps({
-      userRole: String
-    })
-    const emit = defineEmits(["selectPage"])
-    const handleLogout = () => {
-        if (confirm('Are you sure you want to logout?')) {
-            Inertia.post('/logout', {}, {
-                onFinish: () => {
-                    window.location.reload();
-                }
-            });
-        }
-    };
+import { Inertia } from "@inertiajs/inertia";
+import { Home, Building2, MapPin, FileText, Users, MessageSquare, Settings, Briefcase, Book, Star, LogOut } from "lucide-vue-next";
+
+const props = defineProps({
+  userRole: String
+});
+const emit = defineEmits(["selectPage"]);
+const handleLogout = () => {
+  if (confirm("Are you sure you want to logout?")) {
+    Inertia.post("/logout", {}, {
+      onFinish: () => {
+        window.location.reload();
+      }
+    });
+  }
+};
 </script>
+
 
 <style scoped>
 .sidebar-container {
   width: 15%;
   height: 100%;
-  background-color: rgb(249, 249, 250);
+  background-color: #007A8C;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
-.side-label-container {
-  width: 100%;
-}
-
+/* Admin/Agency Label */
 .side-label-container h2 {
   font-size: 1.5em;
   font-weight: 700;
   margin-top: 10px;
   margin-left: 10px;
   text-transform: uppercase;
+  color: white; /* 🔥 makes the title white */
 }
 
-.sidebar-button-container {
-  width: 85%;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  padding-left: 10px;
-  padding-right: 10px;
-}
-
-/* Spacer pushes logout button to bottom */
-.sidebar-spacer {
-  flex-grow: 1;
-}
-
+/* Buttons */
 .sidebar-button-container button {
   display: flex;
   align-items: center;
@@ -130,25 +120,34 @@
   transition: background 0.2s;
   width: 100%;
   text-align: left;
+  color: white; /* 🔥 makes text white */
 }
 
+/* Button hover */
 .sidebar-button-container button:hover {
-  background: #f0f0f0;
+  background: rgba(255, 255, 255, 0.15);
   border-radius: 6px;
 }
 
-.icon-img {
+/* Lucide Icons */
+.icon {
   width: 22px;
   height: 22px;
-  object-fit: contain;
+  stroke: white; /* 🔥 makes icons white */
 }
 
+/* Logout button text & icon */
 .logout-btn {
-  color: #302322;
+  color: #ffecec; /* light pink text */
   font-weight: 600;
 }
-
+.logout-btn .icon {
+  stroke: #ffecec; /* same as text */
+}
 .logout-btn:hover {
-  background: #ffecec;
+  background: rgba(255, 0, 0, 0.2);
+}
+.logout-btn:hover .icon {
+  stroke: red; /* red on hover */
 }
 </style>

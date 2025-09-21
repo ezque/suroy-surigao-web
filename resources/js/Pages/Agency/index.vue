@@ -20,6 +20,9 @@
             <Packages
                 v-if="activePage === 'ManageTours'"
             />
+            <ReviewsAndFeedbacks
+                v-if="activePage === 'agencyFeedbacks'"
+            />
         </div>
     </div>
 </template>
@@ -30,6 +33,7 @@
     import AgencySettings from "./agencySettings.vue";
     import ManageBooking from "./manageBookings.vue";
     import Packages from "./Packages.vue";
+    import ReviewsAndFeedbacks from "./agencyFeedbacks.vue";
 
     import {computed, ref} from "vue";
 
