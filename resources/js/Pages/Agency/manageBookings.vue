@@ -1,6 +1,6 @@
 <template>
     <div class="manageBookings-body">
-
+        <h2>sdasd</h2>
     </div>
 </template>
 <script setup>

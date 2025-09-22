@@ -1,90 +1,93 @@
     <template>
     <div class="manage-user-body">
         <div class="header-actions">
-        <button class="add-user">
-            <i class="material-icons-outlined">add</i>
-            Add User
-        </button>
+            <button class="add-user">
+                <i class="material-icons-outlined">add</i>
+                Add User
+            </button>
 
-        <!-- Search bar -->
-        <input
-            type="text"
-            v-model="searchQuery"
-            placeholder="Search users..."
-            class="search-bar"
-        />
+            <!-- Search bar -->
+            <input
+                type="text"
+                v-model="searchQuery"
+                placeholder="Search users..."
+                class="search-bar"
+            />
         </div>
 
         <div class="user-table-container">
-        <table>
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Full Name</th>
-                <th>Email</th>
-                <th>Role</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr>
-                <td>1</td>
-                <td>John Doe</td>
-                <td>john.doe@example.com</td>
-                <td>Admin</td>
-                <td><span class="status active">Active</span></td>
-                <td>
-                <button class="action-btn view">View</button>
-                <button class="action-btn delete">🗑 Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>2</td>
-                <td>Jane Smith</td>
-                <td>jane.smith@example.com</td>
-                <td>User</td>
-                <td><span class="status inactive">Inactive</span></td>
-                <td>
-                <button class="action-btn view">View</button>
-                <button class="action-btn delete">🗑 Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>3</td>
-                <td>Michael Johnson</td>
-                <td>michael.j@example.com</td>
-                <td>Moderator</td>
-                <td><span class="status active">Active</span></td>
-                <td>
-                <button class="action-btn view">View</button>
-                <button class="action-btn delete">🗑 Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>4</td>
-                <td>Emily Davis</td>
-                <td>emily.davis@example.com</td>
-                <td>User</td>
-                <td><span class="status pending">Pending</span></td>
-                <td>
-                <button class="action-btn view">View</button>
-                <button class="action-btn delete">🗑 Delete</button>
-                </td>
-            </tr>
-            <tr>
-                <td>5</td>
-                <td>Chris Wilson</td>
-                <td>chris.wilson@example.com</td>
-                <td>User</td>
-                <td><span class="status active">Active</span></td>
-                <td>
-                <button class="action-btn view">View</button>
-                <button class="action-btn delete">🗑 Delete</button>
-                </td>
-            </tr>
-            </tbody>
-        </table>
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Full Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>John Doe</td>
+                    <td>john.doe@example.com</td>
+                    <td>Admin</td>
+                    <td><span class="status active">Active</span></td>
+                    <td>
+                    <button class="action-btn view">View</button>
+                    <button class="action-btn delete">🗑 Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jane Smith</td>
+                    <td>jane.smith@example.com</td>
+                    <td>User</td>
+                    <td><span class="status inactive">Inactive</span></td>
+                    <td>
+                    <button class="action-btn view">View</button>
+                    <button class="action-btn delete">🗑 Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Michael Johnson</td>
+                    <td>michael.j@example.com</td>
+                    <td>Moderator</td>
+                    <td><span class="status active">Active</span></td>
+                    <td>
+                    <button class="action-btn view">View</button>
+                    <button class="action-btn delete">🗑 Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>4</td>
+                    <td>Emily Davis</td>
+                    <td>emily.davis@example.com</td>
+                    <td>User</td>
+                    <td><span class="status pending">Pending</span></td>
+                    <td>
+                    <button class="action-btn view">View</button>
+                    <button class="action-btn delete">🗑 Delete</button>
+                    </td>
+                </tr>
+                <tr>
+                    <td>5</td>
+                    <td>Chris Wilson</td>
+                    <td>chris.wilson@example.com</td>
+                    <td>User</td>
+                    <td><span class="status active">Active</span></td>
+                    <td>
+                    <button class="action-btn view">View</button>
+                    <button class="action-btn delete">🗑 Delete</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+            <div class="view-box">
+
+            </div>
         </div>
     </div>
     </template>
@@ -232,5 +235,13 @@
     .action-btn.delete:hover {
     background-color: #b71c1c;
     transform: scale(1.05);
+    }
+    .view-box {
+        width: 200px;
+        height: 200px;
+        border: 1px solid black;
+        position: absolute;
+        top: 30%;
+        left: 50%;
     }
     </style>

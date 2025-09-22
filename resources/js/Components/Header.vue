@@ -32,19 +32,19 @@
 
 <script setup>
     import { ref, computed } from "vue";
-const messages = ref(3);
-const notifications = ref(7);
+    const messages = ref(3);
+    const notifications = ref(7);
 
-    const userName = ref("John Smith");
+        const userName = ref("John Smith");
 
-    // get initials (for avatar)
-    const initials = computed(() =>
-      userName.value
-        .split(" ")
-        .map((n) => n[0])
-        .join("")
-        .toUpperCase()
-    );
+        // get initials (for avatar)
+        const initials = computed(() =>
+          userName.value
+            .split(" ")
+            .map((n) => n[0])
+            .join("")
+            .toUpperCase()
+        );
 </script>
 
 <style scoped>
@@ -156,7 +156,7 @@ const notifications = ref(7);
     }
 
     @media (max-width: 768px) {
-     
+
 
       .header-container {
         padding: 0 15px;
