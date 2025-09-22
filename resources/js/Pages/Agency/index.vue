@@ -5,6 +5,7 @@
             @selectPage="selectActivePage"
         />
         <div class="agency-main-body">
+            <Header></Header>
             <AgencyDashboard
                 v-if="activePage === 'agencyDashboard'"
             />
@@ -36,6 +37,7 @@
     import ReviewsAndFeedbacks from "./agencyFeedbacks.vue";
 
     import {computed, ref} from "vue";
+import Header from "../../Components/Header.vue";
 
     const props = defineProps({
         userInformation: Object,
