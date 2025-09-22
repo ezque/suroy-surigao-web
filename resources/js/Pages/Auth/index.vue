@@ -79,11 +79,12 @@
         flex-direction: column;
         color: white;
         text-align: center;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
         padding: 40px 20px;
     }
 
     .card-right-side img {
-        width: 160px;
+        width: 300px;
         margin-bottom: 20px;
     }
 
