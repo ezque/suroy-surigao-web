@@ -2,7 +2,10 @@
   <div class="packages-body">
     <!-- Top controls -->
     <div class="top-controls">
-      <button class="add-package">
+      <button
+          class="add-package"
+          @click="$emit('selectPage', 'agencyAddPackage')"
+      >
         <i class="material-icons-outlined">add</i>
         Add Package / Tour
       </button>
@@ -68,7 +71,9 @@
     </div>
   </div>
 </template>
-
+<script setup>
+    const emit = defineEmits(["selectPage"]);
+</script>
 <style scoped>
 .packages-body {
   width: 100%;

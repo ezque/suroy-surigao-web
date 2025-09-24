@@ -20,6 +20,7 @@
             />
             <Packages
                 v-if="activePage === 'ManageTours'"
+                @selectPage="selectActivePage"
             />
             <ReviewsAndFeedbacks
                 v-if="activePage === 'agencyFeedbacks'"
@@ -37,7 +38,7 @@
     import ReviewsAndFeedbacks from "./agencyFeedbacks.vue";
 
     import {computed, ref} from "vue";
-import Header from "../../Components/Header.vue";
+    import Header from "../../Components/Header.vue";
 
     const props = defineProps({
         userInformation: Object,
