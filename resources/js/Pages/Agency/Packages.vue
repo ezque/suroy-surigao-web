@@ -2,7 +2,10 @@
   <div class="packages-body">
     <!-- Top controls -->
     <div class="top-controls">
-      <button class="add-package" @click="showForm = true">
+      <button
+        class="add-package"
+        @click="handleAddPackageClick"
+      >
         <i class="material-icons-outlined">add</i>
         Add Package / Tour
       </button>
@@ -72,7 +75,13 @@
 
 <script setup>
 import { ref, computed } from 'vue';
-import AddPackages from './addPackages.vue'; // Import the corrected AddPackages component
+import AddPackages from './addPackages.vue';
+
+const props = defineProps({
+  usePageNavigation: Boolean, // Prop to switch between modal and page navigation
+});
+
+const emit = defineEmits(['selectPage']);
 
 const showForm = ref(false);
 const search = ref('');
@@ -83,6 +92,15 @@ const packages = ref([
   { id: 2, name: 'Mountain Trek', availability: 'Weekends', status: 'Pending', capacity: 15 },
   { id: 3, name: 'River Cruise', availability: 'Monthly', status: 'Inactive', capacity: 40 }
 ]);
+
+// Handle add package click
+const handleAddPackageClick = () => {
+  if (props.usePageNavigation) {
+    emit('selectPage', 'agencyAddPackage');
+  } else {
+    showForm.value = true;
+  }
+};
 
 // Add new package
 const handleAddPackage = (formData) => {
