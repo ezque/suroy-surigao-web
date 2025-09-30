@@ -3,8 +3,10 @@
     <!-- Top controls -->
     <div class="top-controls">
       <button
-          class="add-package"
-          @click="$emit('selectPage', 'agencyAddPackage')"
+
+        class="add-package"
+        @click="handleAddPackageClick"
+
       >
         <i class="material-icons-outlined">add</i>
         Add Package / Tour
@@ -15,6 +17,7 @@
         type="text"
         placeholder="Search tours or packages..."
         class="search-bar"
+        v-model="search"
       />
     </div>
 
@@ -32,48 +35,98 @@
           </tr>
         </thead>
         <tbody>
-          <!-- Example rows -->
-          <tr>
-            <td>1</td>
-            <td>Island Hopping</td>
-            <td>Daily</td>
-            <td><span class="status active">Active</span></td>
-            <td>20</td>
+          <tr v-for="pkg in filteredPackages" :key="pkg.id">
+            <td>{{ pkg.id }}</td>
+            <td>{{ pkg.name }}</td>
+            <td>{{ pkg.availability }}</td>
             <td>
-              <button class="action-btn view">View</button>
-              <button class="action-btn delete">🗑 Delete</button>
+              <span
+                class="status"
+                :class="{
+                  active: pkg.status === 'Active',
+                  pending: pkg.status === 'Pending',
+                  inactive: pkg.status === 'Inactive'
+                }"
+              >
+                {{ pkg.status }}
+              </span>
             </td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Mountain Trek</td>
-            <td>Weekends</td>
-            <td><span class="status pending">Pending</span></td>
-            <td>15</td>
+            <td>{{ pkg.capacity }}</td>
             <td>
               <button class="action-btn view">View</button>
-              <button class="action-btn delete">🗑 Delete</button>
-            </td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>River Cruise</td>
-            <td>Monthly</td>
-            <td><span class="status inactive">Inactive</span></td>
-            <td>40</td>
-            <td>
-              <button class="action-btn view">View</button>
-              <button class="action-btn delete">🗑 Delete</button>
+              <button class="action-btn delete" @click="deletePackage(pkg.id)">
+                🗑 Delete
+              </button>
             </td>
           </tr>
         </tbody>
       </table>
     </div>
+
+    <!-- Modal for Add Package -->
+    <div v-if="showForm" class="modal-overlay">
+      <div class="modal-content">
+        <AddPackages
+          @submit="handleAddPackage"
+          @cancel="showForm = false"
+        />
+      </div>
+    </div>
   </div>
 </template>
+
+
 <script setup>
-    const emit = defineEmits(["selectPage"]);
+import { ref, computed } from 'vue';
+import AddPackages from './addPackages.vue';
+
+const props = defineProps({
+  usePageNavigation: Boolean, // Prop to switch between modal and page navigation
+});
+
+const emit = defineEmits(['selectPage']);
+
+const showForm = ref(false);
+const search = ref('');
+
+// Example initial data
+const packages = ref([
+  { id: 1, name: 'Island Hopping', availability: 'Daily', status: 'Active', capacity: 20 },
+  { id: 2, name: 'Mountain Trek', availability: 'Weekends', status: 'Pending', capacity: 15 },
+  { id: 3, name: 'River Cruise', availability: 'Monthly', status: 'Inactive', capacity: 40 }
+]);
+
+// Handle add package click
+const handleAddPackageClick = () => {
+  if (props.usePageNavigation) {
+    emit('selectPage', 'agencyAddPackage');
+  } else {
+    showForm.value = true;
+  }
+};
+
+// Add new package
+const handleAddPackage = (formData) => {
+  const newId = packages.value.length + 1;
+  packages.value.push({ id: newId, ...formData });
+  showForm.value = false;
+};
+
+// Delete package
+const deletePackage = (id) => {
+  packages.value = packages.value.filter((p) => p.id !== id);
+};
+
+// Search filter
+const filteredPackages = computed(() =>
+  packages.value.filter((p) =>
+    p.name.toLowerCase().includes(search.value.toLowerCase())
+  )
+);
 </script>
+
+
+
 <style scoped>
 .packages-body {
   width: 100%;
@@ -85,7 +138,6 @@
   padding: 20px;
 }
 
-/* Add Package Button */
 .add-package {
   margin-bottom: 15px;
   padding: 10px 16px;
@@ -109,7 +161,6 @@
   transform: scale(1.05);
 }
 
-/* Table container */
 .packages-table-container {
   width: 90%;
   overflow-x: auto;
@@ -119,23 +170,17 @@
   box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
-/* Table styles */
 table {
   width: 100%;
   border-collapse: collapse;
   border-radius: 8px;
   overflow: hidden;
 }
-
 th, td {
   padding: 12px;
   text-align: center;
   border-bottom: 1px solid #e0e0e0;
 }
-td:nth-child(2), td:nth-child(3) {
-  width: 20%;
-}
-
 th {
   background-color: #2575fc;
   color: white;
@@ -152,7 +197,6 @@ tbody tr:hover {
   transition: 0.2s;
 }
 
-/* Status styles */
 .status {
   padding: 5px 10px;
   border-radius: 20px;
@@ -160,17 +204,10 @@ tbody tr:hover {
   font-weight: bold;
   color: white;
 }
-.status.active {
-  background-color: #4caf50;
-}
-.status.inactive {
-  background-color: #9e9e9e;
-}
-.status.pending {
-  background-color: #ff9800;
-}
+.status.active { background-color: #4caf50; }
+.status.inactive { background-color: #9e9e9e; }
+.status.pending { background-color: #ff9800; }
 
-/* Action buttons */
 .action-btn {
   padding: 6px 10px;
   border-radius: 6px;
@@ -181,22 +218,11 @@ tbody tr:hover {
   color: white;
   transition: 0.3s;
 }
-.action-btn.view {
-  background-color: #2196f3;
-}
-.action-btn.view:hover {
-  background-color: #1976d2;
-  transform: scale(1.05);
-}
-.action-btn.delete {
-  background-color: #d32f2f;
-}
-.action-btn.delete:hover {
-  background-color: #b71c1c;
-  transform: scale(1.05);
-}
+.action-btn.view { background-color: #2196f3; }
+.action-btn.view:hover { background-color: #1976d2; transform: scale(1.05); }
+.action-btn.delete { background-color: #d32f2f; }
+.action-btn.delete:hover { background-color: #b71c1c; transform: scale(1.05); }
 
-/* Top controls (button + search bar) */
 .top-controls {
   width: 90%;
   display: flex;
@@ -205,7 +231,6 @@ tbody tr:hover {
   margin-bottom: 15px;
 }
 
-/* Search bar styling */
 .search-bar {
   background-color: #e0e0e0;
   padding: 10px 14px;
@@ -219,5 +244,29 @@ tbody tr:hover {
   border-color: #2575fc;
   outline: none;
   box-shadow: 0 0 5px rgba(37, 117, 252, 0.5);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal-content {
+  background: white;
+  padding: 20px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 850px;
+  max-height: 90%;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
 }
 </style>
