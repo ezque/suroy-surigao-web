@@ -9,8 +9,8 @@
             <AgencyDashboard
                 v-if="activePage === 'agencyDashboard'"
             />
-            <AddPackage
-                v-if="activePage === 'agencyAddPackage'"
+            <AddPackages
+                v-if="activePage === 'addPackages'"
             />
             <AgencySettings
                 v-if="activePage === 'agencySettings'"
@@ -29,7 +29,7 @@
 </template>
 <script setup>
     import Sidebar from "../../Components/Sidebar.vue";
-    import AddPackage from "./addPackages.vue";
+    import AddPackages from "./addPackages.vue";
     import AgencyDashboard from "./agencyDashboard.vue";
     import AgencySettings from "./agencySettings.vue";
     import ManageBooking from "./manageBookings.vue";
