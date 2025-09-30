@@ -3,8 +3,10 @@
     <!-- Top controls -->
     <div class="top-controls">
       <button
+
         class="add-package"
         @click="handleAddPackageClick"
+
       >
         <i class="material-icons-outlined">add</i>
         Add Package / Tour
@@ -73,6 +75,7 @@
   </div>
 </template>
 
+
 <script setup>
 import { ref, computed } from 'vue';
 import AddPackages from './addPackages.vue';
@@ -121,6 +124,8 @@ const filteredPackages = computed(() =>
   )
 );
 </script>
+
+
 
 <style scoped>
 .packages-body {
