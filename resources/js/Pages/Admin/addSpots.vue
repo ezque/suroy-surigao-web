@@ -5,10 +5,12 @@
     </div>
 
     <div class="cardForm">
+      <!-- Success Message -->
       <div v-if="submitted" class="success-message">
         <i class="fas fa-check-circle"></i> Spot added successfully!
       </div>
 
+      <!-- Spot Name -->
       <div class="form-group">
         <label for="spotName">Spot Name <span class="required">*</span></label>
         <input
@@ -21,6 +23,7 @@
         <div class="error-message" v-if="errors.spot_name">{{ errors.spot_name }}</div>
       </div>
 
+      <!-- Description -->
       <div class="form-group">
         <label for="description">Description</label>
         <textarea
@@ -31,6 +34,7 @@
         ></textarea>
       </div>
 
+      <!-- Location -->
       <div class="form-group">
         <label for="location">Location</label>
         <input
@@ -42,6 +46,7 @@
         />
       </div>
 
+      <!-- Category -->
       <div class="form-group">
         <label for="category">Category</label>
         <select id="category" v-model="form.category" class="form-control">
@@ -54,88 +59,132 @@
         </select>
       </div>
 
+      <!-- Upload Images (Styled like Add Package) -->
       <div class="form-group">
-        <label for="images">Upload Images</label>
-        <input
-          type="file"
-          id="images"
-          multiple
-          class="form-control"
-          @change="handleFileUpload"
-        />
+        <label>Upload Images <span class="required">*</span></label>
+
+        <div class="image-upload-container">
+          <!-- Preview thumbnails -->
+          <div v-for="(preview, index) in imagePreviews" :key="index" class="image-thumb">
+            <img :src="preview" alt="Preview" />
+            <button class="remove-btn" @click="removeImage(index)">×</button>
+          </div>
+
+          <!-- Upload box -->
+          <label class="upload-box">
+            <span>+</span>
+            <input type="file" accept="image/*" multiple @change="handleFileUpload" />
+          </label>
+        </div>
+
+        <div class="error-message" v-if="errors.images">{{ errors.images }}</div>
       </div>
 
+      <!-- Buttons -->
       <div class="btn-group">
-        <button type="button" class="btn btn-outline" @click="$emit('selectPage', 'spots')">Cancel</button>
-          <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="loading"
-              @click="store"
-          >
-              {{ loading ? "Saving..." : "Save" }}
-          </button>
+        <button type="button" class="btn btn-outline" @click="$emit('selectPage', 'spots')">
+          Cancel
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          :disabled="loading"
+          @click="store"
+        >
+          {{ loading ? "Saving..." : "Save" }}
+        </button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup>
-    import { ref, reactive } from "vue";
-    import axios from "axios";
+import { ref, reactive } from "vue";
+import axios from "axios";
 
-    const form = reactive({
-        spot_name: "",
-        description: "",
-        location: "",
-        category: "",
-        images: []
+const emit = defineEmits(["selectPage"]);
+
+const form = reactive({
+  spot_name: "",
+  description: "",
+  location: "",
+  category: "",
+  images: [],
+});
+
+const imagePreviews = ref([]);
+const errors = reactive({});
+const submitted = ref(false);
+const loading = ref(false);
+
+const handleFileUpload = (event) => {
+  const files = Array.from(event.target.files);
+  const validImages = files.filter((file) => file.type.startsWith("image/"));
+
+  if (validImages.length) {
+    validImages.forEach((file) => {
+      form.images.push(file);
+      imagePreviews.value.push(URL.createObjectURL(file));
     });
-    const emit = defineEmits(["selectPage"])
+    errors.images = "";
+  } else {
+    errors.images = "Please upload valid image files.";
+  }
 
-    const errors = reactive({});
-    const submitted = ref(false);
-    const loading = ref(false);
+  event.target.value = "";
+};
 
-    const handleFileUpload = (event) => {
-        form.images = Array.from(event.target.files);
-    };
+const removeImage = (index) => {
+  form.images.splice(index, 1);
+  imagePreviews.value.splice(index, 1);
+};
 
-    const validateForm = () => {
-        errors.spot_name = form.spot_name ? "" : "Spot name is required.";
-        return !errors.spot_name;
-    };
+const validateForm = () => {
+  errors.spot_name = form.spot_name ? "" : "Spot name is required.";
+  errors.images = form.images.length ? "" : "At least one image is required.";
+  return !errors.spot_name && !errors.images;
+};
 
-    const store = async () => {
-        if (!validateForm() || loading.value) return;
+const store = async () => {
+  if (!validateForm() || loading.value) return;
+  loading.value = true;
 
-        loading.value = true;
+  try {
+    let formData = new FormData();
+    formData.append("spot_name", form.spot_name);
+    formData.append("description", form.description);
+    formData.append("location", form.location);
+    formData.append("category", form.category);
 
-        try {
-            let formData = new FormData();
-            formData.append("spot_name", form.spot_name);
-            formData.append("description", form.description);
-            formData.append("location", form.location);
-            formData.append("category", form.category);
+    form.images.forEach((file, index) => {
+      formData.append(`images[${index}]`, file);
+    });
 
-            form.images.forEach((file, index) => {
-                formData.append(`images[${index}]`, file);
-            });
+    await axios.post("/add-new-spot", formData, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
 
-            await axios.post("/add-new-spot", formData, {
-                headers: { "Content-Type": "multipart/form-data" }
-            });
+    submitted.value = true;
+    setTimeout(() => (submitted.value = false), 3000);
+    resetForm();
+  } catch (err) {
+    if (err.response?.status === 422) {
+      Object.assign(errors, err.response.data.errors);
+    }
+  } finally {
+    loading.value = false;
+  }
+};
 
-            submitted.value = true;
-            Object.keys(form).forEach((key) => (form[key] = key === "images" ? [] : ""));
-        } catch (err) {
-            if (err.response?.status === 422) {
-                Object.assign(errors, err.response.data.errors);
-            }
-        } finally {
-            loading.value = false;
-        }
-    };
+const resetForm = () => {
+  form.spot_name = "";
+  form.description = "";
+  form.location = "";
+  form.category = "";
+  form.images = [];
+  imagePreviews.value = [];
+  Object.keys(errors).forEach((key) => (errors[key] = ""));
+};
 </script>
 
 <style scoped>
@@ -195,8 +244,8 @@
 
 .form-control:focus {
   outline: none;
-  border-color: #27ae60;
-  box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.2);
+  border-color: #3498db;
+  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
 }
 
 textarea.form-control {
@@ -210,6 +259,72 @@ select.form-control {
   background-repeat: no-repeat;
   background-position: right 10px center;
   background-size: 16px;
+}
+
+/* Image Upload Section */
+.image-upload-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.upload-box {
+  width: 100px;
+  height: 100px;
+  border: 2px dashed #ccc;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 30px;
+  color: #888;
+  cursor: pointer;
+  position: relative;
+}
+
+.upload-box:hover {
+  border-color: #3498db;
+  color: #3498db;
+}
+
+.upload-box input {
+  opacity: 0;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.image-thumb {
+  position: relative;
+  width: 100px;
+  height: 100px;
+}
+
+.image-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 10px;
+  border: 2px solid #ddd;
+}
+
+.remove-btn {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  font-size: 14px;
+  width: 22px;
+  height: 22px;
+  cursor: pointer;
+}
+
+.remove-btn:hover {
+  background: #c0392b;
 }
 
 .btn-group {
@@ -264,5 +379,9 @@ select.form-control {
   border-radius: 6px;
   margin-bottom: 20px;
   text-align: center;
+}
+
+.required {
+  color: #e74c3c;
 }
 </style>

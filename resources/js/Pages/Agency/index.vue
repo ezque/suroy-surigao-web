@@ -45,7 +45,7 @@
     })
 
     const userRole = computed(() => props.userInformation.role);
-    const activePage = ref('dashboard');
+    const activePage = ref('agencyDashboard');
     const selectActivePage = (pageName) => {
         activePage.value = pageName;
     }
