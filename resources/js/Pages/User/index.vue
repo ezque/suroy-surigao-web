@@ -29,10 +29,14 @@ import UserSettings from "./settings.vue"; // create this file if you haven’t 
 import { ref, computed } from "vue";
 
 const props = defineProps({
-  userInformation: Object,
+  userInformation: {
+    type: Object,
+  },
 });
 
 const userRole = computed(() => props.userInformation.role);
+console.log(userRole.value);
+
 const activePage = ref("userDashboard");
 
 const selectActivePage = (pageName) => {
