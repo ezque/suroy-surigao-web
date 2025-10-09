@@ -56,7 +56,7 @@
     .header-container {
       width: 100%;
       height: 70px;
-      background: linear-gradient(135deg, #477979b6 0%, #00798c52 100%);
+      background: linear-gradient(135deg, #213f3fb6 0%, #a3c9df52 100%);
       display: flex;
       justify-content: space-between;
       align-items: center;
