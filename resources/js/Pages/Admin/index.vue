@@ -29,6 +29,10 @@
                 v-else-if="activePage === 'managePost'"
                 @selectPage="selectActivePage"
             />
+            <AddPost
+                v-else-if="activePage === 'addPost'"
+                @selectPage="selectActivePage"
+            />
             <ManageUser
                 v-else-if="activePage === 'manageUser'"
                 :allUsers="allUsers"
@@ -42,10 +46,10 @@
     import Header from "../../Components/Header.vue";
     import Dashboard from "./dashboard.vue";
     import AgencyAddForm from "./agencyAddForm.vue";
-    import AddPost from "./addPost.vue";
+    import ManagePost from './managePost.vue';
+    import AddPost from './addPost.vue';
     import AddSpots from "./addSpots.vue";
     import Agency from "./agency.vue";
-    import ManagePost from "./managePost.vue";
     import ManageUser from "./manageUser.vue";
     import Spots from "./spots.vue";
 
@@ -63,6 +67,8 @@
     const selectActivePage = (pageName) => {
         activePage.value = pageName;
     }
+
+    
 
 
 
