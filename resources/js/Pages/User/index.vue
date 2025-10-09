@@ -6,10 +6,24 @@
     />
 
     <div class="user-main-body">
-      <Header />
+      <Header
+        :userInformation="userInformation"
+        @logout="handleLogout"
+      />
 
+      <!-- Pages -->
       <Home v-if="activePage === 'userDashboard'" />
-      <Spots v-if="activePage === 'spots'" />
+
+      <!-- Spots List -->
+      <div v-if="activePage === 'spots'">
+        <Spots @exploreSpots="openExplore" />
+      </div>
+
+      <!-- Explore Spot Details -->
+      <div v-else-if="activePage === 'exploreSpots'">
+        <ExploreSpots :spot="selectedSpot" @back="goBackToSpots" />
+      </div>
+
       <Favorites v-if="activePage === 'favorites'" />
       <Messages v-if="activePage === 'messages'" />
       <UserSettings v-if="activePage === 'settings'" />
@@ -18,29 +32,50 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
+
+// Components
 import Sidebar from "../../Components/Sidebar.vue";
-import Header from "../../Components/Header.vue";
+import Header from "@/Components/User/Header.vue";
 import Home from "./userDashboard.vue";
 import Spots from "./spots.vue";
+import ExploreSpots from "./exploreSpots.vue";
 import Favorites from "./favorites.vue";
 import Messages from "./messages.vue";
-import UserSettings from "./settings.vue"; // create this file if you haven’t yet
-
-import { ref, computed } from "vue";
+import UserSettings from "./settings.vue";
 
 const props = defineProps({
   userInformation: {
     type: Object,
+    required: true,
   },
 });
 
+// Compute user role
 const userRole = computed(() => props.userInformation.role);
-console.log(userRole.value);
 
+// Active Page Management
 const activePage = ref("userDashboard");
+const selectedSpot = ref(null);
 
 const selectActivePage = (pageName) => {
   activePage.value = pageName;
+};
+
+// When “Explore” is clicked in Spots.vue
+const openExplore = (spot) => {
+  selectedSpot.value = spot;
+  activePage.value = "exploreSpots";
+};
+
+// Go back from ExploreSpots to Spots
+const goBackToSpots = () => {
+  activePage.value = "spots";
+};
+
+// Logout
+const handleLogout = () => {
+  console.log("Logging out...");
 };
 </script>
 
