@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\AdminController;
+use App\Http\Controllers\AgencyController;
 
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
@@ -19,4 +20,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add-agency', [AdminController::class, 'addAgency'])->name('add.agency');
     Route::post('/add-new-spot', [AdminController::class, 'addSpot']);
 
+    Route::post('/add-package', [AgencyController::class, 'addPackage']);
 });

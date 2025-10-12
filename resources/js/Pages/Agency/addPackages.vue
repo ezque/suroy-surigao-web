@@ -1,162 +1,197 @@
 <template>
-      <div class="agency-add-form-body">
-            <div class="form-header">
-              <h2>Package</h2>
+    <div class="agency-add-form-body">
+        <div class="form-header">
+            <h2>Package</h2>
+        </div>
+
+        <div class="cardForm">
+            <!-- Package Name -->
+            <div class="form-group">
+                <label for="package_name">Name of Package <span class="required">*</span></label>
+                <input
+                    type="text"
+                    id="name"
+                    class="form-control"
+                    v-model="package_name"
+                    placeholder="Enter package name"
+                />
+                <div class="error-message" v-if="errors.package_name">{{ errors.package_name }}</div>
             </div>
 
-            <div class="cardForm">
-                  <div class="form-group">
-                        <label for="name">Name of Package <span class="required">*</span></label>
-                        <input
-                          type="text"
-                          id="name"
-                          class="form-control"
-                          v-model="formData.name"
-                          placeholder="Enter package name"
-                        />
-                        <div class="error-message" v-if="errors.name">{{ errors.name }}</div>
-                  </div>
-
-                  <div class="form-group">
-                        <label for="description">Description <span class="required">*</span></label>
-                        <textarea
-                          id="description"
-                          class="form-control"
-                          v-model="formData.description"
-                          placeholder="Enter description"
-                        ></textarea>
-                        <div class="error-message" v-if="errors.description">{{ errors.description }}</div>
-                  </div>
-                  <div class="form-group">
-                        <label for="services">Services 1 <span class="required">*</span></label>
-                        <input
-                          type="text"
-                          id="services"
-                          class="form-control"
-                          v-model="formData.services"
-                          placeholder="Enter service details"
-                        />
-                        <div class="error-message" v-if="errors.services">{{ errors.services }}</div>
-                  </div>
-                  <div class="form-group">
-                        <label for="duration">Duration <span class="required">*</span></label>
-                        <input
-                          type="text"
-                          id="duration"
-                          class="form-control"
-                          v-model="formData.duration"
-                          placeholder="Enter duration"
-                        />
-                        <div class="error-message" v-if="errors.duration">{{ errors.duration }}</div>
-                  </div>
-
-                  <div class="form-group">
-                        <label for="location">Location <span class="required">*</span></label>
-                        <input
-                          type="text"
-                          id="location"
-                          class="form-control"
-                          v-model="formData.location"
-                          placeholder="Enter location"
-                        />
-                        <div class="error-message" v-if="errors.location">{{ errors.location }}</div>
-                  </div>
-
-                  <div class="form-group">
-                        <label for="capacity">Capacity <span class="required">*</span></label>
-                        <input
-                          type="number"
-                          id="capacity"
-                          class="form-control"
-                          v-model.number="formData.capacity"
-                          placeholder="Enter max capacity"
-                          min="1"
-                        />
-                        <div class="error-message" v-if="errors.capacity">{{ errors.capacity }}</div>
-                  </div>
-
-                  <div class="form-group">
-                        <label for="availability">Available from - to <span class="required">*</span></label>
-                        <input
-                          type="text"
-                          id="availability"
-                          class="form-control"
-                          v-model="formData.availability"
-                          placeholder="Enter availability range"
-                        />
-                        <div class="error-message" v-if="errors.availability">{{ errors.availability }}</div>
-                  </div>
-
-                  <div class="btn-group">
-                        <button type="button" class="btn btn-outline" @click="cancel">Cancel</button>
-                        <button type="submit" class="btn btn-primary" @click="handleSubmit">Saved</button>
-                  </div>
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Description <span class="required">*</span></label>
+                <textarea
+                    id="description"
+                    class="form-control"
+                    v-model="description"
+                    placeholder="Enter description"
+                ></textarea>
+                <div class="error-message" v-if="errors.description">{{ errors.description }}</div>
             </div>
-      </div>
+
+            <!-- Dynamic Services -->
+            <div
+                class="form-group"
+                v-for="(service, index) in services"
+                :key="index"
+            >
+                <label>Service {{ index + 1 }} <span class="required">*</span></label>
+                <input
+                    type="text"
+                    class="form-control"
+                    v-model="services[index]"
+                    placeholder="Enter service details"
+                />
+            </div>
+            <button
+                type="button"
+                class="btn btn-outline mt-2"
+                @click="addService"
+            >
+                + Add Another Service
+            </button>
+            <div class="error-message" v-if="errors.services">{{ errors.services }}</div>
+
+            <!-- Duration -->
+            <div class="form-group">
+                <label for="duration">Duration <span class="required">*</span></label>
+                <input
+                    type="text"
+                    id="duration"
+                    class="form-control"
+                    v-model="duration"
+                    placeholder="Enter duration"
+                />
+                <div class="error-message" v-if="errors.duration">{{ errors.duration }}</div>
+            </div>
+
+            <!-- Capacity -->
+            <div class="form-group">
+                <label for="capacity">Capacity <span class="required">*</span></label>
+                <input
+                    type="number"
+                    id="capacity"
+                    class="form-control"
+                    v-model.number="capacity"
+                    placeholder="Enter max capacity"
+                    min="1"
+                />
+                <div class="error-message" v-if="errors.capacity">{{ errors.capacity }}</div>
+            </div>
+            <div class="form-group">
+                <label for="price">Price <span class="required">*</span></label>
+                <input
+                    type="number"
+                    id="price"
+                    class="form-control"
+                    v-model.number="price"
+                    placeholder="Enter Price"
+                    min="1"
+                />
+                <div class="error-message" v-if="errors.price">{{ errors.price }}</div>
+            </div>
+
+            <!-- available_On -->
+            <div class="form-group">
+                <label for="available_On">Available From <span class="required">*</span></label>
+                <input
+                    type="text"
+                    id="available_On"
+                    class="form-control"
+                    v-model="available_On"
+                />
+                <div class="error-message" v-if="errors.available_On">{{ errors.available_On }}</div>
+            </div>
+
+
+
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline" @click="cancel">
+                    Cancel
+                </button>
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                    @click="handleSubmit"
+                >
+                    Save
+                </button>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script setup>
-    import { ref, reactive } from 'vue';
+    import { ref, reactive } from "vue";
+    import axios from "axios";
 
-    const formData = reactive({
-          name: '',
-          description: '',
-          services: '',
-          duration: '',
-          location: '',
-          capacity: null,
-          availability: ''
-    });
+    // form refs
+    const package_name = ref("");
+    const description = ref("");
+    const services = ref([""]);
+    const duration = ref("");
+    const capacity = ref("");
+    const available_On = ref("");
+    const price = ref("");
 
+    // error handling
     const errors = reactive({});
     const submitted = ref(false);
 
-    const emit = defineEmits(['submit', 'cancel']);
+    const emit = defineEmits(["submit", "cancel"]);
 
-    const validateForm = () => {
-          errors.name = formData.name ? '' : 'Name of Package is required.';
-          errors.description = formData.description ? '' : 'Description is required.';
-          errors.services = formData.services ? '' : 'Services are required.';
-          errors.duration = formData.duration ? '' : 'Duration is required.';
-          errors.location = formData.location ? '' : 'Location is required.';
-          errors.capacity = formData.capacity && formData.capacity > 0 ? '' : 'Capacity must be a positive number.';
-          errors.availability = formData.availability ? '' : 'Availability range is required.';
-          return !errors.name && !errors.description && !errors.services && !errors.duration && !errors.location && !errors.capacity && !errors.availability;
+    // Add extra service field
+    const addService = () => {
+        services.value.push("");
     };
 
-    const handleSubmit = () => {
-          if (validateForm()) {
-                emit('submit', { ...formData });
-                submitted.value = true;
-                setTimeout(() => (submitted.value = false), 3000);
-                formData.name = '';
-                formData.description = '';
-                formData.services = '';
-                formData.duration = '';
-                formData.location = '';
-                formData.capacity = null;
-                formData.availability = '';
-          }
+    const handleSubmit = async () => {
+        try {
+            const payload = {
+                package_name: package_name.value,
+                description: description.value,
+                services: services.value, // array will be sent properly
+                duration: duration.value,
+                capacity: capacity.value,
+                available_On: available_On.value,
+                price: price.value,
+            };
+
+            const response = await axios.post('/add-package', payload, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            alert('Package added successfully!');
+
+            // reset form
+            package_name.value = "";
+            description.value = "";
+            services.value = [""];
+            duration.value = "";
+            capacity.value = "";
+            available_On.value = "";
+            price.value = "";
+
+        } catch (error) {
+            console.error(error);
+            if (error.response && error.response.data && error.response.data.errors) {
+                errors.value = error.response.data.errors;
+            }
+            alert('Failed to submit package.');
+        }
     };
+
 
     const cancel = () => {
-          emit('cancel');
-          formData.name = '';
-          formData.description = '';
-          formData.services = '';
-          formData.duration = '';
-          formData.location = '';
-          formData.capacity = null;
-          formData.availability = '';
-          errors.name = '';
-          errors.description = '';
-          errors.services = '';
-          errors.duration = '';
-          errors.location = '';
-          errors.capacity = '';
-          errors.availability = '';
+        emit("cancel");
     };
 </script>
+
+
 
 <style scoped>
     * {
