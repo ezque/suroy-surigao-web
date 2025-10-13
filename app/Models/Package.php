@@ -14,7 +14,11 @@ class Package extends Model
         'price',
         'capacity',
         'duration',
-        'available_from',
-        'available_to',
+        'available_On',
     ];
+
+    public function services()
+    {
+        return $this->hasMany(Service::class, 'package_id');
+    }
 }
