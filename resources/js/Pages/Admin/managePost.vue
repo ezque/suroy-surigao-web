@@ -2,9 +2,9 @@
   <div class="manage-post-body">
     <div class="header-section">
       <h2>Manage Posts</h2>
-      <router-link to="/add-post" class="add-btn">
+      <button @click="goToAddPost" class="add-btn">
         <i class="material-icons">add</i> Add New Post
-      </router-link>
+      </button>
     </div>
 
     <div class="table-container">
@@ -25,14 +25,14 @@
             <td>{{ post.id }}</td>
             <td>{{ post.userId }}</td>
             <td>{{ post.title }}</td>
-            <td><a :href="post.url">{{ post.url }}</a></td>
+            <td><a :href="post.url" target="_blank">{{ post.url }}</a></td>
             <td>{{ post.createdAt }}</td>
             <td>{{ post.updatedAt }}</td>
             <td class="action-buttons">
-              <button class="edit-btn">
+              <button class="edit-btn" @click="editPost(post)">
                 <i class="material-icons">edit</i>
               </button>
-              <button class="delete-btn">
+              <button class="delete-btn" @click="deletePost(post.id)">
                 <i class="material-icons">delete</i>
               </button>
             </td>
@@ -45,6 +45,9 @@
 
 <script setup>
 import { ref } from 'vue';
+
+// Define emits to communicate with parent component
+const emit = defineEmits(['selectPage']);
 
 // Sample data for posts
 const posts = ref([
@@ -65,6 +68,31 @@ const posts = ref([
     updatedAt: '2025-10-09',
   },
 ]);
+
+// Navigate to Add Post page
+const goToAddPost = () => {
+  emit('selectPage', 'addPost');
+};
+
+// Edit post function
+const editPost = (post) => {
+  console.log('Editing post:', post);
+  // You can emit an event with post data or navigate to edit page
+  // emit('selectPage', 'editPost');
+};
+
+// Delete post function
+const deletePost = (id) => {
+  if (confirm('Are you sure you want to delete this post?')) {
+    const index = posts.value.findIndex(post => post.id === id);
+    if (index !== -1) {
+      posts.value.splice(index, 1);
+    }
+    console.log('Deleted post with ID:', id);
+    // Later, add API call here:
+    // await axios.delete(`/api/posts/${id}`);
+  }
+};
 
 // Later, you can replace the sample data with an API call using axios, e.g.:
 // import axios from 'axios';

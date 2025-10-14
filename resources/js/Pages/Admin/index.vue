@@ -37,6 +37,10 @@
                 v-else-if="activePage === 'manageUser'"
                 :allUsers="allUsers"
             />
+             <ReviewsAndFeedbacks
+                v-else-if="activePage === 'reviewsAndFeedbacks'"
+                :allUsers="allUsers"
+            />
         </div>
     </div>
 </template>
@@ -52,6 +56,7 @@
     import Agency from "./agency.vue";
     import ManageUser from "./manageUser.vue";
     import Spots from "./spots.vue";
+    import ReviewsAndFeedbacks from "./reviewsAndFeedbacks.vue";
 
 
     const props = defineProps({

@@ -1,260 +1,292 @@
 <template>
-  <div class="agency-add-form-body">
-    <div class="form-header">
-      <h2>Agency Information</h2>
+  <div class="add-agency-body">
+    <div class="header-section">
+      <h2>Add New Agency</h2>
+      <button class="back-btn" @click="$emit('selectPage', 'agency')">
+        <i class="material-icons">arrow_back</i> Back to Manage Agencies
+      </button>
     </div>
 
-    <div class="cardForm">
+    <div class="form-container">
       <div v-if="submitted" class="success-message">
-        <i class="fas fa-check-circle"></i> Agency information saved successfully!
+        <i class="material-icons">check_circle</i>
+        <span>Agency information saved successfully!</span>
       </div>
 
-      <!-- Agency Name -->
-      <div class="form-group">
-        <label for="agencyName">Name of Agency <span class="required">*</span></label>
-        <input
-          type="text"
-          id="agencyName"
-          class="form-control"
-          v-model="form.agency_name"
-          placeholder="Enter agency name"
-        />
-        <div class="error-message" v-if="errors.agency_name">{{ errors.agency_name }}</div>
-      </div>
+      <form @submit.prevent="store">
+        <div class="form-group">
+          <label for="agencyName">
+            Agency Name <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="agencyName"
+            v-model="form.agency_name"
+            placeholder="Enter agency name"
+            required
+          />
+          <div class="error-message" v-if="errors.agency_name">
+            {{ errors.agency_name }}
+          </div>
+        </div>
 
-      <!-- Description -->
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          class="form-control"
-          v-model="form.description"
-          placeholder="Describe your agency"
-        ></textarea>
-      </div>
+        <div class="form-group">
+          <label for="description">Description</label>
+          <textarea
+            id="description"
+            v-model="form.description"
+            placeholder="Describe your agency"
+            rows="4"
+          ></textarea>
+        </div>
 
-      <!-- Contact -->
-      <div class="form-group">
-        <label for="contact_number">Contact Information <span class="required">*</span></label>
-        <input
-          type="text"
-          id="contact_number"
-          class="form-control"
-          v-model="form.contact_number"
-          placeholder="Phone"
-        />
-        <div class="error-message" v-if="errors.contact_number">{{ errors.contact_number }}</div>
-      </div>
+        <div class="form-group">
+          <label for="contact_number">
+            Contact Number <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="contact_number"
+            v-model="form.contact_number"
+            placeholder="Enter contact number"
+            required
+          />
+          <div class="error-message" v-if="errors.contact_number">
+            {{ errors.contact_number }}
+          </div>
+        </div>
 
-      <!-- Location -->
-      <div class="form-group">
-        <label for="location">Location</label>
-        <input
-          type="text"
-          id="location"
-          class="form-control"
-          v-model="form.location_address"
-          placeholder="City, country"
-        />
-      </div>
+        <div class="form-group">
+          <label for="location">Location Address</label>
+          <input
+            type="text"
+            id="location"
+            v-model="form.location_address"
+            placeholder="Enter location address"
+          />
+        </div>
 
-      <!-- Buttons -->
-      <div class="btn-group">
-        <button type="button" class="btn btn-outline">Cancel</button>
-        <button type="submit" class="btn btn-primary" @click="store">Save</button>
-      </div>
+        <div class="form-actions">
+          <button type="submit" class="submit-btn">
+            <i class="material-icons">save</i> Save Agency
+          </button>
+        </div>
+      </form>
     </div>
   </div>
 </template>
 
 <script setup>
-    import { ref, reactive } from "vue";
-    import axios from "axios";
+import { ref, reactive } from "vue";
+import axios from "axios";
 
-    const form = reactive({
-        agency_name: "",
-        description: "",
-        contact_number: "",
-        location_address: "",
+const emit = defineEmits(['selectPage']);
+
+const form = reactive({
+  agency_name: "",
+  description: "",
+  contact_number: "",
+  location_address: "",
+});
+
+const errors = reactive({});
+const submitted = ref(false);
+
+const validateForm = () => {
+  errors.agency_name = form.agency_name ? "" : "Agency name is required.";
+  errors.contact_number = form.contact_number ? "" : "Contact information is required.";
+  return !errors.agency_name && !errors.contact_number;
+};
+
+const store = async () => {
+  if (!validateForm()) {
+    return;
+  }
+
+  try {
+    const formData = new FormData();
+
+    formData.append('agency_name', form.agency_name);
+    formData.append('description', form.description);
+    formData.append('contact_number', form.contact_number);
+    formData.append('location_address', form.location_address);
+
+    const response = await axios.post('/add-agency', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
     });
 
-    const errors = reactive({});
-    const submitted = ref(false);
+    submitted.value = true;
 
-    const validateForm = () => {
-        errors.agency_name = form.agency_name ? "" : "Agency name is required.";
-        errors.contact_number = form.contact_number ? "" : "Contact information is required.";
-        return !errors.agency_name && !errors.contact_number;
-    };
+    // Reset form
+    form.agency_name = "";
+    form.description = "";
+    form.contact_number = "";
+    form.location_address = "";
 
-    const store = async () => {
-        try {
-            const formData = new FormData();
-
-            formData.append('agency_name', form.agency_name);
-            formData.append('description', form.description);
-            formData.append('contact_number', form.contact_number);
-            formData.append('location_address', form.location_address);
-
-            const response = await axios.post('/add-agency', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            });
-
-            submitted.value = true;
-
-            form.agency_name = "";
-            form.description = "";
-            form.contact_number = "";
-            form.location_address = "";
-
-            alert('Agency added successfully!');
-        } catch (error) {
-            console.error(error);
-            if (error.response && error.response.data && error.response.data.errors) {
-                Object.assign(errors, error.response.data.errors);
-            }
-            alert('Failed to submit Agency.');
-        }
-    };
-
-
+    // Hide success message after 3 seconds
+    setTimeout(() => {
+      submitted.value = false;
+      emit('selectPage', 'agency');
+    }, 2000);
+  } catch (error) {
+    console.error(error);
+    if (error.response && error.response.data && error.response.data.errors) {
+      Object.assign(errors, error.response.data.errors);
+    }
+    alert('Failed to submit Agency.');
+  }
+};
 </script>
 
 <style scoped>
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+.add-agency-body {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(to bottom, #E8F4F8, #FFFFFF);
+  padding: 20px;
+  overflow-y: auto;
 }
 
-body {
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-  min-height: 100vh;
+/* ===== HEADER SECTION ===== */
+.header-section {
   display: flex;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
+  margin-bottom: 20px;
+}
+
+.header-section h2 {
+  color: #004C5E;
+  font-weight: 700;
+}
+
+.back-btn {
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: 0.2s;
+}
+
+.back-btn:hover {
+  background-color: #5a6268;
+}
+
+/* ===== FORM ===== */
+.form-container {
+  max-width: 600px;
+  margin: 0 auto;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
   padding: 20px;
 }
 
-.agency-add-form-body {
-  width: 100%;
-  max-width: 600px;
-  background-color: white;
-  border-radius: 12px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
-  overflow: hidden;
-  margin: auto;
+.success-message {
+  background-color: #d4edda;
+  border: 1px solid #c3e6cb;
+  color: #155724;
+  padding: 12px 15px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
 }
 
-.form-header {
-  background: linear-gradient(90deg, #3498db, #2c3e50);
-  color: white;
-  padding: 25px 30px;
-  text-align: center;
-}
-
-.form-header h2 {
-  font-weight: 600;
-  font-size: 28px;
-}
-
-.cardForm {
-  padding: 30px;
+.success-message i {
+  font-size: 24px;
+  color: #28a745;
 }
 
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 15px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
+  color: #004C5E;
   font-weight: 500;
-  color: #34495e;
+  margin-bottom: 5px;
+  font-size: 14px;
 }
 
-.form-control {
+.required {
+  color: #E74C3C;
+}
+
+.form-group input,
+.form-group textarea {
   width: 100%;
-  padding: 12px 15px;
+  padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 6px;
+  border-radius: 5px;
   font-size: 16px;
-  transition: all 0.3s;
+  transition: border-color 0.3s;
 }
 
-.form-control:focus {
+.form-group input:focus,
+.form-group textarea:focus {
   outline: none;
-  border-color: #3498db;
-  box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+  border-color: #007A8C;
+  box-shadow: 0 0 0 3px rgba(0, 122, 140, 0.1);
 }
 
-textarea.form-control {
-  min-height: 100px;
+.form-group textarea {
   resize: vertical;
-}
-
-select.form-control {
-  appearance: none;
-  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
-  background-repeat: no-repeat;
-  background-position: right 10px center;
-  background-size: 16px;
-}
-
-.btn-group {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 25px;
-}
-
-.btn {
-  padding: 12px 25px;
-  border: none;
-  border-radius: 6px;
-  font-size: 16px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s;
-}
-
-.btn-primary {
-  background: linear-gradient(90deg, #3498db, #2c3e50);
-  color: white;
-}
-
-.btn-primary:hover {
-  background: linear-gradient(90deg, #2980b9, #1c2833);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-.btn-outline {
-  background: transparent;
-  border: 2px solid #95a5a6;
-  color: #7f8c8d;
-}
-
-.btn-outline:hover {
-  background: #f5f7fa;
-  transform: translateY(-2px);
+  font-family: inherit;
 }
 
 .error-message {
-  color: #e74c3c;
-  font-size: 14px;
+  color: #E74C3C;
+  font-size: 13px;
   margin-top: 5px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
 
-.success-message {
-  background-color: #2ecc71;
+.error-message::before {
+  content: "⚠";
+  font-size: 14px;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 20px;
+}
+
+.submit-btn {
+  background-color: #007A8C;
   color: white;
-  padding: 15px;
+  border: none;
+  padding: 10px 20px;
   border-radius: 6px;
-  margin-bottom: 20px;
-  text-align: center;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-weight: 500;
+  font-size: 16px;
+  transition: 0.2s;
+}
+
+.submit-btn:hover {
+  background-color: #009FB7;
+}
+
+.submit-btn i {
+  font-size: 20px;
 }
 </style>

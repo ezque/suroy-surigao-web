@@ -94,6 +94,7 @@ function editSpot(spot) {
   flex-direction: column;
   padding: 25px;
   overflow-y: auto;
+  background: linear-gradient(135deg, #E8F4F8 0%, #FFFFFF 100%);
 }
 
 .page-label {
@@ -157,7 +158,7 @@ function editSpot(spot) {
 }
 
 .spot-card {
-  background: rgb(209, 218, 223);
+  background: rgb(112, 198, 245);
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.08);
@@ -221,7 +222,7 @@ function editSpot(spot) {
 .spot-location {
   display: flex;
   align-items: center;
-  color: #7f8c8d;
+  color: #f9fcfc;
   font-size: 0.9rem;
   margin-bottom: 12px;
 }

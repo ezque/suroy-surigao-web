@@ -26,7 +26,7 @@
         <button @click="$emit('selectPage', 'manageUser')">
           <i class="material-icons">group</i> Manage Users
         </button>
-        <button @click="$emit('selectPage', 'reviews')">
+        <button @click="$emit('selectPage', 'reviewsAndFeedbacks')">
           <i class="material-icons">feedback</i> Reviews & Feedbacks
         </button>
         <button @click="$emit('selectPage', 'settings')">

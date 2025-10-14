@@ -2,9 +2,9 @@
   <div class="add-post-body">
     <div class="header-section">
       <h2>Add New Post</h2>
-      <router-link to="/manage-posts" class="back-btn">
+      <button @click="goBackToManagePosts" class="back-btn">
         <i class="material-icons">arrow_back</i> Back to Manage Posts
-      </router-link>
+      </button>
     </div>
 
     <div class="form-container">
@@ -51,9 +51,9 @@
 
 <script setup>
 import { ref } from 'vue';
-import { useRouter } from 'vue-router';
 
-const router = useRouter();
+// Define emits to communicate with parent component
+const emit = defineEmits(['selectPage']);
 
 const post = ref({
   userId: null,
@@ -66,10 +66,16 @@ const submitPost = () => {
   // import axios from 'axios';
   // await axios.post('/api/posts', post.value);
   console.log('Submitting post:', post.value);
+  
   // Reset form
   post.value = { userId: null, title: '', url: '' };
-  // Navigate back to Manage Posts
-  router.push('/manage-posts');
+  
+  // Navigate back to Manage Posts using emit
+  goBackToManagePosts();
+};
+
+const goBackToManagePosts = () => {
+  emit('selectPage', 'managePost');
 };
 </script>
 
