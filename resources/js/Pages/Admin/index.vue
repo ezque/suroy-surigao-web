@@ -20,11 +20,14 @@
             <Spots
                 v-else-if="activePage === 'spots'"
                 @selectPage="selectActivePage"
+                :allSpots="allSpots"
             />
             <AddSpots
                 v-else-if="activePage === 'addSpots'"
+                :editingSpot="editingSpot"
                 @selectPage="selectActivePage"
             />
+
             <ManagePost
                 v-else-if="activePage === 'managePost'"
                 @selectPage="selectActivePage"
@@ -63,21 +66,30 @@
         userInformation: Object,
         agencyDetails: Array,
         allUsers: Array,
+        allSpots: Array,
     })
 
     const userRole = computed(() => props.userInformation.role);
 
     const activePage = ref('dashboard');
+    const editingSpot = ref(null)
 
-    const selectActivePage = (pageName) => {
-        activePage.value = pageName;
+    const selectActivePage = (payload) => {
+        if (typeof payload === "string") {
+            activePage.value = payload
+            editingSpot.value = null
+        } else {
+            activePage.value = payload.page
+            editingSpot.value = payload.spot
+        }
     }
 
-    
+
 
 
 
 </script>
+
 <style scoped>
     .admin-body {
         width: 100%;

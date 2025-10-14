@@ -1,89 +1,95 @@
 <template>
-  <div class="admin-spots-body">
-    <div class="page-label">
-      <h2>Spots Management</h2>
-      <button class="add-spots-btn" @click="$emit('selectPage', 'addSpots')">
-        <i class="fas fa-plus"></i> Add New Spot
-      </button>
-    </div>
-
-    <!-- 🔍 Search Bar -->
-    <div class="search-bar">
-      <input 
-        type="text" 
-        v-model="searchQuery" 
-        placeholder="Search spots by name or location..."
-      />
-    </div>
-
-    <div class="spots-grid scrollable">
-      <div 
-        class="spot-card" 
-        v-for="(spot, index) in filteredSpots" 
-        :key="index"
-      >
-        <div class="spot-image">
-          <img :src="spot.image" :alt="spot.name" />
-          <div
-            class="spot-status"
-            :class="spot.active ? 'status-active' : 'status-inactive'"
-          >
-            {{ spot.active ? "Active" : "Inactive" }}
-          </div>
-        </div>
-        <div class="spot-info">
-          <h3 class="spot-name">{{ spot.name }}</h3>
-          <div class="spot-location">
-            <i class="fas fa-map-marker-alt"></i> {{ spot.location }}
-          </div>
-          <div class="spot-actions">
-            <button class="edit-btn" @click="editSpot(spot)">
-              <i class="fas fa-edit"></i> Edit
+    <div class="admin-spots-body">
+        <div class="page-label">
+            <h2>Spots Management</h2>
+            <button class="add-spots-btn" @click="$emit('selectPage', 'addSpots')">
+                <i class="fas fa-plus"></i> Add New Spot
             </button>
-          </div>
         </div>
-      </div>
 
-      <!-- No Results -->
-      <div v-if="filteredSpots.length === 0" class="no-results">
-        No spots found.
-      </div>
+        <!-- 🔍 Search Bar -->
+        <div class="search-bar">
+            <input
+                type="text"
+                v-model="searchQuery"
+                placeholder="Search spots by name or location..."
+            />
+        </div>
+
+        <div class="spots-grid scrollable">
+            <div
+                class="spot-card"
+                v-for="(spot, index) in filteredSpots"
+                :key="spot.id"
+            >
+                <!-- Spot Image -->
+                <div class="spot-image">
+                    <img
+                        v-if="spot.images && spot.images.length > 0"
+                        :src="`/storage/${spot.images[0].spot_image}`"
+                        :alt="spot.spot_name"
+                    />
+                    <img
+                        v-else
+                        src="/public/images/logo/logo.png"
+                        alt="No Image Available"
+                    />
+
+                    <!-- Spot Status -->
+                    <div
+                        class="spot-status"
+                        :class="spot.status === '1' ? 'status-active' : 'status-inactive'"
+                    >
+                        {{ spot.status === '1' ? "Active" : "Inactive" }}
+                    </div>
+                </div>
+
+                <!-- Spot Info -->
+                <div class="spot-info">
+                    <h3 class="spot-name">{{ spot.spot_name }}</h3>
+                    <div class="spot-location">
+                        <i class="fas fa-map-marker-alt"></i> {{ spot.location }}
+                    </div>
+                    <div class="spot-actions">
+                        <button class="edit-btn" @click="editSpot(spot)">
+                            <i class="fas fa-edit"></i> Edit
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- No Results -->
+            <div v-if="filteredSpots.length === 0" class="no-results">
+                No spots found.
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue"
+    import { ref, computed } from "vue"
 
-const emit = defineEmits(["selectPage"])
+    const emit = defineEmits(["selectPage"])
 
-const searchQuery = ref("")
+    const props = defineProps({
+        allSpots: {
+            type: Array,
+            default: () => [],
+        },
+    })
 
-const spots = [
-  { name: "Mountain Viewpoint", location: "Colorado, USA", image: "https://images.unsplash.com/photo-1506744038136-46273834b3fb", active: true },
-  { name: "Beach House", location: "California, USA", image: "https://images.unsplash.com/photo-1519885277449-12eee5564d68", active: true },
-  { name: "Forest Cabin", location: "Oregon, USA", image: "https://images.unsplash.com/photo-1566073771259-6a8506099945", active: false },
-  { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-   { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-    { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-     { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-      { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-       { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-        { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-         { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-          { name: "Luxury Villa", location: "Miami, USA", image: "https://images.unsplash.com/photo-1520250497591-112f2f40a3f4", active: true },
-]
+    const searchQuery = ref("")
 
-const filteredSpots = computed(() => {
-  return spots.filter(spot => 
-    spot.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
-    spot.location.toLowerCase().includes(searchQuery.value.toLowerCase())
-  )
-})
+    const filteredSpots = computed(() => {
+        return props.allSpots.filter((spot) =>
+            (spot.spot_name || "").toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+            (spot.location || "").toLowerCase().includes(searchQuery.value.toLowerCase())
+        )
+    })
 
-function editSpot(spot) {
-  alert(`Edit functionality for: ${spot.name}`)
-}
+    function editSpot(spot) {
+        emit("selectPage", { page: "addSpots", spot })
+    }
 </script>
 
 <style scoped>

@@ -19,6 +19,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/add-agency', [AdminController::class, 'addAgency'])->name('add.agency');
     Route::post('/add-new-spot', [AdminController::class, 'addSpot']);
+    Route::post('/update-spot/{id}', [AdminController::class, 'updateSpot']);
 
     Route::post('/add-package', [AgencyController::class, 'addPackage']);
 

@@ -101,6 +101,49 @@ class AdminController extends Controller
             return response()->json(['error' => 'Something went wrong. Check logs for details.'], 500);
         }
     }
+    public function updateSpot(Request $request, $id)
+    {
+        \Log::info('Incoming update request for spot ID: ' . $id, $request->all());
+
+        try {
+            $request->validate([
+                'spot_name'   => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'location'    => 'nullable|string|max:255',
+                'category'    => 'nullable|string|max:255',
+                'images.*'    => 'image|mimes:jpeg,png,jpg,gif|max:40000'
+            ]);
+
+            $spot = Spot::findOrFail($id);
+            $spot->update([
+                'spot_name'   => $request->spot_name,
+                'description' => $request->description,
+                'location'    => $request->location,
+                'category'    => $request->category,
+            ]);
+
+            // If new images are uploaded, save them
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $image->store('spots', 'public');
+
+                    SpotImage::create([
+                        'spot_id'    => $spot->id,
+                        'spot_image' => $path
+                    ]);
+                }
+            }
+
+            return response()->json(['message' => 'Spot updated successfully!']);
+
+        } catch (\Exception $e) {
+            \Log::error('Error updating spot: '.$e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+            return response()->json(['error' => 'Something went wrong. Check logs for details.'], 500);
+        }
+    }
+
 
     public function updateUserStatus(Request $request)
     {

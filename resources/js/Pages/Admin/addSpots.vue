@@ -1,191 +1,208 @@
 <template>
-  <div class="spot-add-form-body">
-    <div class="form-header">
-      <h2>Add New Spot</h2>
-    </div>
-
-    <div class="cardForm">
-      <!-- Success Message -->
-      <div v-if="submitted" class="success-message">
-        <i class="fas fa-check-circle"></i> Spot added successfully!
-      </div>
-
-      <!-- Spot Name -->
-      <div class="form-group">
-        <label for="spotName">Spot Name <span class="required">*</span></label>
-        <input
-          type="text"
-          id="spotName"
-          class="form-control"
-          v-model="form.spot_name"
-          placeholder="Enter spot name"
-        />
-        <div class="error-message" v-if="errors.spot_name">{{ errors.spot_name }}</div>
-      </div>
-
-      <!-- Description -->
-      <div class="form-group">
-        <label for="description">Description</label>
-        <textarea
-          id="description"
-          class="form-control"
-          v-model="form.description"
-          placeholder="Describe the spot"
-        ></textarea>
-      </div>
-
-      <!-- Location -->
-      <div class="form-group">
-        <label for="location">Location</label>
-        <input
-          type="text"
-          id="location"
-          class="form-control"
-          v-model="form.location"
-          placeholder="City, Province"
-        />
-      </div>
-
-      <!-- Category -->
-      <div class="form-group">
-        <label for="category">Category</label>
-        <select id="category" v-model="form.category" class="form-control">
-          <option disabled value="">Select category</option>
-          <option>Beach</option>
-          <option>Mountain</option>
-          <option>Historical</option>
-          <option>Adventure</option>
-          <option>Cultural</option>
-        </select>
-      </div>
-
-      <!-- Upload Images (Styled like Add Package) -->
-      <div class="form-group">
-        <label>Upload Images <span class="required">*</span></label>
-
-        <div class="image-upload-container">
-          <!-- Preview thumbnails -->
-          <div v-for="(preview, index) in imagePreviews" :key="index" class="image-thumb">
-            <img :src="preview" alt="Preview" />
-            <button class="remove-btn" @click="removeImage(index)">×</button>
-          </div>
-
-          <!-- Upload box -->
-          <label class="upload-box">
-            <span>+</span>
-            <input type="file" accept="image/*" multiple @change="handleFileUpload" />
-          </label>
+    <div class="spot-add-form-body">
+        <div class="form-header">
+            <h2>{{ props.editingSpot ? "Edit Spot" : "Add New Spot" }}</h2>
         </div>
 
-        <div class="error-message" v-if="errors.images">{{ errors.images }}</div>
-      </div>
+        <div class="cardForm">
+            <!-- Success Message -->
+            <div v-if="submitted" class="success-message">
+                <i class="fas fa-check-circle"></i>
+                {{ props.editingSpot ? "Spot updated successfully!" : "Spot added successfully!" }}
+            </div>
 
-      <!-- Buttons -->
-      <div class="btn-group">
-        <button type="button" class="btn btn-outline" @click="$emit('selectPage', 'spots')">
-          Cancel
-        </button>
-        <button
-          type="button"
-          class="btn btn-primary"
-          :disabled="loading"
-          @click="store"
-        >
-          {{ loading ? "Saving..." : "Save" }}
-        </button>
-      </div>
+            <!-- Spot Name -->
+            <div class="form-group">
+                <label for="spotName">Spot Name <span class="required">*</span></label>
+                <input
+                    type="text"
+                    id="spotName"
+                    class="form-control"
+                    v-model="form.spot_name"
+                    placeholder="Enter spot name"
+                />
+                <div class="error-message" v-if="errors.spot_name">{{ errors.spot_name }}</div>
+            </div>
+
+            <!-- Description -->
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea
+                    id="description"
+                    class="form-control"
+                    v-model="form.description"
+                    placeholder="Describe the spot"
+                ></textarea>
+            </div>
+
+            <!-- Location -->
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input
+                    type="text"
+                    id="location"
+                    class="form-control"
+                    v-model="form.location"
+                    placeholder="City, Province"
+                />
+            </div>
+
+            <!-- Category -->
+            <div class="form-group">
+                <label for="category">Category</label>
+                <select id="category" v-model="form.category" class="form-control">
+                    <option disabled value="">Select category</option>
+                    <option>Beach</option>
+                    <option>Mountain</option>
+                    <option>Historical</option>
+                    <option>Adventure</option>
+                    <option>Cultural</option>
+                </select>
+            </div>
+
+            <!-- Upload Images -->
+            <div class="form-group">
+                <label>Upload Images <span class="required">*</span></label>
+
+                <div class="image-upload-container">
+                    <!-- Preview thumbnails -->
+                    <div v-for="(preview, index) in imagePreviews" :key="index" class="image-thumb">
+                        <img :src="preview" alt="Preview" />
+                        <button class="remove-btn" @click="removeImage(index)">×</button>
+                    </div>
+
+                    <!-- Upload box -->
+                    <label class="upload-box">
+                        <span>+</span>
+                        <input type="file" accept="image/*" multiple @change="handleFileUpload" />
+                    </label>
+                </div>
+
+                <div class="error-message" v-if="errors.images">{{ errors.images }}</div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-outline" @click="$emit('selectPage', 'spots')">
+                    Cancel
+                </button>
+                <button
+                    type="button"
+                    class="btn btn-primary"
+                    :disabled="loading"
+                    @click="store"
+                >
+                    {{ loading ? "Saving..." : "Save" }}
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
-import { ref, reactive } from "vue";
-import axios from "axios";
+    import { ref, reactive } from "vue";
+    import axios from "axios";
 
-const emit = defineEmits(["selectPage"]);
-
-const form = reactive({
-  spot_name: "",
-  description: "",
-  location: "",
-  category: "",
-  images: [],
-});
-
-const imagePreviews = ref([]);
-const errors = reactive({});
-const submitted = ref(false);
-const loading = ref(false);
-
-const handleFileUpload = (event) => {
-  const files = Array.from(event.target.files);
-  const validImages = files.filter((file) => file.type.startsWith("image/"));
-
-  if (validImages.length) {
-    validImages.forEach((file) => {
-      form.images.push(file);
-      imagePreviews.value.push(URL.createObjectURL(file));
+    const props = defineProps({
+        editingSpot: Object
     });
-    errors.images = "";
-  } else {
-    errors.images = "Please upload valid image files.";
-  }
+    const emit = defineEmits(["selectPage"]);
 
-  event.target.value = "";
-};
-
-const removeImage = (index) => {
-  form.images.splice(index, 1);
-  imagePreviews.value.splice(index, 1);
-};
-
-const validateForm = () => {
-  errors.spot_name = form.spot_name ? "" : "Spot name is required.";
-  errors.images = form.images.length ? "" : "At least one image is required.";
-  return !errors.spot_name && !errors.images;
-};
-
-const store = async () => {
-  if (!validateForm() || loading.value) return;
-  loading.value = true;
-
-  try {
-    let formData = new FormData();
-    formData.append("spot_name", form.spot_name);
-    formData.append("description", form.description);
-    formData.append("location", form.location);
-    formData.append("category", form.category);
-
-    form.images.forEach((file, index) => {
-      formData.append(`images[${index}]`, file);
+    const form = reactive({
+        spot_name: props.editingSpot?.spot_name || "",
+        description: props.editingSpot?.description || "",
+        location: props.editingSpot?.location || "",
+        category: props.editingSpot?.category || "",
+        images: [],
     });
 
-    await axios.post("/add-new-spot", formData, {
-      headers: { "Content-Type": "multipart/form-data" },
-    });
+    const imagePreviews = ref(
+        props.editingSpot?.images?.map(img => `/storage/${img.spot_image}`) || []
+    );
 
-    submitted.value = true;
-    setTimeout(() => (submitted.value = false), 3000);
-    resetForm();
-  } catch (err) {
-    if (err.response?.status === 422) {
-      Object.assign(errors, err.response.data.errors);
-    }
-  } finally {
-    loading.value = false;
-  }
-};
+    const errors = reactive({});
+    const submitted = ref(false);
+    const loading = ref(false);
 
-const resetForm = () => {
-  form.spot_name = "";
-  form.description = "";
-  form.location = "";
-  form.category = "";
-  form.images = [];
-  imagePreviews.value = [];
-  Object.keys(errors).forEach((key) => (errors[key] = ""));
-};
+    const handleFileUpload = (event) => {
+        const files = Array.from(event.target.files);
+        const validImages = files.filter((file) => file.type.startsWith("image/"));
+
+        if (validImages.length) {
+            validImages.forEach((file) => {
+                form.images.push(file);
+                imagePreviews.value.push(URL.createObjectURL(file));
+            });
+            errors.images = "";
+        } else {
+            errors.images = "Please upload valid image files.";
+        }
+
+        event.target.value = "";
+    };
+
+    const removeImage = (index) => {
+        form.images.splice(index, 1);
+        imagePreviews.value.splice(index, 1);
+    };
+
+    const validateForm = () => {
+        errors.spot_name = form.spot_name ? "" : "Spot name is required.";
+        if (!props.editingSpot) {
+            errors.images = form.images.length ? "" : "At least one image is required.";
+        }
+        return !errors.spot_name && !errors.images;
+    };
+
+    const store = async () => {
+        if (!validateForm() || loading.value) return;
+        loading.value = true;
+
+        try {
+            let formData = new FormData();
+            formData.append("spot_name", form.spot_name);
+            formData.append("description", form.description);
+            formData.append("location", form.location);
+            formData.append("category", form.category);
+
+            form.images.forEach((file, index) => {
+                formData.append(`images[${index}]`, file);
+            });
+
+            if (props.editingSpot) {
+                await axios.post(`/update-spot/${props.editingSpot.id}`, formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+            } else {
+                await axios.post("/add-new-spot", formData, {
+                    headers: { "Content-Type": "multipart/form-data" },
+                });
+            }
+
+            submitted.value = true;
+            setTimeout(() => (submitted.value = false), 3000);
+
+            if (!props.editingSpot) resetForm();
+        } catch (err) {
+            if (err.response?.status === 422) {
+                Object.assign(errors, err.response.data.errors);
+            }
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    const resetForm = () => {
+        form.spot_name = "";
+        form.description = "";
+        form.location = "";
+        form.category = "";
+        form.images = [];
+        imagePreviews.value = [];
+        Object.keys(errors).forEach((key) => (errors[key] = ""));
+    };
 </script>
+
 
 <style scoped>
 /* same design style as agency form */
