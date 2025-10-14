@@ -1,10 +1,12 @@
 <?php
 
+use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgencyController;
+
 
 
 Route::get('/', [AuthController::class, 'index'])->name('login');
@@ -22,6 +24,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/update-spot/{id}', [AdminController::class, 'updateSpot']);
 
     Route::post('/add-package', [AgencyController::class, 'addPackage']);
-
     Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
+
+    Route::post('/add-reservation', [UserController::class, 'addReservation']);
 });

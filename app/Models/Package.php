@@ -13,8 +13,16 @@ class Package extends Model
         'description',
         'price',
         'capacity',
-        'duration',
-        'available_On',
+        'available_slot',
+        'start_date',
+        'end_date',
+        'start_time',
+        'end_time',
+        'pickup_point',
+        'tour_destination',
+        'inclusions',
+        'exclusions',
+        'status',
     ];
 
     public function services()
