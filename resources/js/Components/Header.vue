@@ -56,7 +56,7 @@
     .header-container {
       width: 100%;
       height: 70px;
-      background: linear-gradient(135deg, #213f3fb6 0%, #a3c9df52 100%);
+      background: whitesmoke;
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -69,7 +69,7 @@
     .logo {
       display: flex;
       align-items: center;
-      color: white;
+      color: rgb(14, 85, 126);
       font-weight: 700;
       font-size: 1.5rem;
     }

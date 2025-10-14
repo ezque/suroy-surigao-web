@@ -498,7 +498,7 @@ watch(recentActivity, (newActivity) => {
 <style scoped>
 .favorites-body {
   width: 100%;
-  min-height: 100vh;
+  min-height: 50vh;
   background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
   padding: 20px;
   overflow-y: auto;

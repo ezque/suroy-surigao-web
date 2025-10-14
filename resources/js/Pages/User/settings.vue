@@ -1,18 +1,13 @@
 <template>
   <div class="user-settings-body">
-    <!-- Header Section -->
     <div class="settings-header">
-      <div class="header-content">
-        <h1>Settings</h1>
-        <p class="subtitle">Manage your account preferences and settings</p>
-      </div>
+      <h1>Settings</h1>
+      <p>Manage your account preferences and personal details.</p>
     </div>
 
-    <!-- Settings Container -->
     <div class="settings-container">
-      <!-- Sidebar Navigation -->
-      <div class="settings-sidebar">
-        <div class="sidebar-menu">
+      <aside class="settings-sidebar">
+        <nav class="sidebar-menu">
           <button 
             v-for="item in menuItems" 
             :key="item.id"
@@ -23,268 +18,163 @@
             <i class="material-icons">{{ item.icon }}</i>
             <span>{{ item.label }}</span>
           </button>
-        </div>
-      </div>
+        </nav>
+      </aside>
 
-      <!-- Settings Content -->
-      <div class="settings-content">
-        <!-- Profile Settings -->
-        <div v-if="activeSection === 'profile'" class="settings-section">
-          <div class="section-header">
-            <h2>Profile Information</h2>
-            <p>Update your personal details and profile picture</p>
+      <main class="settings-content">
+        <div v-if="activeSection === 'profile'" class="content-card">
+          <div class="card-header">
+            <h2>Public Profile</h2>
+            <p>This information will be displayed on your public profile.</p>
           </div>
-
-          <div class="profile-photo-section">
-            <div class="profile-photo">
-              <img :src="userProfile.avatar" alt="Profile" />
-              <button class="change-photo-btn">
-                <i class="material-icons">camera_alt</i>
-              </button>
+          <div class="card-body">
+            <div class="profile-header">
+              <img :src="userProfile.avatar" alt="Profile Avatar" class="profile-avatar"/>
+              <div class="profile-info">
+                <button class="btn-primary">Upload new picture</button>
+                <button class="btn-secondary">Delete</button>
+              </div>
             </div>
-            <div class="photo-info">
-              <h3>{{ userProfile.name }}</h3>
-              <p>{{ userProfile.email }}</p>
-              <button class="btn-outline">Change Photo</button>
-            </div>
-          </div>
-
-          <div class="form-grid">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" v-model="userProfile.name" />
-            </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input type="email" v-model="userProfile.email" />
-            </div>
-            <div class="form-group">
-              <label>Phone Number</label>
-              <input type="tel" v-model="userProfile.phone" />
+            <div class="form-grid">
+              <div class="form-group">
+                <label for="fullName">Full Name</label>
+                <input type="text" id="fullName" v-model="userProfile.name" />
+              </div>
+              <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" v-model="userProfile.email" />
+              </div>
+              <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" v-model="userProfile.phone" />
+              </div>
+              <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" v-model="userProfile.location" />
+              </div>
             </div>
             <div class="form-group">
-              <label>Location</label>
-              <input type="text" v-model="userProfile.location" />
+                <label for="bio">Bio</label>
+                <textarea id="bio" v-model="userProfile.bio" rows="4" placeholder="Tell us a little about yourself..."></textarea>
             </div>
           </div>
-
-          <div class="form-group full-width">
-            <label>Bio</label>
-            <textarea v-model="userProfile.bio" rows="4" placeholder="Tell us about yourself..."></textarea>
-          </div>
-
-          <div class="form-actions">
-            <button class="btn-outline">Cancel</button>
+          <div class="card-footer">
             <button class="btn-primary">Save Changes</button>
           </div>
         </div>
 
-        <!-- Account Settings -->
-        <div v-if="activeSection === 'account'" class="settings-section">
+        <div v-if="activeSection === 'account'">
           <div class="section-header">
             <h2>Account Settings</h2>
-            <p>Manage your account security and preferences</p>
+            <p>Manage your account security and preferences.</p>
+          </div>
+          <div class="tab-navigation">
+              <button :class="{ active: activeAccountTab === 'password' }" @click="activeAccountTab = 'password'">Password</button>
+              <button :class="{ active: activeAccountTab === 'security' }" @click="activeAccountTab = 'security'">Security</button>
+          </div>
+          
+          <div v-if="activeAccountTab === 'password'" class="content-card">
+              <div class="card-header">
+                  <h3>Change Password</h3>
+                  <p>Update your password regularly to keep your account secure.</p>
+              </div>
+              <div class="card-body">
+                  <div class="form-group">
+                      <label for="currentPassword">Current Password</label>
+                      <input type="password" id="currentPassword" placeholder="Enter current password" />
+                  </div>
+                  <div class="form-group">
+                      <label for="newPassword">New Password</label>
+                      <input type="password" id="newPassword" placeholder="Enter new password" />
+                  </div>
+                   <div class="form-group">
+                      <label for="confirmPassword">Confirm New Password</label>
+                      <input type="password" id="confirmPassword" placeholder="Confirm new password" />
+                  </div>
+              </div>
+              <div class="card-footer">
+                  <button class="btn-primary">Update Password</button>
+              </div>
           </div>
 
-          <div class="settings-card">
-            <div class="card-header">
-              <i class="material-icons">lock</i>
-              <div>
-                <h3>Change Password</h3>
-                <p>Update your password regularly to keep your account secure</p>
+          <div v-if="activeAccountTab === 'security'" class="content-card">
+               <div class="card-header">
+                  <h3>Two-Factor Authentication</h3>
+                  <p>Add an extra layer of security to your account during login.</p>
               </div>
-            </div>
-            <div class="card-content">
-              <div class="form-group">
-                <label>Current Password</label>
-                <input type="password" placeholder="Enter current password" />
+              <div class="card-body">
+                  <div class="toggle-option">
+                    <div class="toggle-info">
+                      <h4>Enable 2FA</h4>
+                      <p>When enabled, you'll be prompted for a code from your authenticator app.</p>
+                    </div>
+                    <label class="toggle-switch">
+                      <input type="checkbox" v-model="settings.twoFactorAuth" />
+                      <span class="slider"></span>
+                    </label>
+                  </div>
               </div>
-              <div class="form-group">
-                <label>New Password</label>
-                <input type="password" placeholder="Enter new password" />
-              </div>
-              <div class="form-group">
-                <label>Confirm New Password</label>
-                <input type="password" placeholder="Confirm new password" />
-              </div>
-              <button class="btn-primary">Update Password</button>
-            </div>
-          </div>
-
-          <div class="settings-card">
-            <div class="card-header">
-              <i class="material-icons">verified_user</i>
-              <div>
-                <h3>Two-Factor Authentication</h3>
-                <p>Add an extra layer of security to your account</p>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="toggle-option">
-                <div class="toggle-info">
-                  <h4>Enable 2FA</h4>
-                  <p>Secure your account with two-factor authentication</p>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="settings.twoFactorAuth" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-            </div>
           </div>
         </div>
 
-        <!-- Notification Settings -->
-        <div v-if="activeSection === 'notifications'" class="settings-section">
-          <div class="section-header">
-            <h2>Notification Preferences</h2>
-            <p>Choose what notifications you want to receive</p>
-          </div>
-
-          <div class="settings-card">
+        <div v-if="activeSection === 'notifications'" class="content-card">
             <div class="card-header">
-              <i class="material-icons">notifications</i>
-              <div>
-                <h3>Push Notifications</h3>
-                <p>Manage how you receive notifications</p>
-              </div>
+                <h2>Notifications</h2>
+                <p>Choose how you want to be notified.</p>
             </div>
-            <div class="card-content">
-              <div class="toggle-option">
-                <div class="toggle-info">
-                  <h4>New Messages</h4>
-                  <p>Get notified when you receive new messages</p>
+            <div class="card-body">
+                <div class="toggle-option">
+                    <div class="toggle-info">
+                        <h4>New Messages</h4>
+                        <p>Get notified when you receive new messages.</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" v-model="settings.notifyMessages" />
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="settings.notifyMessages" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <div class="toggle-option">
-                <div class="toggle-info">
-                  <h4>Booking Updates</h4>
-                  <p>Receive updates about your bookings</p>
+                <div class="toggle-option">
+                    <div class="toggle-info">
+                        <h4>Booking Updates</h4>
+                        <p>Receive updates and confirmations about your bookings.</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" v-model="settings.notifyBookings" />
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="settings.notifyBookings" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <div class="toggle-option">
-                <div class="toggle-info">
-                  <h4>Special Offers</h4>
-                  <p>Get notified about deals and promotions</p>
+                 <div class="toggle-option">
+                    <div class="toggle-info">
+                        <h4>Weekly Newsletter</h4>
+                        <p>Receive travel tips and destination highlights by email.</p>
+                    </div>
+                    <label class="toggle-switch">
+                        <input type="checkbox" v-model="settings.emailNewsletter" />
+                        <span class="slider"></span>
+                    </label>
                 </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="settings.notifyOffers" />
-                  <span class="slider"></span>
-                </label>
-              </div>
             </div>
-          </div>
-
-          <div class="settings-card">
-            <div class="card-header">
-              <i class="material-icons">email</i>
-              <div>
-                <h3>Email Notifications</h3>
-                <p>Control your email preferences</p>
-              </div>
+            <div class="card-footer">
+                <button class="btn-primary">Save Preferences</button>
             </div>
-            <div class="card-content">
-              <div class="toggle-option">
-                <div class="toggle-info">
-                  <h4>Weekly Newsletter</h4>
-                  <p>Receive travel tips and destination highlights</p>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="settings.emailNewsletter" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-              <div class="toggle-option">
-                <div class="toggle-info">
-                  <h4>Marketing Emails</h4>
-                  <p>Get promotional emails and special deals</p>
-                </div>
-                <label class="toggle-switch">
-                  <input type="checkbox" v-model="settings.emailMarketing" />
-                  <span class="slider"></span>
-                </label>
-              </div>
-            </div>
-          </div>
         </div>
 
-        <!-- Privacy Settings -->
-        <div v-if="activeSection === 'privacy'" class="settings-section">
-          <div class="section-header">
-            <h2>Privacy & Data</h2>
-            <p>Control your privacy and data preferences</p>
-          </div>
-
-          <div class="settings-card">
-            <div class="card-header">
-              <i class="material-icons">visibility</i>
-              <div>
-                <h3>Profile Visibility</h3>
-                <p>Choose who can see your profile</p>
-              </div>
+        <div v-if="activeSection === 'privacy'" class="content-card danger-zone">
+             <div class="card-header">
+                <h2>Danger Zone</h2>
+                <p>These actions are permanent and cannot be undone.</p>
             </div>
-            <div class="card-content">
-              <div class="radio-group">
-                <label class="radio-option">
-                  <input type="radio" name="visibility" value="public" v-model="settings.profileVisibility" />
-                  <div class="radio-content">
-                    <h4>Public</h4>
-                    <p>Anyone can see your profile</p>
-                  </div>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="visibility" value="friends" v-model="settings.profileVisibility" />
-                  <div class="radio-content">
-                    <h4>Friends Only</h4>
-                    <p>Only your connections can see your profile</p>
-                  </div>
-                </label>
-                <label class="radio-option">
-                  <input type="radio" name="visibility" value="private" v-model="settings.profileVisibility" />
-                  <div class="radio-content">
-                    <h4>Private</h4>
-                    <p>Your profile is hidden from everyone</p>
-                  </div>
-                </label>
-              </div>
-            </div>
-          </div>
-
-          <div class="settings-card danger-zone">
-            <div class="card-header">
-              <i class="material-icons">warning</i>
-              <div>
-                <h3>Danger Zone</h3>
-                <p>Irreversible actions</p>
-              </div>
-            </div>
-            <div class="card-content">
-              <div class="danger-action">
-                <div>
-                  <h4>Download Your Data</h4>
-                  <p>Get a copy of all your data</p>
+            <div class="card-body">
+                <div class="danger-action">
+                    <div>
+                        <h4>Delete Account</h4>
+                        <p>Once you delete your account, there is no going back. Please be certain.</p>
+                    </div>
+                    <button class="btn-danger">Delete My Account</button>
                 </div>
-                <button class="btn-outline">Download</button>
-              </div>
-              <div class="danger-action">
-                <div>
-                  <h4>Delete Account</h4>
-                  <p>Permanently delete your account and all data</p>
-                </div>
-                <button class="btn-danger">Delete Account</button>
-              </div>
             </div>
-          </div>
         </div>
-      </div>
+      </main>
     </div>
   </div>
 </template>
@@ -293,201 +183,198 @@
 import { ref, reactive } from 'vue';
 
 const activeSection = ref('profile');
+const activeAccountTab = ref('password');
 
 const menuItems = [
   { id: 'profile', label: 'Profile', icon: 'person' },
-  { id: 'account', label: 'Account', icon: 'settings' },
+  { id: 'account', label: 'Account', icon: 'lock' },
   { id: 'notifications', label: 'Notifications', icon: 'notifications' },
-  { id: 'privacy', label: 'Privacy', icon: 'shield' },
+  { id: 'privacy', label: 'Privacy & Data', icon: 'shield' },
 ];
 
 const userProfile = reactive({
-  name: 'John Doe',
-  email: 'john.doe@example.com',
-  phone: '+63 912 345 6789',
+  name: 'Maria Clara',
+  email: 'maria.clara@example.com',
+  phone: '+63 917 123 4567',
   location: 'Surigao City, Philippines',
-  bio: 'Travel enthusiast exploring the beautiful islands of Surigao!',
-  avatar: 'https://i.pravatar.cc/150?img=12',
+  bio: 'A passionate traveler and guide, eager to share the beauty of the Caraga region with the world.',
+  avatar: 'https://i.pravatar.cc/150?img=25', // Using a placeholder image
 });
 
 const settings = reactive({
   twoFactorAuth: false,
   notifyMessages: true,
   notifyBookings: true,
-  notifyOffers: false,
-  emailNewsletter: true,
-  emailMarketing: false,
-  profileVisibility: 'public',
+  emailNewsletter: false,
 });
 </script>
 
 <style scoped>
+/* ===== GLOBAL & LAYOUT ===== */
 .user-settings-body {
   width: 100%;
   height: 100%;
-  background: linear-gradient(to bottom, #E8F4F8, #FFFFFF);
+  background-color: #f8fafc;
   overflow-y: auto;
 }
-
-/* ===== HEADER ===== */
 .settings-header {
-  padding: 30px;
-  background: white;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  background-color: white;
+  padding: 24px 32px;
+  border-bottom: 1px solid #e2e8f0;
 }
-
-.header-content h1 {
-  color: #004C5E;
-  font-size: 2rem;
+.settings-header h1 {
+  font-size: 1.75rem;
   font-weight: 700;
-  margin: 0 0 5px 0;
-}
-
-.subtitle {
-  color: #666;
-  font-size: 0.95rem;
+  color: #1e293b;
   margin: 0;
 }
-
-/* ===== SETTINGS CONTAINER ===== */
+.settings-header p {
+  margin-top: 4px;
+  color: #64748b;
+}
 .settings-container {
   display: flex;
+  gap: 32px;
+  padding: 32px;
   max-width: 1400px;
   margin: 0 auto;
-  padding: 30px;
-  gap: 30px;
+  align-items: flex-start;
 }
 
 /* ===== SIDEBAR ===== */
 .settings-sidebar {
-  width: 250px;
+  width: 240px;
   flex-shrink: 0;
-}
-
-.sidebar-menu {
-  background: white;
-  border-radius: 12px;
-  padding: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   position: sticky;
-  top: 30px;
+  top: 32px;
 }
-
+.sidebar-menu {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
 .menu-item {
   width: 100%;
   display: flex;
   align-items: center;
-  gap: 15px;
-  padding: 15px;
+  gap: 12px;
+  padding: 12px 16px;
   border: none;
   background: transparent;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s ease;
-  color: #666;
+  color: #334155;
   font-size: 0.95rem;
   font-weight: 500;
   text-align: left;
 }
-
 .menu-item:hover {
-  background: #f8f9fa;
+  background: #f1f5f9;
+  color: #0D9488;
 }
-
 .menu-item.active {
-  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+  background: #0D9488;
   color: white;
+  box-shadow: 0 4px 10px rgba(13, 148, 136, 0.2);
 }
-
 .menu-item i {
-  font-size: 22px;
+  font-size: 20px;
 }
 
-/* ===== SETTINGS CONTENT ===== */
+/* ===== CONTENT AREA ===== */
 .settings-content {
   flex: 1;
   min-width: 0;
 }
-
-.settings-section {
+.section-header {
+    margin-bottom: 16px;
+}
+.section-header h2 {
+    font-size: 1.5rem;
+    color: #1e293b;
+    margin: 0;
+}
+.section-header p {
+    color: #64748b;
+    margin-top: 4px;
+}
+.content-card {
   background: white;
   border-radius: 12px;
-  padding: 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid #e2e8f0;
+  margin-bottom: 24px;
 }
-
-.section-header {
-  margin-bottom: 30px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #f0f0f0;
+.card-header {
+  padding: 24px;
+  border-bottom: 1px solid #e2e8f0;
 }
-
-.section-header h2 {
-  color: #333;
-  font-size: 1.5rem;
-  margin: 0 0 8px 0;
-}
-
-.section-header p {
-  color: #666;
+.card-header h2, .card-header h3 {
+  font-size: 1.25rem;
+  color: #1e293b;
   margin: 0;
-  font-size: 0.9rem;
 }
-
-/* ===== PROFILE PHOTO ===== */
-.profile-photo-section {
+.card-header p {
+  margin: 4px 0 0 0;
+  color: #64748b;
+}
+.card-body {
+  padding: 24px;
+}
+.card-footer {
+  padding: 16px 24px;
+  background-color: #f8fafc;
+  border-top: 1px solid #e2e8f0;
+  border-radius: 0 0 12px 12px;
   display: flex;
-  align-items: center;
-  gap: 25px;
-  margin-bottom: 30px;
-  padding: 25px;
-  background: #f8f9fa;
-  border-radius: 12px;
+  justify-content: flex-end;
 }
 
-.profile-photo {
-  position: relative;
+/* ===== TABS ===== */
+.tab-navigation {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+    border-bottom: 1px solid #e2e8f0;
+}
+.tab-navigation button {
+    padding: 8px 16px;
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #64748b;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -1px; /* Overlap the main border */
+    transition: all 0.2s ease;
+}
+.tab-navigation button:hover {
+    color: #0D9488;
+}
+.tab-navigation button.active {
+    color: #0D9488;
+    border-bottom-color: #0D9488;
 }
 
-.profile-photo img {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 4px solid white;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+/* ===== PROFILE SECTION ===== */
+.profile-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 24px;
 }
-
-.change-photo-btn {
-  position: absolute;
-  bottom: 0;
-  right: 0;
-  width: 35px;
-  height: 35px;
-  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-  border: 3px solid white;
-  border-radius: 50%;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: white;
-  transition: all 0.2s ease;
+.profile-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
-
-.change-photo-btn:hover {
-  transform: scale(1.1);
-}
-
-.photo-info h3 {
-  margin: 0 0 5px 0;
-  color: #333;
-}
-
-.photo-info p {
-  margin: 0 0 15px 0;
-  color: #666;
-  font-size: 0.9rem;
+.profile-info {
+    display: flex;
+    gap: 12px;
 }
 
 /* ===== FORMS ===== */
@@ -495,138 +382,70 @@ const settings = reactive({
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  margin-bottom: 20px;
 }
-
 .form-group {
   display: flex;
   flex-direction: column;
+  margin-bottom: 20px;
 }
-
-.form-group.full-width {
-  grid-column: 1 / -1;
-}
-
 .form-group label {
-  color: #555;
-  font-weight: 500;
+  color: #334155;
+  font-weight: 600;
   margin-bottom: 8px;
   font-size: 0.9rem;
 }
-
 .form-group input,
 .form-group textarea {
-  padding: 12px 15px;
-  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  font-size: 0.95rem;
-  transition: all 0.3s ease;
-  background: #fafafa;
+  font-size: 1rem;
+  transition: all 0.2s ease;
+  background: white;
 }
-
 .form-group input:focus,
 .form-group textarea:focus {
   outline: none;
-  border-color: #00b4db;
-  background: white;
-  box-shadow: 0 0 0 3px rgba(0, 180, 219, 0.1);
+  border-color: #0D9488;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.15);
 }
-
 .form-group textarea {
   resize: vertical;
   font-family: inherit;
+  min-height: 100px;
 }
 
 /* ===== BUTTONS ===== */
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 2px solid #f0f0f0;
-}
-
-.btn-primary,
-.btn-outline,
-.btn-danger {
-  padding: 12px 25px;
+.btn-primary, .btn-secondary, .btn-danger {
+  padding: 10px 20px;
   border-radius: 8px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  border: none;
 }
-
 .btn-primary {
-  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+  background: #0D9488;
   color: white;
-  border: none;
-  box-shadow: 0 4px 15px rgba(0, 180, 219, 0.3);
 }
-
 .btn-primary:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 180, 219, 0.4);
+  background: #0f766e;
 }
-
-.btn-outline {
-  background: white;
-  border: 2px solid #e0e0e0;
-  color: #666;
+.btn-secondary {
+  background: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
 }
-
-.btn-outline:hover {
-  border-color: #00b4db;
-  color: #00b4db;
+.btn-secondary:hover {
+  background: #cbd5e1;
 }
-
 .btn-danger {
-  background: #E74C3C;
+  background: #dc2626;
   color: white;
-  border: none;
 }
-
 .btn-danger:hover {
-  background: #C0392B;
-}
-
-/* ===== SETTINGS CARDS ===== */
-.settings-card {
-  margin-bottom: 25px;
-  border: 1px solid #e8e8e8;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding: 20px;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e8e8e8;
-}
-
-.card-header i {
-  font-size: 28px;
-  color: #00b4db;
-}
-
-.card-header h3 {
-  margin: 0 0 5px 0;
-  color: #333;
-  font-size: 1.1rem;
-}
-
-.card-header p {
-  margin: 0;
-  color: #666;
-  font-size: 0.85rem;
-}
-
-.card-content {
-  padding: 25px;
+  background: #b91c1c;
 }
 
 /* ===== TOGGLE SWITCH ===== */
@@ -634,168 +453,38 @@ const settings = reactive({
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 16px 0;
+  border-bottom: 1px solid #f1f5f9;
 }
-
-.toggle-option:last-child {
-  border-bottom: none;
-}
-
-.toggle-info h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-  font-size: 0.95rem;
-}
-
-.toggle-info p {
-  margin: 0;
-  color: #666;
-  font-size: 0.85rem;
-}
-
-.toggle-switch {
-  position: relative;
-  display: inline-block;
-  width: 50px;
-  height: 26px;
-}
-
-.toggle-switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-}
-
-.slider {
-  position: absolute;
-  cursor: pointer;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: #ccc;
-  transition: 0.4s;
-  border-radius: 26px;
-}
-
-.slider:before {
-  position: absolute;
-  content: "";
-  height: 18px;
-  width: 18px;
-  left: 4px;
-  bottom: 4px;
-  background-color: white;
-  transition: 0.4s;
-  border-radius: 50%;
-}
-
-input:checked + .slider {
-  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-}
-
-input:checked + .slider:before {
-  transform: translateX(24px);
-}
-
-/* ===== RADIO OPTIONS ===== */
-.radio-group {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.radio-option {
-  display: flex;
-  align-items: flex-start;
-  gap: 15px;
-  padding: 15px;
-  border: 2px solid #e8e8e8;
-  border-radius: 10px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-}
-
-.radio-option:hover {
-  border-color: #00b4db;
-  background: #f8fcfd;
-}
-
-.radio-option input {
-  margin-top: 3px;
-  cursor: pointer;
-  accent-color: #00b4db;
-}
-
-.radio-content h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-  font-size: 0.95rem;
-}
-
-.radio-content p {
-  margin: 0;
-  color: #666;
-  font-size: 0.85rem;
-}
+.toggle-option:last-child { border-bottom: none; }
+.toggle-info h4 { margin: 0 0 4px 0; font-size: 1rem; color: #1e293b; }
+.toggle-info p { margin: 0; font-size: 0.9rem; color: #64748b; }
+.toggle-switch { position: relative; display: inline-block; width: 44px; height: 24px; }
+.toggle-switch input { opacity: 0; width: 0; height: 0; }
+.slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: #ccc; transition: .4s; border-radius: 24px; }
+.slider:before { position: absolute; content: ""; height: 18px; width: 18px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+input:checked + .slider { background-color: #0D9488; }
+input:checked + .slider:before { transform: translateX(20px); }
 
 /* ===== DANGER ZONE ===== */
-.danger-zone .card-header {
-  background: #fff5f5;
-  border-bottom-color: #ffebee;
-}
-
-.danger-zone .card-header i {
-  color: #E74C3C;
-}
-
-.danger-action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.danger-action:last-child {
-  border-bottom: none;
-}
-
-.danger-action h4 {
-  margin: 0 0 5px 0;
-  color: #333;
-  font-size: 0.95rem;
-}
-
-.danger-action p {
-  margin: 0;
-  color: #666;
-  font-size: 0.85rem;
-}
+.danger-zone { border-color: #fca5a5; }
+.danger-zone .card-header { background-color: #fef2f2; }
+.danger-zone .card-header h2 { color: #b91c1c; }
+.danger-action { display: flex; justify-content: space-between; align-items: center; }
+.danger-action h4 { margin: 0; }
+.danger-action p { margin: 4px 0 0 0; color: #64748b; font-size: 0.9rem; }
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 968px) {
-  .settings-container {
-    flex-direction: column;
-  }
-
-  .settings-sidebar {
-    width: 100%;
-  }
-
-  .sidebar-menu {
-    display: flex;
-    overflow-x: auto;
-    position: static;
-  }
-
-  .menu-item {
-    white-space: nowrap;
-  }
-
-  .form-grid {
-    grid-template-columns: 1fr;
-  }
+  .settings-container { flex-direction: column; }
+  .settings-sidebar { width: 100%; position: static; }
+  .sidebar-menu { flex-direction: row; overflow-x: auto; padding-bottom: 8px; }
+  .menu-item { white-space: nowrap; }
+}
+@media (max-width: 768px) {
+  .user-settings-body, .settings-header, .settings-container { padding: 16px; }
+  .form-grid { grid-template-columns: 1fr; }
+  .profile-header { flex-direction: column; align-items: flex-start; }
+  .danger-action { flex-direction: column; align-items: flex-start; gap: 12px; }
 }
 </style>
