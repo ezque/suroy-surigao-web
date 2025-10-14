@@ -20,13 +20,13 @@
         <button @click="$emit('selectPage', 'spots')">
           <i class="material-icons">map</i> Manage Spots
         </button>
-        <button @click="$emit('selectPage', 'post')">
+        <button @click="$emit('selectPage', 'managePost')">
           <i class="material-icons">article</i> Manage Post
         </button>
         <button @click="$emit('selectPage', 'manageUser')">
           <i class="material-icons">group</i> Manage Users
         </button>
-        <button @click="$emit('selectPage', 'reviews')">
+        <button @click="$emit('selectPage', 'reviewsAndFeedbacks')">
           <i class="material-icons">feedback</i> Reviews & Feedbacks
         </button>
         <button @click="$emit('selectPage', 'settings')">

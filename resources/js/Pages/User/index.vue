@@ -27,6 +27,15 @@
       <Favorites v-if="activePage === 'favorites'" />
       <Messages v-if="activePage === 'messages'" />
       <UserSettings v-if="activePage === 'settings'" />
+
+      <!-- forms -->
+       <AddPackage
+          v-if="activePage === 'AddPackage'"
+       />
+
+       <Reserve
+          v-if="activePage === 'Reserve'"
+       />
     </div>
   </div>
 </template>
@@ -43,6 +52,9 @@ import ExploreSpots from "./exploreSpots.vue";
 import Favorites from "./favorites.vue";
 import Messages from "./messages.vue";
 import UserSettings from "./settings.vue";
+import AddPackage from "../../Components/Forms/addPackage.vue";
+import Reserve from "../../Components/Forms/reserve.vue";
+
 
 const props = defineProps({
   userInformation: {
@@ -55,7 +67,7 @@ const props = defineProps({
 const userRole = computed(() => props.userInformation.role);
 
 // Active Page Management
-const activePage = ref("userDashboard");
+const activePage = ref("AddPackage");
 const selectedSpot = ref(null);
 
 const selectActivePage = (pageName) => {
