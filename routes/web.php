@@ -21,4 +21,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add-new-spot', [AdminController::class, 'addSpot']);
 
     Route::post('/add-package', [AgencyController::class, 'addPackage']);
+
+    Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
 });

@@ -102,6 +102,27 @@ class AdminController extends Controller
         }
     }
 
+    public function updateUserStatus(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer|exists:users,id',
+            'status' => 'required|integer|in:1,2,3',
+        ]);
+
+        $user = User::findOrFail($request->id);
+
+        $user->status = $request->status;
+        $user->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'User status updated successfully.',
+            'user' => $user
+        ]);
+    }
+
+
+
 
 
 }
