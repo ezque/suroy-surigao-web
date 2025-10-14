@@ -43,28 +43,6 @@
       </div>
     </section>
 
-    <!-- Quick Actions -->
-    <section class="actions-section">
-      <h2 class="section-title">Explore Surigao</h2>
-      <div class="actions-grid">
-        <div class="action-card" @click="navigateTo('spots')">
-          <div class="action-icon">📍</div>
-          <h3>Tourist Spots</h3>
-          <p>Discover beautiful destinations</p>
-        </div>
-        <div class="action-card" @click="navigateTo('packages')">
-          <div class="action-icon">🎒</div>
-          <h3>Tour Packages</h3>
-          <p>Find your perfect adventure</p>
-        </div>
-        <div class="action-card" @click="navigateTo('map')">
-          <div class="action-icon">🗺️</div>
-          <h3>Interactive Map</h3>
-          <p>Navigate Surigao easily</p>
-        </div>
-      </div>
-    </section>
-
     <!-- Personalized Recommendations -->
     <section class="recommendations-section">
       <div class="section-header">

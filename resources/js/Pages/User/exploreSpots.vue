@@ -1,6 +1,5 @@
 <template>
   <div class="exploreSpots-body" v-if="spot">
-    <!-- Banner Image with Overlay -->
     <div class="spot-banner">
       <img :src="spot.image" :alt="spot.name" class="spot-banner-img" />
       <div class="banner-overlay">
@@ -11,7 +10,11 @@
           <button class="share-btn" @click="shareSpot">
             <span class="share-icon">📤</span> Share
           </button>
-          <button class="favorite-btn" :class="{ favorited: isFavorited }" @click="toggleFavorite">
+          <button
+            class="favorite-btn"
+            :class="{ favorited: isFavorited }"
+            @click="toggleFavorite"
+          >
             <span class="heart-icon">{{ isFavorited ? '❤️' : '🤍' }}</span>
             {{ isFavorited ? 'Favorited' : 'Add to Favorites' }}
           </button>
@@ -19,9 +22,7 @@
       </div>
     </div>
 
-    <!-- Main Content Container -->
     <div class="spot-content">
-      <!-- Spot Header with Key Info -->
       <div class="spot-header">
         <div class="spot-title-section">
           <h1 class="spot-title">{{ spot.name }}</h1>
@@ -32,7 +33,12 @@
         </div>
         <div class="spot-rating">
           <div class="rating-stars">
-            <span v-for="n in 5" :key="n" class="star" :class="{ filled: n <= spot.rating }">
+            <span
+              v-for="n in 5"
+              :key="n"
+              class="star"
+              :class="{ filled: n <= spot.rating }"
+            >
               {{ n <= spot.rating ? '⭐' : '☆' }}
             </span>
           </div>
@@ -41,8 +47,7 @@
         </div>
       </div>
 
-     
-      <!-- Tabs Navigation -->
+      <!-- ✅ Tabs -->
       <div class="spot-tabs">
         <button
           class="tab-btn"
@@ -51,20 +56,16 @@
         >
           <span class="tab-icon">📖</span> Overview
         </button>
+
         <button
           class="tab-btn"
-          :class="{ active: activeTab === 'gallery' }"
-          @click="activeTab = 'gallery'"
+          :class="{ active: activeTab === 'tourAgencies' }"
+          @click="activeTab = 'tourAgencies'"
         >
-          <span class="tab-icon">🖼️</span> Gallery
+          <i class="fas fa-building"></i>
+          <span>Tour Agencies</span>
         </button>
-        <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'services' }"
-          @click="activeTab = 'services'"
-        >
-          <span class="tab-icon">🏢</span> Tour Services
-        </button>
+
         <button
           class="tab-btn"
           :class="{ active: activeTab === 'reviews' }"
@@ -72,25 +73,21 @@
         >
           <span class="tab-icon">💬</span> Reviews
         </button>
-        <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'tips' }"
-          @click="activeTab = 'tips'"
-        >
-          <span class="tab-icon">💡</span> Travel Tips
-        </button>
       </div>
 
-      <!-- Tab Content -->
       <div class="tab-content">
-        <!-- Overview Tab -->
+        <!-- ✅ Overview -->
         <div v-if="activeTab === 'overview'" class="tab-panel overview-panel">
           <div class="description-section">
             <h3>About This Place</h3>
             <p class="spot-description">{{ spot.description }}</p>
-            
+
             <div class="highlights-grid">
-              <div class="highlight-card" v-for="highlight in spot.highlights" :key="highlight">
+              <div
+                class="highlight-card"
+                v-for="highlight in spot.highlights"
+                :key="highlight"
+              >
                 <span class="highlight-icon">✅</span>
                 <span>{{ highlight }}</span>
               </div>
@@ -109,61 +106,51 @@
             <div class="detail-section">
               <h4>🎒 What to Bring</h4>
               <div class="items-list">
-                <span class="item-tag" v-for="item in spot.whatToBring" :key="item">{{ item }}</span>
+                <span
+                  class="item-tag"
+                  v-for="item in spot.whatToBring"
+                  :key="item"
+                  >{{ item }}</span
+                >
               </div>
             </div>
           </div>
         </div>
 
-        <!-- Gallery Tab -->
-        <div v-if="activeTab === 'gallery'" class="tab-panel gallery-panel">
-          <div class="gallery-grid">
-            <div 
-              class="gallery-item" 
-              v-for="(image, index) in spot.gallery" 
-              :key="index"
-              @click="openLightbox(index)"
-            >
-              <img :src="image" :alt="`${spot.name} image ${index + 1}`" />
-            </div>
-          </div>
+        <!-- ✅ Tour Agencies Tab -->
+        <div v-if="activeTab === 'tourAgencies'" class="tab-panel agencies-panel">
+          <TourAgencies
+            :spotId="spot.id"
+            @viewAgency="openAgencyDetails"
+          />
+
+          <!-- Nested details panel -->
+          <ExploreTourAgency
+            v-if="selectedAgency"
+            :agency="selectedAgency"
+            @close="selectedAgency = null"
+          />
         </div>
 
-        <!-- Services Tab -->
-        <div v-if="activeTab === 'services'" class="tab-panel services-panel">
-          <h3>Available Tour Services</h3>
-          <div class="services-list">
-            <div class="service-card" v-for="service in spot.services" :key="service.id">
-              <div class="service-info">
-                <h4>{{ service.name }}</h4>
-                <p class="service-description">{{ service.description }}</p>
-                <div class="service-features">
-                  <span class="feature-tag" v-for="feature in service.features" :key="feature">
-                    {{ feature }}
-                  </span>
-                </div>
-              </div>
-              <div class="service-pricing">
-                <div class="price">₱{{ service.price }}</div>
-                <div class="price-note">per person</div>
-                <button class="book-btn" @click="bookService(service)">Book Now</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Reviews Tab -->
+        <!-- ✅ Reviews -->
         <div v-if="activeTab === 'reviews'" class="tab-panel reviews-panel">
           <div class="reviews-header">
             <div class="reviews-summary">
               <div class="overall-rating">
                 <div class="rating-big">{{ spot.rating }}</div>
                 <div class="rating-stars">
-                  <span v-for="n in 5" :key="n" class="star" :class="{ filled: n <= spot.rating }">
+                  <span
+                    v-for="n in 5"
+                    :key="n"
+                    class="star"
+                    :class="{ filled: n <= spot.rating }"
+                  >
                     {{ n <= spot.rating ? '⭐' : '☆' }}
                   </span>
                 </div>
-                <div class="rating-text">Based on {{ spot.reviewCount }} reviews</div>
+                <div class="rating-text">
+                  Based on {{ spot.reviewCount }} reviews
+                </div>
               </div>
             </div>
             <button class="add-review-btn" @click="showReviewForm = true">
@@ -172,7 +159,11 @@
           </div>
 
           <div class="reviews-list">
-            <div class="review-card" v-for="review in spot.reviews" :key="review.id">
+            <div
+              class="review-card"
+              v-for="review in spot.reviews"
+              :key="review.id"
+            >
               <div class="reviewer-info">
                 <div class="reviewer-avatar">{{ review.user.charAt(0) }}</div>
                 <div class="reviewer-details">
@@ -181,7 +172,12 @@
                 </div>
               </div>
               <div class="review-rating">
-                <span v-for="n in 5" :key="n" class="star" :class="{ filled: n <= review.rating }">
+                <span
+                  v-for="n in 5"
+                  :key="n"
+                  class="star"
+                  :class="{ filled: n <= review.rating }"
+                >
                   {{ n <= review.rating ? '⭐' : '☆' }}
                 </span>
               </div>
@@ -189,38 +185,27 @@
             </div>
           </div>
         </div>
-
-        <!-- Travel Tips Tab -->
-        <div v-if="activeTab === 'tips'" class="tab-panel tips-panel">
-          <h3>Travel Tips & Recommendations</h3>
-          <div class="tips-grid">
-            <div class="tip-card" v-for="tip in spot.travelTips" :key="tip.id">
-              <div class="tip-icon">{{ tip.icon }}</div>
-              <div class="tip-content">
-                <h4>{{ tip.title }}</h4>
-                <p>{{ tip.description }}</p>
-              </div>
-            </div>
-          </div>
-        </div>
       </div>
 
-      <!-- Map Section -->
+      <!-- Map -->
       <div class="map-section">
         <h3>📍 Location Map</h3>
         <div class="map-container">
-          <div class="map-placeholder">
-            <span class="map-icon">🗺️</span>
-            <p>Interactive map showing {{ spot.name }}</p>
-            <button class="directions-btn" @click="getDirections">
-              🚗 Get Directions
-            </button>
-          </div>
+          <iframe
+            v-if="mapUrl"
+            :src="mapUrl"
+            allowfullscreen=""
+            loading="lazy"
+            referrerpolicy="no-referrer-when-downgrade"
+          ></iframe>
         </div>
+        <button class="directions-btn" @click="getDirections">
+          🚗 Get Directions
+        </button>
       </div>
     </div>
 
-    <!-- Review Form Modal -->
+    <!-- Review Modal -->
     <div v-if="showReviewForm" class="modal-overlay" @click="showReviewForm = false">
       <div class="modal-content" @click.stop>
         <h3>Write a Review</h3>
@@ -228,9 +213,9 @@
           <div class="rating-input">
             <label>Your Rating:</label>
             <div class="star-rating">
-              <span 
-                v-for="n in 5" 
-                :key="n" 
+              <span
+                v-for="n in 5"
+                :key="n"
                 class="star-selectable"
                 :class="{ selected: n <= newReview.rating }"
                 @click="newReview.rating = n"
@@ -239,8 +224,8 @@
               </span>
             </div>
           </div>
-          <textarea 
-            v-model="newReview.content" 
+          <textarea
+            v-model="newReview.content"
             placeholder="Share your experience..."
             rows="5"
           ></textarea>
@@ -251,18 +236,9 @@
         </form>
       </div>
     </div>
-
-    <!-- Lightbox Modal -->
-    <div v-if="showLightbox" class="lightbox-overlay" @click="closeLightbox">
-      <div class="lightbox-content" @click.stop>
-        <button class="lightbox-close" @click="closeLightbox">×</button>
-        <img :src="spot.gallery[currentImageIndex]" :alt="`${spot.name} image`" />
-        <button class="lightbox-nav prev" @click="prevImage">‹</button>
-        <button class="lightbox-nav next" @click="nextImage">›</button>
-      </div>
-    </div>
   </div>
 
+  <!-- Not Found -->
   <div v-else class="not-found">
     <div class="not-found-content">
       <h2>📍 Spot Not Found</h2>
@@ -273,131 +249,47 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, computed } from "vue";
+import TourAgencies from "./tourAgencies.vue";
+import ExploreTourAgencies from "./exploreTourAgencies.vue";
 
 const props = defineProps({
   spot: Object,
 });
-
-const emit = defineEmits(['back']);
+const emit = defineEmits(["back"]);
 
 const activeTab = ref("overview");
+const selectedAgency = ref(null);
 const isFavorited = ref(false);
 const showReviewForm = ref(false);
-const showLightbox = ref(false);
-const currentImageIndex = ref(0);
+const newReview = reactive({ rating: 0, content: "" });
 
-const newReview = reactive({
-  rating: 0,
-  content: ''
+const spot = props.spot || {}; // assume data passed from parent
+
+const mapUrl = computed(() => {
+  if (!spot || !spot.location) return "";
+  const query = encodeURIComponent(`${spot.name}, ${spot.location}`);
+  return `https://maps.google.com/maps?q=${query}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 });
 
-// Sample data structure - in real app this would come from props/API
-const sampleSpot = {
-  id: 1,
-  name: "Mabua Pebble Beach",
-  location: "Surigao City, Surigao del Norte",
-  image: "/images/mabua-beach.jpg",
-  rating: 4.5,
-  reviewCount: 127,
-  description: "Mabua Pebble Beach is a unique destination near Surigao City, known for its shoreline of smooth, white, and gray pebbles instead of sand. The rhythmic sound of waves rolling over the stones creates a therapeutic atmosphere perfect for relaxation.",
-  bestTime: "7AM - 5PM",
-  entranceFee: "₱50",
-  distance: "15 km",
-  activityLevel: "Easy",
-  operatingHours: "Daily, 6:00 AM - 6:00 PM",
-  howToGetThere: "From Surigao City proper, take a tricycle or habal-habal (motorcycle taxi) to Mabua. The journey takes approximately 30-45 minutes.",
-  whatToBring: ["Sunscreen", "Water", "Camera", "Beach Towel", "Snacks"],
-  highlights: [
-    "Unique pebble shoreline",
-    "Crystal clear waters",
-    "Perfect sunset views",
-    "Photography opportunities",
-    "Peaceful atmosphere"
-  ],
-  gallery: [
-    "/images/mabua-1.jpg",
-    "/images/mabua-2.jpg",
-    "/images/mabua-3.jpg",
-    "/images/mabua-4.jpg"
-  ],
-  services: [
-    {
-      id: 1,
-      name: "Basic Beach Tour",
-      description: "Guided tour of Mabua Pebble Beach with local insights",
-      price: 500,
-      features: ["Local guide", "Entrance fee", "Basic amenities"]
-    },
-    {
-      id: 2,
-      name: "Premium Photography Tour",
-      description: "Professional photography session at the best spots",
-      price: 1500,
-      features: ["Professional photographer", "30 digital photos", "Golden hour session"]
-    }
-  ],
-  reviews: [
-    {
-      id: 1,
-      user: "Maria Santos",
-      date: "2 weeks ago",
-      rating: 5,
-      content: "Absolutely breathtaking! The pebble beach is unlike anything I've seen before. The sound of waves on stones is so therapeutic."
-    },
-    {
-      id: 2,
-      user: "John Cruz",
-      date: "1 month ago",
-      rating: 4,
-      content: "Beautiful place but can get crowded on weekends. Come early to enjoy the peaceful atmosphere."
-    }
-  ],
-  travelTips: [
-    {
-      id: 1,
-      icon: "👟",
-      title: "Wear Proper Footwear",
-      description: "The pebbles can be uncomfortable to walk on barefoot. Bring water shoes or sturdy sandals."
-    },
-    {
-      id: 2,
-      icon: "🌅",
-      title: "Best Time to Visit",
-      description: "Visit during sunrise or sunset for the most spectacular views and photography opportunities."
-    },
-    {
-      id: 3,
-      icon: "📸",
-      title: "Photography Tips",
-      description: "The golden hour provides perfect lighting. Use a polarizing filter to reduce glare from the water."
-    }
-  ]
+const openAgencyDetails = (agency) => {
+  selectedAgency.value = agency;
 };
-
-// Use sample data if no spot prop provided
-const spot = props.spot || sampleSpot;
-
-onMounted(() => {
-  checkIfFavorited();
-});
 
 const checkIfFavorited = () => {
   const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  isFavorited.value = favorites.some(fav => fav.id === spot.id);
+  isFavorited.value = favorites.some((fav) => fav.id === spot.id);
 };
 
 const toggleFavorite = () => {
   let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  
   if (isFavorited.value) {
-    favorites = favorites.filter(fav => fav.id !== spot.id);
+    favorites = favorites.filter((fav) => fav.id !== spot.id);
     isFavorited.value = false;
   } else {
     favorites.push(spot);
     isFavorited.value = true;
   }
-  
   localStorage.setItem("favorites", JSON.stringify(favorites));
 };
 
@@ -409,49 +301,30 @@ const shareSpot = () => {
       url: window.location.href,
     });
   } else {
-    // Fallback: copy to clipboard
     navigator.clipboard.writeText(window.location.href);
     alert("Link copied to clipboard!");
   }
 };
 
-const bookService = (service) => {
-  alert(`Booking ${service.name} for ₱${service.price}`);
-  // In real app, this would open a booking modal or redirect to booking page
-};
-
 const getDirections = () => {
-  // In real app, this would open Google Maps or similar
-  const mapsUrl = `https://maps.google.com/?q=${encodeURIComponent(spot.name + ', ' + spot.location)}`;
-  window.open(mapsUrl, '_blank');
-};
-
-const openLightbox = (index) => {
-  currentImageIndex.value = index;
-  showLightbox.value = true;
-};
-
-const closeLightbox = () => {
-  showLightbox.value = false;
-};
-
-const nextImage = () => {
-  currentImageIndex.value = (currentImageIndex.value + 1) % spot.gallery.length;
-};
-
-const prevImage = () => {
-  currentImageIndex.value = (currentImageIndex.value - 1 + spot.gallery.length) % spot.gallery.length;
+  if (spot && spot.location) {
+    const query = encodeURIComponent(`${spot.name}, ${spot.location}`);
+    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+    window.open(mapsUrl, "_blank");
+  }
 };
 
 const submitReview = () => {
-  // In real app, this would submit to backend
-  console.log('New review:', newReview);
+  console.log("New review:", newReview);
   showReviewForm.value = false;
   newReview.rating = 0;
-  newReview.content = '';
-  alert('Thank you for your review!');
+  newReview.content = "";
+  alert("Thank you for your review!");
 };
+
+onMounted(() => checkIfFavorited());
 </script>
+
 
 <style scoped>
 .exploreSpots-body {
@@ -952,12 +825,13 @@ const submitReview = () => {
   line-height: 1.5;
 }
 
-/* Map Section */
+/* ✨ UPDATED: Map Section Styles */
 .map-section {
   background: white;
   border-radius: 20px;
   padding: 30px;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  text-align: center; /* Center align section content */
 }
 
 .map-section h3 {
@@ -968,22 +842,16 @@ const submitReview = () => {
 .map-container {
   border-radius: 15px;
   overflow: hidden;
-  background: #e3f2fd;
-  height: 300px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  background: #e3f2fd; /* Fallback color while map loads */
+  height: 400px; /* Adjust height as needed */
+  width: 100%;
+  margin-bottom: 20px; /* Space between map and button */
 }
 
-.map-placeholder {
-  text-align: center;
-  color: #546e7a;
-}
-
-.map-icon {
-  font-size: 4rem;
-  display: block;
-  margin-bottom: 15px;
+.map-container iframe {
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
 
 .directions-btn {
@@ -994,7 +862,7 @@ const submitReview = () => {
   padding: 12px 25px;
   cursor: pointer;
   font-weight: 600;
-  margin-top: 15px;
+  display: inline-block; /* Allows margin auto to work if needed */
   transition: all 0.3s ease;
 }
 

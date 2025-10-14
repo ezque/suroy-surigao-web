@@ -1,41 +1,39 @@
 <template>
   <div class="user-body-container">
-    <Sidebar
-      :userRole="userRole"
-      @selectPage="selectActivePage"
-    />
+    <Sidebar :userRole="userRole" @selectPage="selectActivePage" />
 
     <div class="user-main-body">
-      <Header
-        :userInformation="userInformation"
-        @logout="handleLogout"
-      />
+      <Header :userInformation="userInformation" @logout="handleLogout" />
 
-      <!-- Pages -->
+      <!-- Home -->
       <Home v-if="activePage === 'userDashboard'" />
 
-      <!-- Spots List -->
+      <!-- Spots -->
       <div v-if="activePage === 'spots'">
-        <Spots @exploreSpots="openExplore" />
+        <Spots @exploreSpots="openExploreSpots" />
       </div>
 
-      <!-- Explore Spot Details -->
+      <!-- Explore Spots -->
       <div v-else-if="activePage === 'exploreSpots'">
         <ExploreSpots :spot="selectedSpot" @back="goBackToSpots" />
       </div>
 
+      <!-- Tour Agencies -->
+      <div v-else-if="activePage === 'tourAgencies'">
+        <TourAgenciesPanel :agencies="agencies" @view-agency="openExploreTourAgencies" />
+      </div>
+
+      <!-- Explore Tour Agency Packages -->
+      <div v-else-if="activePage === 'exploreTourAgencies'">
+        <ExploreTourAgencies :agency="selectedAgency" @back="goBackToTourAgencies" />
+      </div>
+
+      <!-- Other Pages -->
       <Favorites v-if="activePage === 'favorites'" />
       <Messages v-if="activePage === 'messages'" />
       <UserSettings v-if="activePage === 'settings'" />
-
-      <!-- forms -->
-       <AddPackage
-          v-if="activePage === 'AddPackage'"
-       />
-
-       <Reserve
-          v-if="activePage === 'Reserve'"
-       />
+      <AddPackage v-if="activePage === 'AddPackage'" />
+      <Reserve v-if="activePage === 'Reserve'" />
     </div>
   </div>
 </template>
@@ -49,12 +47,13 @@ import Header from "@/Components/User/Header.vue";
 import Home from "./userDashboard.vue";
 import Spots from "./spots.vue";
 import ExploreSpots from "./exploreSpots.vue";
+import TourAgenciesPanel from "./tourAgencies.vue";
+import ExploreTourAgencies from "./exploreTourAgencies.vue";
 import Favorites from "./favorites.vue";
 import Messages from "./messages.vue";
 import UserSettings from "./settings.vue";
 import AddPackage from "../../Components/Forms/addPackage.vue";
 import Reserve from "../../Components/Forms/reserve.vue";
-
 
 const props = defineProps({
   userInformation: {
@@ -63,48 +62,101 @@ const props = defineProps({
   },
 });
 
-// Compute user role
 const userRole = computed(() => props.userInformation.role);
+const activePage = ref("userDashboard");
 
-// Active Page Management
-const activePage = ref("AddPackage");
+// Navigation states
 const selectedSpot = ref(null);
+const selectedAgency = ref(null);
 
-const selectActivePage = (pageName) => {
-  activePage.value = pageName;
-};
+// Sample Tour Agencies
+const agencies = ref([
+  {
+    id: 1,
+    name: "Surigao Eco Tours",
+    location: "Surigao City",
+    shortDesc: "Eco-friendly island hopping and mountain adventures.",
+    packages: [
+      {
+        id: 101,
+        title: "Island Hopping Adventure",
+        shortDesc: "Explore 3 scenic islands in one day.",
+        price: 2500,
+        capacity: 15,
+        availableSlots: 8,
+        days: 1,
+        nights: 0,
+        startDate: "2025-11-10",
+        startTime: "7:00 AM",
+        endDate: "2025-11-10",
+        endTime: "6:00 PM",
+        pickUpPoint: "Surigao Boulevard",
+        destinations: ["Naked Island", "Daku Island", "Guyam Island"],
+        inclusions: ["Lunch", "Boat", "Guide", "Entrance Fees"],
+        exclusions: ["Snorkeling Gear", "Drinks"],
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "Adventure Surigao Travel Co.",
+    location: "Dapa, Siargao",
+    shortDesc: "Surf and nature combo packages around Siargao.",
+    packages: [
+      {
+        id: 102,
+        title: "Siargao Surf & Nature Tour",
+        shortDesc: "2 days of island life and surf adventure.",
+        price: 4800,
+        capacity: 10,
+        availableSlots: 4,
+        days: 2,
+        nights: 1,
+        startDate: "2025-12-05",
+        startTime: "6:00 AM",
+        endDate: "2025-12-06",
+        endTime: "5:00 PM",
+        pickUpPoint: "Dapa Port",
+        destinations: ["Cloud 9", "Magpupungko", "Sugba Lagoon"],
+        inclusions: ["Accommodation", "Breakfast", "Transport"],
+        exclusions: ["Personal Expenses", "Dinner"],
+      },
+    ],
+  },
+]);
 
-// When “Explore” is clicked in Spots.vue
-const openExplore = (spot) => {
+// Navigation handlers
+const selectActivePage = (page) => (activePage.value = page);
+
+const openExploreSpots = (spot) => {
   selectedSpot.value = spot;
   activePage.value = "exploreSpots";
 };
 
-// Go back from ExploreSpots to Spots
-const goBackToSpots = () => {
-  activePage.value = "spots";
+const openExploreTourAgencies = (agency) => {
+  selectedAgency.value = agency;
+  activePage.value = "exploreTourAgencies";
 };
 
-// Logout
-const handleLogout = () => {
-  console.log("Logging out...");
-};
+const goBackToSpots = () => (activePage.value = "spots");
+const goBackToTourAgencies = () => (activePage.value = "tourAgencies");
+
+const handleLogout = () => console.log("Logging out...");
 </script>
 
 <style scoped>
 .user-body-container {
+  display: flex;
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  display: flex;
-  flex-direction: row;
 }
 
 .user-main-body {
   width: 85%;
-  height: 100%;
   display: flex;
   flex-direction: column;
-  background: linear-gradient(to bottom, #6ABBE4, #EEF8F9);
+  overflow-y: auto;
+
 }
 </style>
