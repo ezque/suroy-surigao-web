@@ -297,15 +297,15 @@ const handleHide = (reviewId) => {
 }
 
 .stat-card-green {
-    background: linear-gradient(to bottom right, #86efac, #4ade80);
+    background: #dcfce7; color: #14532d;
 }
 
 .stat-card-purple {
-    background: linear-gradient(to bottom right, #d8b4fe, #c084fc);
+    background: #f3e8ff; color: #581c87;
 }
 
 .stat-card-orange {
-    background: linear-gradient(to bottom right, #fcd34d, #fb923c);
+    background: #fef3c7; color: #7c2d12;
 }
 
 .stat-content {

@@ -42,8 +42,8 @@
         <button @click="$emit('selectPage', 'ManageTours')">
           <i class="material-icons">work</i> Manage Tours & Packages
         </button>
-        <button @click="$emit('selectPage', 'ManageBookings')">
-          <i class="material-icons">book</i> Manage Bookings
+        <button @click="$emit('selectPage', 'manageReservation')">
+          <i class="material-icons">book</i> Manage Reservation
         </button>
         <button @click="$emit('selectPage', 'agencyFeedbacks')">
           <i class="material-icons">star</i> Reviews & Feedbacks
@@ -104,7 +104,7 @@ const handleLogout = () => {
     .sidebar-container {
       width: 15%;
       height: 100vh;
-      background-color: #04333a;
+      background-color: #047a8a;
       display: flex;
       flex-direction: column;
       align-items: center;

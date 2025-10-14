@@ -15,8 +15,8 @@
             <AgencySettings
                 v-if="activePage === 'agencySettings'"
             />
-            <ManageBooking
-                v-if="activePage === 'ManageBookings'"
+            <ManageReservation
+                v-if="activePage === 'manageReservation'"
             />
             <Packages
                 v-if="activePage === 'ManageTours'"
@@ -33,12 +33,11 @@
     import AddPackages from "./addPackages.vue";
     import AgencyDashboard from "./agencyDashboard.vue";
     import AgencySettings from "./agencySettings.vue";
-    import ManageBooking from "./manageBookings.vue";
     import Packages from "./Packages.vue";
     import ReviewsAndFeedbacks from "./agencyFeedbacks.vue";
-
     import {computed, ref} from "vue";
     import Header from "../../Components/Header.vue";
+    import ManageReservation from "./manageReservation.vue";
 
     const props = defineProps({
         userInformation: Object,
@@ -63,6 +62,6 @@
         height: 100%;
         display: flex;
         flex-direction: column;
-        background: linear-gradient(to bottom, #6ABBE4, #EEF8F9);
+        background: linear-gradient(to bottom, #E8F4F8, #FFFFFF);
     }
 </style>

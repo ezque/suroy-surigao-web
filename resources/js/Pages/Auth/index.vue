@@ -14,11 +14,11 @@
                     @switchForm="activeForm = 'login'"
                 />
             </div>
-            <div class="card-right-side">
-                <img src="/public/images/logo/logo.png" alt="logo" />
-                <h2>welcome!</h2>
-                <h3>your journey starts here</h3>
-            </div>
+                <div class="card-right-side">
+                    <img src="/public/images/logo/logo.png" alt="logo" />
+                    <h2 class="welcome-text">welcome!</h2>
+                    <h3 class="subtext">your journey starts here</h3>
+                </div>
         </div>
     </div>
 </template>
@@ -31,6 +31,23 @@
 
 </script>
 <style scoped>
+    @import url('https://fonts.googleapis.com/css2?family=Liu+Jian+Mao+Cao&display=swap');
+
+    .welcome-text {
+    font-family: 'Liu Jian Mao Cao', cursive;
+    font-size: 100%;
+    color: #fffdfd;
+    text-transform: capitalize;
+    margin-bottom: 0.2rem;
+    }
+
+    .subtext {
+    font-family: 'Liu Jian Mao Cao', cursive;
+    font-size: 28px;
+    color: #f8f3f3;
+    letter-spacing: 1px;
+    }
+
     .auth-main-body {
         width: 100%;
         height: 100vh;
