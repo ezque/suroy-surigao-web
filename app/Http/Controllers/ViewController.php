@@ -38,7 +38,7 @@ class ViewController extends Controller
     {
         $userInformation = $userServices->getUserInformation();
         $allSpots = $spotsServices->getAllSpots();
-        $allPackages = $packageServices->getAllPackages();
+        $allPackages = $packageServices->getAllOwnedPackages();
 
         return Inertia::render('Agency/index', [
             'userInformation' => $userInformation,

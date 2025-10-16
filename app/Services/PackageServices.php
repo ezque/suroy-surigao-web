@@ -5,9 +5,11 @@ use App\Models\Package;
 class PackageServices
 {
 
-    public function getAllPackages()
+    public function getAllOwnedPackages()
     {
-        $packages = Package::all();
+        $userId = auth()->id();
+
+        $packages = Package::where('userID', $userId)->get();
 
         return $packages;
     }
