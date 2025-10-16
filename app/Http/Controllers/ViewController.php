@@ -7,6 +7,7 @@ use Inertia\Inertia;
 use App\Services\UserServices;
 use App\Services\AdminServices;
 use App\Services\SpotsServices;
+use App\Services\PackageServices;
 
 class ViewController extends Controller
 {
@@ -33,14 +34,16 @@ class ViewController extends Controller
             'userInformation' => $userInformation,
         ]);
     }
-    public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices): \Inertia\Response
+    public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices, PackageServices $packageServices): \Inertia\Response
     {
         $userInformation = $userServices->getUserInformation();
         $allSpots = $spotsServices->getAllSpots();
+        $allPackages = $packageServices->getAllPackages();
 
         return Inertia::render('Agency/index', [
             'userInformation' => $userInformation,
             'allSpots'     => $allSpots,
+            'allPackages'  => $allPackages,
         ]);
     }
 

@@ -9,10 +9,6 @@
             <AgencyDashboard
                 v-if="activePage === 'agencyDashboard'"
             />
-            <AddPackages
-                v-if="activePage === 'addPackages'"
-                :allSpots="allSpots"
-            />
             <AgencySettings
                 v-if="activePage === 'agencySettings'"
             />
@@ -23,6 +19,7 @@
                 v-if="activePage === 'ManageTours'"
                 @selectPage="selectActivePage"
                 :allSpots="allSpots"
+                :allPackages="allPackages"
             />
             <ReviewsAndFeedbacks
                 v-if="activePage === 'agencyFeedbacks'"
@@ -44,10 +41,11 @@
     const props = defineProps({
         userInformation: Object,
         allSpots: Array,
+        allPackages: Array,
     })
 
     onMounted(() => {
-        console.log(props.allSpots);
+        console.log(props.allPackages);
     });
 
     const userRole = computed(() => props.userInformation.role);

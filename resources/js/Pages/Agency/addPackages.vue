@@ -39,8 +39,8 @@
 
                     <label>
                         🎟 Available Slot
-                        <input type="number" v-model="available_On" min="1" placeholder="e.g., 10" />
-                        <div class="error-message" v-if="errors.available_On">{{ errors.available_On }}</div>
+                        <input type="number" v-model="available_slot" min="1" placeholder="e.g., 10" />
+                        <div class="error-message" v-if="errors.available_slot">{{ errors.available_slot }}</div>
                     </label>
                 </div>
             </section>
@@ -88,10 +88,10 @@
                         </select>
 
                         <div v-if="destinations.length" class="selected-spots">
-              <span v-for="(spotId, index) in destinations" :key="index" class="spot-chip">
-                {{ getSpotName(spotId) }}
-                <button type="button" class="remove-btn" @click="removeDestination(index)">×</button>
-              </span>
+                            <span v-for="(spotId, index) in destinations" :key="index" class="spot-chip">
+                                {{ getSpotName(spotId) }}
+                                <button type="button" class="remove-btn" @click="removeDestination(index)">×</button>
+                            </span>
                         </div>
                     </div>
 
@@ -116,50 +116,81 @@
 </template>
 
 <script setup>
-    import { ref, reactive } from "vue";
+    import { ref, reactive, watch } from "vue";
     import axios from "axios";
 
     const props = defineProps({
         allSpots: Array,
+        packageData: { type: Object, default: null },
     });
 
+    const emit = defineEmits(["cancel", "submit"]);
+
+    // --- Form fields ---
     const package_name = ref("");
     const shortDesc = ref("");
     const price = ref("");
     const capacity = ref("");
-    const available_On = ref("");
+    const available_slot = ref("");
     const startDate = ref("");
     const startTime = ref("");
     const endDate = ref("");
     const endTime = ref("");
     const pickupPoint = ref("");
-    const destinations = ref([]); // holds array of spot IDs
+    const destinations = ref([]);
     const inclusions = ref("");
     const exclusions = ref("");
 
     const selectedSpot = ref("");
     const errors = reactive({});
-    const emit = defineEmits(["cancel"]);
 
-    // ✅ Add spot to destinations
+    // Fill form if editing
+    watch(
+        () => props.packageData,
+        (data) => {
+            if (data) {
+                package_name.value = data.package_name || "";
+                shortDesc.value = data.description || "";
+                price.value = data.price || "";
+                capacity.value = data.capacity || "";
+                available_slot.value = data.available_slot || "";
+                startDate.value = data.start_date || "";
+                startTime.value = data.start_time || "";
+                endDate.value = data.end_date || "";
+                endTime.value = data.end_time || "";
+                pickupPoint.value = data.pickup_point || "";
+                destinations.value = data.tour_destination
+                    ? JSON.parse(data.tour_destination)
+                    : [];
+                inclusions.value = data.inclusions || "";
+                exclusions.value = data.exclusions || "";
+            }
+        },
+        { immediate: true }
+    );
+
+    // ✅ Add spot
     const addDestination = () => {
         if (selectedSpot.value && !destinations.value.includes(selectedSpot.value)) {
-            destinations.value.push(selectedSpot.value); // push ID
+            destinations.value.push(selectedSpot.value);
             selectedSpot.value = "";
         }
     };
-
     const removeDestination = (index) => {
         destinations.value.splice(index, 1);
     };
-
-    // ✅ Map ID back to spot name
     const getSpotName = (id) => {
         const spot = props.allSpots.find((s) => s.id === id);
         return spot ? spot.spot_name : "Unknown";
     };
 
-    // ✅ Submit form
+    // ✅ Ensure HH:mm format
+    const formatTime = (time) => {
+        if (!time) return "";
+        return time.length === 8 ? time.substring(0, 5) : time; // convert HH:mm:ss → HH:mm
+    };
+
+    // ✅ Submit
     const handleSubmit = async () => {
         try {
             const payload = {
@@ -167,49 +198,42 @@
                 shortDesc: shortDesc.value,
                 price: price.value,
                 capacity: capacity.value,
-                available_On: available_On.value,
+                available_slot: available_slot.value,
                 startDate: startDate.value,
-                startTime: startTime.value,
+                startTime: formatTime(startTime.value), // ✅ formatted
                 endDate: endDate.value,
-                endTime: endTime.value,
+                endTime: formatTime(endTime.value),     // ✅ formatted
                 pickupPoint: pickupPoint.value,
-                destinations: destinations.value, // array of IDs
+                destinations: destinations.value,
                 inclusions: inclusions.value,
                 exclusions: exclusions.value,
             };
 
-            const response = await axios.post("/add-package", payload);
+            let response;
+            if (props.packageData) {
+                // update
+                response = await axios.post(`/update-package/${props.packageData.id}`, payload);
+            } else {
+                // create
+                response = await axios.post("/add-package", payload);
+            }
 
-            alert(response.data.message); // "Package added successfully!"
-
-            // Optional: clear form
-            package_name.value = "";
-            shortDesc.value = "";
-            price.value = "";
-            capacity.value = "";
-            available_On.value = "";
-            startDate.value = "";
-            startTime.value = "";
-            endDate.value = "";
-            endTime.value = "";
-            pickupPoint.value = "";
-            destinations.value = [];
-            inclusions.value = "";
-            exclusions.value = "";
-
+            alert(response.data.message);
+            emit("submit", payload);
         } catch (error) {
             if (error.response && error.response.data.errors) {
                 Object.assign(errors, error.response.data.errors);
             }
             console.error(error);
-            alert("Failed to submit package.");
+            alert("Failed to save package.");
         }
     };
 
-    const cancel = () => {
-        emit("cancel");
-    };
+    const cancel = () => emit("cancel");
 </script>
+
+
+
 
 
 <style scoped>
