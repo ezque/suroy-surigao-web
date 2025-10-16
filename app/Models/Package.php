@@ -25,8 +25,4 @@ class Package extends Model
         'status',
     ];
 
-    public function services()
-    {
-        return $this->hasMany(Service::class, 'package_id');
-    }
 }

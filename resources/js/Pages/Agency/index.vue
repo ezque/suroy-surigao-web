@@ -11,6 +11,7 @@
             />
             <AddPackages
                 v-if="activePage === 'addPackages'"
+                :allSpots="allSpots"
             />
             <AgencySettings
                 v-if="activePage === 'agencySettings'"
@@ -21,6 +22,7 @@
             <Packages
                 v-if="activePage === 'ManageTours'"
                 @selectPage="selectActivePage"
+                :allSpots="allSpots"
             />
             <ReviewsAndFeedbacks
                 v-if="activePage === 'agencyFeedbacks'"
@@ -35,13 +37,18 @@
     import AgencySettings from "./agencySettings.vue";
     import Packages from "./Packages.vue";
     import ReviewsAndFeedbacks from "./agencyFeedbacks.vue";
-    import {computed, ref} from "vue";
+    import {computed, onMounted, ref} from "vue";
     import Header from "../../Components/Header.vue";
     import ManageReservation from "./manageReservation.vue";
 
     const props = defineProps({
         userInformation: Object,
+        allSpots: Array,
     })
+
+    onMounted(() => {
+        console.log(props.allSpots);
+    });
 
     const userRole = computed(() => props.userInformation.role);
     const activePage = ref('agencyDashboard');
@@ -49,6 +56,7 @@
         activePage.value = pageName;
     }
 </script>
+
 <style scoped>
     .agency-body-container {
         width: 100%;

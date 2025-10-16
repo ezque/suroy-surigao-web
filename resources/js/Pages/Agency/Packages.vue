@@ -76,10 +76,11 @@
         <button class="modal-close-btn" @click="handleCancel">
             <i class="material-icons">close</i>
         </button>
-        <AddPackages 
+        <AddPackages
             :packageData="editingPackage"
-            @submit="handleFormSubmit" 
-            @cancel="handleCancel" 
+            @submit="handleFormSubmit"
+            @cancel="handleCancel"
+            :allSpots="allSpots"
         />
       </div>
     </div>
@@ -87,75 +88,77 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
-import AddPackages from './addPackages.vue' // Assuming this component is created
+    import { ref, computed } from 'vue'
+    import AddPackages from './addPackages.vue'
 
-const props = defineProps({
-  usePageNavigation: Boolean,
-})
-const emit = defineEmits(['selectPage'])
+    const props = defineProps({
+        usePageNavigation: Boolean,
+        allSpots: Array,
+    })
 
-const showForm = ref(false)
-const search = ref('')
-const editingPackage = ref(null) // To hold package data for editing
+    const emit = defineEmits(['selectPage'])
 
-const packages = ref([
-  { id: 1, name: 'Siargao Island Hopping', availability: 'Daily', status: 'Active', capacity: 20 },
-  { id: 2, name: 'Enchanted River & Tinuy-an Falls', availability: 'Weekends', status: 'Active', capacity: 15 },
-  { id: 3, name: 'Sohoton Cove National Park', availability: 'Daily', status: 'Pending', capacity: 40 },
-  { id: 4, name: 'Britannia Group of Islands', availability: 'T-W-Th', status: 'Inactive', capacity: 25 }
-])
+    const showForm = ref(false)
+    const search = ref('')
+    const editingPackage = ref(null)
 
-// --- Modal and Form Handling ---
-const handleAddPackageClick = () => {
-  if (props.usePageNavigation) {
-    emit('selectPage', 'agencyAddPackage')
-  } else {
-    editingPackage.value = null // Ensure we are in "add" mode
-    showForm.value = true
-  }
-}
+    const packages = ref([
+      { id: 1, name: 'Siargao Island Hopping', availability: 'Daily', status: 'Active', capacity: 20 },
+      { id: 2, name: 'Enchanted River & Tinuy-an Falls', availability: 'Weekends', status: 'Active', capacity: 15 },
+      { id: 3, name: 'Sohoton Cove National Park', availability: 'Daily', status: 'Pending', capacity: 40 },
+      { id: 4, name: 'Britannia Group of Islands', availability: 'T-W-Th', status: 'Inactive', capacity: 25 }
+    ])
 
-const handleEditPackageClick = (pkg) => {
-  // Create a copy to avoid mutating the original object directly
-  editingPackage.value = { ...pkg }
-  showForm.value = true
-}
-
-const handleFormSubmit = (formData) => {
-  if (editingPackage.value) {
-    // Update existing package
-    const index = packages.value.findIndex(p => p.id === editingPackage.value.id)
-    if (index !== -1) {
-      packages.value[index] = { ...editingPackage.value, ...formData }
+    // --- Modal and Form Handling ---
+    const handleAddPackageClick = () => {
+      if (props.usePageNavigation) {
+        emit('selectPage', 'agencyAddPackage')
+      } else {
+        editingPackage.value = null // Ensure we are in "add" mode
+        showForm.value = true
+      }
     }
-  } else {
-    // Add new package
-    const newId = Math.max(...packages.value.map(p => p.id), 0) + 1
-    packages.value.push({ id: newId, ...formData })
-  }
-  showForm.value = false
-  editingPackage.value = null
-}
 
-const handleCancel = () => {
-    showForm.value = false
-    editingPackage.value = null
-}
+    const handleEditPackageClick = (pkg) => {
+      // Create a copy to avoid mutating the original object directly
+      editingPackage.value = { ...pkg }
+      showForm.value = true
+    }
 
-// --- Package Actions ---
-const deletePackage = (id) => {
-  if (confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
-    packages.value = packages.value.filter((p) => p.id !== id)
-  }
-}
+    const handleFormSubmit = (formData) => {
+      if (editingPackage.value) {
+        // Update existing package
+        const index = packages.value.findIndex(p => p.id === editingPackage.value.id)
+        if (index !== -1) {
+          packages.value[index] = { ...editingPackage.value, ...formData }
+        }
+      } else {
+        // Add new package
+        const newId = Math.max(...packages.value.map(p => p.id), 0) + 1
+        packages.value.push({ id: newId, ...formData })
+      }
+      showForm.value = false
+      editingPackage.value = null
+    }
 
-// --- Computed Properties ---
-const filteredPackages = computed(() =>
-  packages.value.filter((p) =>
-    p.name.toLowerCase().includes(search.value.toLowerCase())
-  )
-)
+    const handleCancel = () => {
+        showForm.value = false
+        editingPackage.value = null
+    }
+
+    // --- Package Actions ---
+    const deletePackage = (id) => {
+      if (confirm('Are you sure you want to delete this package? This action cannot be undone.')) {
+        packages.value = packages.value.filter((p) => p.id !== id)
+      }
+    }
+
+    // --- Computed Properties ---
+    const filteredPackages = computed(() =>
+      packages.value.filter((p) =>
+        p.name.toLowerCase().includes(search.value.toLowerCase())
+      )
+    )
 </script>
 
 <style scoped>

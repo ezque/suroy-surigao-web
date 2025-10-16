@@ -33,12 +33,14 @@ class ViewController extends Controller
             'userInformation' => $userInformation,
         ]);
     }
-    public function agencyDashboard(UserServices $userServices): \Inertia\Response
+    public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices): \Inertia\Response
     {
         $userInformation = $userServices->getUserInformation();
+        $allSpots = $spotsServices->getAllSpots();
 
         return Inertia::render('Agency/index', [
             'userInformation' => $userInformation,
+            'allSpots'     => $allSpots,
         ]);
     }
 

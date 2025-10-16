@@ -1,155 +1,158 @@
 <template>
-  <div class="add-package-wrapper">
-    <div class="add-package-container">
-      <h2 class="form-title">Add New Tour Package</h2>
+      <div class="add-package-wrapper">
+            <div class="add-package-container">
+                  <h2 class="form-title">Add New Tour Package</h2>
 
-      <form class="package-form" @submit.prevent="addPackage">
-        <!-- Package Details -->
-        <div class="form-section">
-          <h3>📦 Package Details</h3>
-          <div class="form-grid">
-            <label>
-              Package Name
-              <input type="text" placeholder="Enter package name" v-model="packageData.name" required />
-            </label>
+                  <form class="package-form" @submit.prevent="addPackage">
+                        <!-- Package Details -->
+                        <div class="form-section">
+                          <h3>📦 Package Details</h3>
+                          <div class="form-grid">
+                            <label>
+                              Package Name
+                              <input type="text" placeholder="Enter package name" v-model="packageData.name" required />
+                            </label>
 
-            <label>
-              Short Description
-              <input type="text" placeholder="Enter short description" v-model="packageData.shortDesc" />
-            </label>
+                            <label>
+                              Short Description
+                              <input type="text" placeholder="Enter short description" v-model="packageData.shortDesc" />
+                            </label>
 
-            <label>
-              ₱ Price Per Head
-              <input type="number" placeholder="e.g., 1500" v-model="packageData.pricePerHead" min="0" />
-            </label>
+                            <label>
+                              ₱ Price Per Head
+                              <input type="number" placeholder="e.g., 1500" v-model="packageData.pricePerHead" min="0" />
+                            </label>
 
-            <label>
-              👥 Capacity
-              <input type="number" placeholder="e.g., 20 people" v-model="packageData.capacity" min="1" />
-            </label>
+                            <label>
+                              👥 Capacity
+                              <input type="number" placeholder="e.g., 20 people" v-model="packageData.capacity" min="1" />
+                            </label>
 
-            <label>
-              🎟 Available Slot
-              <input type="number" placeholder="e.g., 10" v-model="packageData.availableSlot" min="1" />
-            </label>
-          </div>
-        </div>
+                            <label>
+                              🎟 Available Slot
+                              <input type="number" placeholder="e.g., 10" v-model="packageData.availableSlot" min="1" />
+                            </label>
+                          </div>
+                        </div>
 
-        <!-- Tour Schedule -->
-        <div class="form-section">
-          <h3>🗓️ Tour Schedule</h3>
-          <div class="form-grid">
-            <label>
-              Start Date
-              <input type="date" v-model="packageData.startDate" />
-            </label>
-            <label>
-              Start Time
-              <input type="time" v-model="packageData.startTime" />
-            </label>
-            <label>
-              End Date
-              <input type="date" v-model="packageData.endDate" />
-            </label>
-            <label>
-              End Time
-              <input type="time" v-model="packageData.endTime" />
-            </label>
-          </div>
-        </div>
+                        <!-- Tour Schedule -->
+                        <div class="form-section">
+                          <h3>🗓️ Tour Schedule</h3>
+                          <div class="form-grid">
+                            <label>
+                              Start Date
+                              <input type="date" v-model="packageData.startDate" />
+                            </label>
+                            <label>
+                              Start Time
+                              <input type="time" v-model="packageData.startTime" />
+                            </label>
+                            <label>
+                              End Date
+                              <input type="date" v-model="packageData.endDate" />
+                            </label>
+                            <label>
+                              End Time
+                              <input type="time" v-model="packageData.endTime" />
+                            </label>
+                          </div>
+                        </div>
 
-        <!-- Tour Information -->
-        <div class="form-section">
-          <h3>🧭 Tour Information</h3>
-          <div class="form-grid">
-            <label>
-              Pick-up Point
-              <input type="text" placeholder="Enter pick-up location" v-model="packageData.pickupPoint" />
-            </label>
+                        <!-- Tour Information -->
+                        <div class="form-section">
+                              <h3>🧭 Tour Information</h3>
+                              <div class="form-grid">
+                                    <label>
+                                        Pick-up Point
+                                        <input type="text" placeholder="Enter pick-up location" v-model="packageData.pickupPoint" />
+                                    </label>
 
-            <div class="select-destination-container">
-              <label>Tour Destinations</label>
-              <select v-model="selectedSpot" @change="addDestination" class="select-spot">
-                <option disabled value="">Select a spot</option>
-                <option v-for="spot in availableSpots" :key="spot.id" :value="spot.name">
-                  {{ spot.name }}
-                </option>
-              </select>
+                                    <div class="select-destination-container">
+                                          <label>Tour Destinations</label>
+                                                <select v-model="selectedSpot" @change="addDestination" class="select-spot">
+                                                    <option disabled value="">Select a spot</option>
+                                                    <option v-for="spot in allSpots" :key="spot.id" :value="spot.id">
+                                                        {{ spot.spot_name }}
+                                                    </option>
+                                                </select>
 
-              <div v-if="packageData.destinations.length" class="selected-spots">
-                <span v-for="(spot, index) in packageData.destinations" :key="index" class="spot-chip">
-                  {{ spot }}
-                  <button type="button" @click="removeDestination(index)" class="remove-btn">×</button>
-                </span>
-              </div>
+                                                <div v-if="packageData.destinations.length" class="selected-spots">
+                                                    <span v-for="(spot, index) in packageData.destinations" :key="index" class="spot-chip">
+                                                        {{ getSpotName(spot) }}
+                                                        <button type="button" @click="removeDestination(index)" class="remove-btn">×</button>
+                                                    </span>
+                                                </div>
+                                    </div>
+
+                                    <label class="textarea-label">
+                                        Inclusions
+                                        <textarea placeholder="List all inclusions" v-model="packageData.inclusions"></textarea>
+                                    </label>
+
+                                    <label class="textarea-label">
+                                        Exclusions
+                                        <textarea placeholder="List all exclusions" v-model="packageData.exclusions"></textarea>
+                                    </label>
+                              </div>
+                        </div>
+
+                        <div class="button-container">
+                            <button type="submit" class="add-btn">Add Package</button>
+                        </div>
+                  </form>
             </div>
-
-            <label class="textarea-label">
-              Inclusions
-              <textarea placeholder="List all inclusions" v-model="packageData.inclusions"></textarea>
-            </label>
-
-            <label class="textarea-label">
-              Exclusions
-              <textarea placeholder="List all exclusions" v-model="packageData.exclusions"></textarea>
-            </label>
-          </div>
-        </div>
-
-        <div class="button-container">
-          <button type="submit" class="add-btn">Add Package</button>
-        </div>
-      </form>
-    </div>
-  </div>
+      </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+    import { ref } from 'vue';
 
-// Example spots (replace with API call)
-const availableSpots = ref([
-  { id: 1, name: 'Tinuy-an Falls' },
-  { id: 2, name: 'Enchanted River' },
-  { id: 3, name: 'Britania Islands' },
-  { id: 4, name: 'Siargao Surfing Spot' },
-]);
+    const props = defineProps({
+        allSpots: Array,
+    });
 
-const selectedSpot = ref('');
+    const selectedSpot = ref('');
 
-const packageData = ref({
-  name: '',
-  shortDesc: '',
-  pricePerHead: 0,
-  capacity: 0,
-  availableSlot: 0,
-  startDate: '',
-  startTime: '',
-  endDate: '',
-  endTime: '',
-  pickupPoint: '',
-  destinations: [],
-  inclusions: '',
-  exclusions: ''
-});
+    const packageData = ref({
+        name: '',
+        shortDesc: '',
+        pricePerHead: 0,
+        capacity: 0,
+        availableSlot: 0,
+        startDate: '',
+        startTime: '',
+        endDate: '',
+        endTime: '',
+        pickupPoint: '',
+        destinations: [],
+        inclusions: '',
+        exclusions: ''
+    });
 
-const addDestination = () => {
-  if (selectedSpot.value && !packageData.value.destinations.includes(selectedSpot.value)) {
-    packageData.value.destinations.push(selectedSpot.value);
-    selectedSpot.value = '';
-  }
-};
+    const addDestination = () => {
+        if (selectedSpot.value && !packageData.value.destinations.includes(selectedSpot.value)) {
+            packageData.value.destinations.push(selectedSpot.value); // push id
+            selectedSpot.value = '';
+        }
+    };
 
-const removeDestination = (index) => {
-  packageData.value.destinations.splice(index, 1);
-};
+    const removeDestination = (index) => {
+        packageData.value.destinations.splice(index, 1);
+    };
 
-const addPackage = () => {
-  console.log('Adding package:', packageData.value);
-  alert('Package successfully added!');
-  // Future backend call goes here
-};
+    // Helper to display the spot_name by id
+    const getSpotName = (id) => {
+        const spot = props.allSpots.find(s => s.id === id);
+        return spot ? spot.spot_name : 'Unknown';
+    };
+
+    const addPackage = () => {
+        console.log('Adding package:', packageData.value);
+        alert('Package successfully added!');
+        // Future backend call goes here
+    };
 </script>
+
 
 <style scoped>
 /* Scrollable wrapper */
