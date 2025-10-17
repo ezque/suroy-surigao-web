@@ -10,7 +10,7 @@ class AgencyController extends Controller
 {
     public function addPackage(Request $request)
     {
-        // ✅ validate inputs
+
         $validated = $request->validate([
             'package_name'   => 'required|string|max:255',
             'shortDesc'      => 'nullable|string|max:255',
@@ -28,6 +28,7 @@ class AgencyController extends Controller
         ]);
 
         $package = Package::create([
+            'userID' => auth()->id(),
             'package_name'    => $validated['package_name'],
             'description'     => $validated['shortDesc'] ?? null,
             'price'           => $validated['price'],
