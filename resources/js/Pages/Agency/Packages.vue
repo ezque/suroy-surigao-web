@@ -50,7 +50,11 @@
                     </td>
                     <td>{{ pkg.capacity }} people</td>
                     <td class="action-buttons">
-                        <button class="icon-btn view-btn" title="View Details">
+                        <button
+                            class="icon-btn view-btn"
+                            title="View Details"
+                            @click="handleViewPackageClick(pkg)"
+                        >
                             <i class="material-icons">visibility</i>
                         </button>
                         <button
@@ -95,6 +99,22 @@
                 />
             </div>
         </div>
+        <div v-if="showViewBox" class="modal-overlay" @click="closeViewBox">
+            <div class="view-box" @click.stop>
+                <button class="modal-close-btn" @click="closeViewBox">
+                    <i class="material-icons">close</i>
+                </button>
+                <h3>{{ viewingPackage.package_name }}</h3>
+                <p><strong>ID:</strong> {{ viewingPackage.id }}</p>
+                <p><strong>Status:</strong> {{ viewingPackage.status == 1 ? 'Active' : 'Inactive' }}</p>
+                <p><strong>Available Slot:</strong> {{ viewingPackage.available_slot }}</p>
+                <p><strong>Capacity:</strong> {{ viewingPackage.capacity }} people</p>
+                <p><strong>Description:</strong></p>
+                <p>{{ viewingPackage.description }}</p>
+                <p><strong>Duration:</strong> {{ viewingPackage.duration }}</p>
+                <p><strong>Available On:</strong> {{ viewingPackage.available_On }}</p>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -113,6 +133,8 @@
     const showForm = ref(false);
     const search = ref("");
     const editingPackage = ref(null);
+    const viewingPackage = ref({});
+    const showViewBox = ref(false);
 
     // --- Modal and Form Handling ---
     const handleAddPackageClick = () => {
@@ -170,6 +192,15 @@
             p.package_name.toLowerCase().includes(search.value.toLowerCase())
         )
     );
+
+    const handleViewPackageClick = (pkg) => {
+        viewingPackage.value = { ...pkg };
+        showViewBox.value = true;
+    };
+    const closeViewBox = () => {
+        showViewBox.value = false;
+        viewingPackage.value = {};
+    };
 </script>
 
 
@@ -440,6 +471,29 @@
         .add-btn i {
             margin-right: 0;
         }
+    }
+    .view-box {
+        background: white;
+        padding: 32px;
+        border-radius: 16px;
+        width: 90%;
+        max-width: 600px;
+        max-height: 80vh;
+        overflow-y: auto;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        position: relative;
+    }
+    .view-box h3 {
+        margin-top: 0;
+        margin-bottom: 16px;
+        color: #1e293b;
+        font-size: 1.5rem;
+        font-weight: 700;
+    }
+    .view-box p {
+        margin: 8px 0;
+        color: #475569;
+        line-height: 1.5;
     }
 
 </style>
