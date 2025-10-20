@@ -1,207 +1,187 @@
 <template>
-  <div class="spots-body">
-    <!-- Hero Section -->
-    <div class="hero-section">
-      <div class="hero-content">
-        <h1 class="hero-title">Ali na sa Surigao!</h1>
-        <p class="hero-subtitle">Discover the most beautiful spots in Surigao del Norte</p>
-      </div>
-      <div class="wave-decoration">
-        <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
-          <path d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z" opacity=".25" fill="#ffffff"></path>
-          <path d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z" opacity=".5" fill="#ffffff"></path>
-          <path d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z" fill="#ffffff"></path>
-        </svg>
-      </div>
-    </div>
-
-    <!-- Filter Section -->
-    <div class="filter-section">
-      <div class="filter-container">
-        <div class="search-wrapper">
-          <i class="material-icons search-icon">search</i>
-          <input
-            type="text"
-            placeholder="Search for beaches, parks, waterfalls..."
-            v-model="searchQuery"
-            class="search-bar"
-          />
-        </div>
-
-        <div class="category-wrapper">
-          <i class="material-icons category-icon">category</i>
-          <select v-model="selectedCategory" class="category-dropdown">
-            <option value="">All Categories</option>
-            <option value="beach">🏖️ Beaches</option>
-            <option value="park">🌳 Parks</option>
-            <option value="museum">🏛️ Museums</option>
-            <option value="waterfall">💧 Waterfalls</option>
-            <option value="mountain">⛰️ Mountains</option>
-            <option value="island">🏝️ Islands</option>
-          </select>
-        </div>
-      </div>
-
-      <!-- Quick Stats -->
-      <div class="quick-stats">
-        <div class="stat-badge">
-          <i class="material-icons">explore</i>
-          <span>{{ filteredSpots.length }} Spots</span>
-        </div>
-        <div class="stat-badge">
-          <i class="material-icons">star</i>
-          <span>Top Rated</span>
-        </div>
-        <div class="stat-badge">
-          <i class="material-icons">trending_up</i>
-          <span>Trending</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Spots Grid -->
-    <div class="spots-container">
-      <div class="spots-grid" v-if="filteredSpots.length > 0">
-        <div 
-          v-for="spot in filteredSpots" 
-          :key="spot.id" 
-          class="spot-card"
-          @click="goToExplore(spot)"
-        >
-          <div class="spot-image-wrapper">
-            <img :src="spot.image" :alt="spot.name" class="spot-image" />
-            <div class="spot-overlay">
-              <button class="explore-btn">
-                <i class="material-icons">visibility</i>
-                <span>Explore Now</span>
-              </button>
+    <div class="spots-body">
+        <!-- Hero Section -->
+        <div class="hero-section">
+            <div class="hero-content">
+                <h1 class="hero-title">Ali na sa Surigao!</h1>
+                <p class="hero-subtitle">
+                    Discover the most beautiful spots in Surigao del Norte
+                </p>
             </div>
-            <div class="spot-badge">{{ getCategoryLabel(spot.category) }}</div>
-          </div>
-          <div class="spot-info">
-            <h3>{{ spot.name }}</h3>
-            <div class="spot-meta">
-              <div class="rating">
-                <i class="material-icons">star</i>
-                <span>{{ spot.rating || '4.5' }}</span>
-              </div>
-              <div class="location">
-                <i class="material-icons">place</i>
-                <span>{{ spot.location || 'Surigao' }}</span>
-              </div>
+            <div class="wave-decoration">
+                <svg viewBox="0 0 1200 120" preserveAspectRatio="none">
+                    <path
+                        d="M0,0V46.29c47.79,22.2,103.59,32.17,158,28,70.36-5.37,136.33-33.31,206.8-37.5C438.64,32.43,512.34,53.67,583,72.05c69.27,18,138.3,24.88,209.4,13.08,36.15-6,69.85-17.84,104.45-29.34C989.49,25,1113-14.29,1200,52.47V0Z"
+                        opacity=".25"
+                        fill="#ffffff"
+                    ></path>
+                    <path
+                        d="M0,0V15.81C13,36.92,27.64,56.86,47.69,72.05,99.41,111.27,165,111,224.58,91.58c31.15-10.15,60.09-26.07,89.67-39.8,40.92-19,84.73-46,130.83-49.67,36.26-2.85,70.9,9.42,98.6,31.56,31.77,25.39,62.32,62,103.63,73,40.44,10.79,81.35-6.69,119.13-24.28s75.16-39,116.92-43.05c59.73-5.85,113.28,22.88,168.9,38.84,30.2,8.66,59,6.17,87.09-7.5,22.43-10.89,48-26.93,60.65-49.24V0Z"
+                        opacity=".5"
+                        fill="#ffffff"
+                    ></path>
+                    <path
+                        d="M0,0V5.63C149.93,59,314.09,71.32,475.83,42.57c43-7.64,84.23-20.12,127.61-26.46,59-8.63,112.48,12.24,165.56,35.4C827.93,77.22,886,95.24,951.2,90c86.53-7,172.46-45.71,248.8-84.81V0Z"
+                        fill="#ffffff"
+                    ></path>
+                </svg>
             </div>
-            <div class="spot-actions">
-              <button class="action-icon bookmark">
-                <i class="material-icons">bookmark_border</i>
-              </button>
-              <button class="action-icon share">
-                <i class="material-icons">share</i>
-              </button>
-            </div>
-          </div>
         </div>
-      </div>
 
-      <!-- Empty State -->
-      <div v-else class="empty-state">
-        <i class="material-icons">search_off</i>
-        <h3>No spots found</h3>
-        <p>Try adjusting your search or filter to find what you're looking for</p>
-      </div>
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-container">
+                <div class="search-wrapper">
+                    <i class="material-icons search-icon">search</i>
+                    <input
+                        type="text"
+                        placeholder="Search for beaches, parks, waterfalls..."
+                        v-model="searchQuery"
+                        class="search-bar"
+                    />
+                </div>
+
+                <div class="category-wrapper">
+                    <i class="material-icons category-icon">category</i>
+                    <select v-model="selectedCategory" class="category-dropdown">
+                        <option value="">All Categories</option>
+                        <option value="beach">🏖️ Beaches</option>
+                        <option value="park">🌳 Parks</option>
+                        <option value="museum">🏛️ Museums</option>
+                        <option value="waterfall">💧 Waterfalls</option>
+                        <option value="mountain">⛰️ Mountains</option>
+                        <option value="island">🏝️ Islands</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Quick Stats -->
+            <div class="quick-stats">
+                <div class="stat-badge">
+                    <i class="material-icons">explore</i>
+                    <span>{{ filteredSpots.length }} Spots</span>
+                </div>
+                <div class="stat-badge">
+                    <i class="material-icons">star</i>
+                    <span>Top Rated</span>
+                </div>
+                <div class="stat-badge">
+                    <i class="material-icons">trending_up</i>
+                    <span>Trending</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Spots Grid -->
+        <div class="spots-container">
+            <div class="spots-grid" v-if="filteredSpots.length > 0">
+                <div
+                    v-for="spot in filteredSpots"
+                    :key="spot.id"
+                    class="spot-card"
+                    @click="goToExplore(spot)"
+                >
+                    <div class="spot-image-wrapper">
+                        <img
+                            v-if="spot.images && spot.images.length > 0"
+                            :src="`/storage/${spot.images[0].spot_image}`"
+                            :alt="spot.spot_name"
+                            class="spot-image"
+                        />
+                        <div class="spot-overlay">
+                            <button class="explore-btn">
+                                <i class="material-icons">visibility</i>
+                                <span>Explore Now</span>
+                            </button>
+                        </div>
+                        <div class="spot-badge">
+                            {{ getCategoryLabel(spot.category) }}
+                        </div>
+                    </div>
+                    <div class="spot-info">
+                        <h3>{{ spot.spot_name }}</h3>
+                        <div class="spot-meta">
+                            <div class="rating">
+                                <i class="material-icons">star</i>
+                                <span>{{ spot.rating || '4.5' }}</span>
+                            </div>
+                            <div class="location">
+                                <i class="material-icons">place</i>
+                                <span>{{ spot.location || 'Surigao' }}</span>
+                            </div>
+                        </div>
+                        <div class="spot-actions">
+                            <button class="action-icon bookmark">
+                                <i class="material-icons">bookmark_border</i>
+                            </button>
+                            <button class="action-icon share">
+                                <i class="material-icons">share</i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Empty State -->
+            <div v-else class="empty-state">
+                <i class="material-icons">search_off</i>
+                <h3>No spots found</h3>
+                <p>
+                    Try adjusting your search or filter to find what you're looking for
+                </p>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+    import { ref, computed } from "vue";
 
-const emit = defineEmits(["exploreSpots"]);
+    const emit = defineEmits(["exploreSpots"]);
+    const props = defineProps({
+        allSpots: Array, // Spots from Laravel via Inertia
+    });
 
-const searchQuery = ref("");
-const selectedCategory = ref("");
+    const searchQuery = ref("");
+    const selectedCategory = ref("");
 
-// Sample spots data
-const spots = ref([
-  {
-    id: 1,
-    name: "Surigao City Boulevard",
-    image: "/images/surigao-boulevard.jpg",
-    category: "park",
-    rating: 4.7,
-    location: "Surigao City"
-  },
-  {
-    id: 2,
-    name: "Mabua Pebble Beach",
-    image: "/images/mabua-beach.jpg",
-    category: "beach",
-    rating: 4.8,
-    location: "Surigao City"
-  },
-  {
-    id: 3,
-    name: "Luneta Park",
-    image: "/images/luneta-park.jpg",
-    category: "park",
-    rating: 4.5,
-    location: "Surigao City"
-  },
-  {
-    id: 4,
-    name: "Bayay Surigaonon Museum",
-    image: "/images/museum.jpg",
-    category: "museum",
-    rating: 4.6,
-    location: "Surigao City"
-  },
-  {
-    id: 5,
-    name: "Magkawas Falls",
-    image: "/images/waterfall.jpg",
-    category: "waterfall",
-    rating: 4.9,
-    location: "Gigaquit"
-  },
-  {
-    id: 6,
-    name: "Naked Island",
-    image: "/images/island.jpg",
-    category: "island",
-    rating: 5.0,
-    location: "General Luna"
-  },
-]);
+    // Filtering logic
+    const filteredSpots = computed(() => {
+        return props.allSpots.filter((spot) => {
+            const matchesSearch =
+                (spot.spot_name || "")
+                    .toLowerCase()
+                    .includes(searchQuery.value.toLowerCase()) ||
+                (spot.location || "")
+                    .toLowerCase()
+                    .includes(searchQuery.value.toLowerCase());
 
-// Filtering logic
-const filteredSpots = computed(() => {
-  return spots.value.filter((spot) => {
-    const matchesSearch = spot.name
-      .toLowerCase()
-      .includes(searchQuery.value.toLowerCase());
-    const matchesCategory =
-      !selectedCategory.value || spot.category === selectedCategory.value;
-    return matchesSearch && matchesCategory;
-  });
-});
+            const matchesCategory =
+                !selectedCategory.value || spot.category === selectedCategory.value;
 
-// Get category label
-const getCategoryLabel = (category) => {
-  const labels = {
-    beach: "🏖️ Beach",
-    park: "🌳 Park",
-    museum: "🏛️ Museum",
-    waterfall: "💧 Waterfall",
-    mountain: "⛰️ Mountain",
-    island: "🏝️ Island"
-  };
-  return labels[category] || category;
-};
+            return matchesSearch && matchesCategory;
+        });
+    });
 
-// Navigate to explore
-const goToExplore = (spot) => {
-  emit("exploreSpots", spot);
-};
+    // Get category label
+    const getCategoryLabel = (category) => {
+        const labels = {
+            beach: "🏖️ Beach",
+            park: "🌳 Park",
+            museum: "🏛️ Museum",
+            waterfall: "💧 Waterfall",
+            mountain: "⛰️ Mountain",
+            island: "🏝️ Island",
+        };
+        return labels[category] || category;
+    };
+
+    // Navigate to explore
+    const goToExplore = (spot) => {
+        emit("exploreSpots", spot);
+    };
 </script>
+
 
 <style scoped>
 .spots-body {

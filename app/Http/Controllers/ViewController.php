@@ -26,12 +26,14 @@ class ViewController extends Controller
         ]);
     }
 
-    public function userDashboard(UserServices $userServices): \Inertia\Response
+    public function userDashboard(UserServices $userServices, SpotsServices $spotsServices): \Inertia\Response
     {
         $userInformation = $userServices->getUserInformation();
+        $allSpots = $spotsServices->getAllSpots();
 
         return Inertia::render('User/index', [
             'userInformation' => $userInformation,
+            'allSpots'     => $allSpots,
         ]);
     }
     public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices, PackageServices $packageServices): \Inertia\Response
