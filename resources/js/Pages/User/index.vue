@@ -63,7 +63,7 @@ const props = defineProps({
 });
 
 const userRole = computed(() => props.userInformation.role);
-const activePage = ref("AddPackage");
+const activePage = ref("userDashboard");
 
 // Navigation states
 const selectedSpot = ref(null);
