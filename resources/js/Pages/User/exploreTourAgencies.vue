@@ -1,5 +1,5 @@
 <template>
-  <div class="agency-details">
+  <div class="agency-details" :class="{ 'modal-open': showReservationForm }">
     <!-- Header with Back Button -->
     <div class="header-section">
       <button class="back-btn" @click="$emit('back')">
@@ -230,7 +230,7 @@
               class="book-btn"
               :class="{ 'fully-booked': pkg.availableSlots === 0 }"
               :disabled="pkg.availableSlots === 0"
-              @click="inquirePackage(pkg)"
+              @click="openReservationForm(pkg)"
             >
               <span v-if="pkg.availableSlots > 0" class="btn-content">
                 <span class="btn-icon">💬</span>
@@ -253,11 +253,24 @@
         <p>There are no {{ filter === 'available' ? 'available' : '' }} packages at the moment.</p>
       </div>
     </div>
+
+    <!-- Reservation Form Modal -->
+     <div v-if="showReservationForm" class="reservation-modal-overlay" @click="closeReservationForm">
+      <div class="reservation-modal-container" @click.stop>
+        <ReservePackage
+          :agency="agency"
+          :package="selectedPackage"
+          @close="closeReservationForm"
+          @reservation-completed="handleReservationComplete"
+        />
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue';
+import ReservePackage from "./reservePackage.vue";
 
 const props = defineProps({
   agency: Object,
@@ -268,6 +281,10 @@ const emit = defineEmits(['back']);
 // Reactive data
 const isFavorited = ref(false);
 const filter = ref('all');
+
+// Reservation modal state
+const showReservationForm = ref(false);
+const selectedPackage = ref(null);
 
 // Computed properties
 const filteredPackages = computed(() => {
@@ -280,7 +297,6 @@ const filteredPackages = computed(() => {
 // Methods
 const toggleFavorite = () => {
   isFavorited.value = !isFavorited.value;
-  // In real app, save to localStorage or send to API
 };
 
 const shareAgency = () => {
@@ -296,13 +312,25 @@ const shareAgency = () => {
   }
 };
 
-const inquirePackage = (pkg) => {
-  // In real app, this would open a booking/inquiry modal
-  alert(`Inquiring about: ${pkg.title}\nPrice: ₱${pkg.price}\nAvailable Slots: ${pkg.availableSlots}`);
+// Reservation methods
+const openReservationForm = (pkg) => {
+  console.log('Opening reservation form for:', pkg.title);
+  selectedPackage.value = pkg;
+  showReservationForm.value = true;
+};
+
+const closeReservationForm = () => {
+  showReservationForm.value = false;
+  selectedPackage.value = null;
+};
+
+const handleReservationComplete = (reservationData) => {
+  console.log('Reservation completed:', reservationData);
+  alert(`Reservation confirmed! Your reservation ID: ${reservationData.reservationId}`);
+  closeReservationForm();
 };
 
 const calculateDuration = (pkg) => {
-  // Simple duration calculation - in real app, use proper date parsing
   const start = new Date(pkg.startDate);
   const end = new Date(pkg.endDate);
   const diffTime = Math.abs(end - start);
@@ -311,7 +339,6 @@ const calculateDuration = (pkg) => {
 };
 
 const formatDate = (dateString) => {
-  // Simple date formatting - in real app, use a proper date library
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
     month: 'short',
@@ -321,10 +348,13 @@ const formatDate = (dateString) => {
 };
 
 onMounted(() => {
-  // Check if agency is favorited
   const favorites = JSON.parse(localStorage.getItem('favoriteAgencies') || '[]');
   isFavorited.value = favorites.some(fav => fav.id === props.agency.id);
 });
+
+const testClick = () => {
+  console.log('Overlay clicked');
+};
 </script>
 
 <style scoped>
@@ -334,6 +364,51 @@ onMounted(() => {
   min-height: 100vh;
   animation: fadeInUp 0.6s ease-out;
 }
+
+/* Reservation Modal Styles */
+.reservation-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.reservation-modal-container {
+  background: white;
+  border-radius: 20px;
+  max-width: 800px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ... (keep all your existing CSS styles from the previous ExploreTourAgencies) ... */
 
 /* Header Section */
 .header-section {
@@ -940,6 +1015,11 @@ onMounted(() => {
 
   .book-btn {
     width: 100%;
+  }
+
+  .reservation-modal-container {
+    margin: 10px;
+    max-height: 95vh;
   }
 }
 

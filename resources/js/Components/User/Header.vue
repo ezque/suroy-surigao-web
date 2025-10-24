@@ -9,138 +9,78 @@
       <h1 class="welcome-text">Welcome back, {{ userName }}!</h1>
     </div>
 
-    <!-- Right Section: Messages, Notifications, Profile -->
+    <!-- Right Section: Notifications Only -->
     <div class="right-controls">
-      <!-- Messages -->
-      <div class="icon-button" @click="toggleMessages">
-        <i class="material-icons">mail_outline</i>
-        <div v-if="messageList.length > 0" class="notification-badge">{{ messageList.length }}</div>
-        
-        <!-- Messages dropdown -->
-        <div v-if="showMessages" class="dropdown messages-dropdown">
-          <div class="dropdown-header">
-            <h3>Messages</h3>
-            <span class="badge">{{ messageList.length }}</span>
-          </div>
-          <div class="dropdown-content">
-            <div v-if="messageList.length === 0" class="empty-state">
-              <i class="material-icons">mail_outline</i>
-              <p>No new messages</p>
-            </div>
-            <div v-else class="message-list">
-              <div v-for="(msg, index) in messageList" :key="index" class="message-item">
-                <div class="message-avatar">
-                  {{ msg.sender.charAt(0).toUpperCase() }}
-                </div>
-                <div class="message-content">
-                  <div class="message-header">
-                    <span class="sender">{{ msg.sender }}</span>
-                    <span class="time">{{ msg.time }}</span>
-                  </div>
-                  <p class="message-preview">{{ msg.preview }}</p>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="dropdown-footer">
-            <button class="view-all-btn">View All Messages</button>
-          </div>
-        </div>
-      </div>
-
       <!-- Notifications -->
-      <div class="icon-button" @click="toggleNotifications">
-        <i class="material-icons">notifications_none</i>
-        <div v-if="notifications.length > 0" class="notification-badge">{{ notifications.length }}</div>
+      <div class="notification-wrapper" @click="toggleNotifications">
+        <div class="icon-button">
+          <i class="material-icons">notifications_none</i>
+          <div v-if="unreadCount > 0" class="notification-badge">{{ unreadCount }}</div>
+        </div>
 
         <!-- Notification dropdown -->
         <div v-if="showNotifications" class="dropdown notif-dropdown">
           <div class="dropdown-header">
-            <h3>Notifications</h3>
-            <span class="badge">{{ notifications.length }}</span>
+            <div class="header-title">
+              <i class="material-icons">notifications</i>
+              <h3>Notifications</h3>
+            </div>
+            <div class="header-actions">
+              <button class="action-btn" @click.stop="markAllAsRead" v-if="unreadCount > 0">
+                <i class="material-icons">done_all</i>
+                Mark all read
+              </button>
+              <span class="badge">{{ unreadCount }} unread</span>
+            </div>
           </div>
+          
           <div class="dropdown-content">
             <div v-if="notifications.length === 0" class="empty-state">
-              <i class="material-icons">notifications_none</i>
-              <p>No new notifications</p>
+              <i class="material-icons">notifications_off</i>
+              <p>No notifications yet</p>
+              <small>We'll notify you when something arrives</small>
             </div>
+            
             <div v-else class="notification-list">
               <div v-for="(notif, index) in notifications" :key="index" 
-                   class="notification-item" :class="{'unread': notif.unread}">
-                <div class="notification-icon" :class="notif.type">
-                  <i class="material-icons">
-                    {{ notif.type === 'success' ? 'check_circle' : 
-                       notif.type === 'warning' ? 'warning' : 'info' }}
-                  </i>
+                   class="notification-item" :class="{'unread': notif.unread, [notif.type]: true}">
+                <div class="notification-icon">
+                  <i class="material-icons">{{ getNotificationIcon(notif.type) }}</i>
                 </div>
                 <div class="notification-content">
-                  <p>{{ notif.message }}</p>
-                  <small>{{ notif.time }}</small>
+                  <p class="notification-message">{{ notif.message }}</p>
+                  <div class="notification-meta">
+                    <span class="notification-time">{{ notif.time }}</span>
+                    <span class="notification-category">{{ notif.category }}</span>
+                  </div>
                 </div>
+                <button v-if="notif.unread" class="mark-read-btn" @click.stop="markAsRead(index)">
+                  <i class="material-icons">check_circle</i>
+                </button>
               </div>
             </div>
           </div>
+          
           <div class="dropdown-footer">
-            <button class="view-all-btn">View All Notifications</button>
+            <button class="view-all-btn" @click.stop="viewAllNotifications">
+              <i class="material-icons">list_alt</i>
+              View Notification History
+            </button>
           </div>
         </div>
       </div>
 
-      <!-- Profile -->
-      <div class="profile-button" @click="toggleProfileDropdown">
-        <div class="profile-avatar">
+      <!-- User Info (Minimal) -->
+      <div class="user-minimal">
+        <div class="user-avatar">
           {{ initials }}
         </div>
-        <div class="profile-info-inline">
-          <span class="profile-name">{{ userName }}</span>
-          <span class="profile-role">Traveler</span>
-        </div>
-        <i class="material-icons chevron" :class="{ 'rotated': showProfileDropdown }">
-          expand_more
-        </i>
-
-        <!-- Profile Dropdown -->
-        <div v-if="showProfileDropdown" class="dropdown profile-dropdown">
-          <div class="profile-info">
-            <div class="profile-avatar-large">
-              {{ initials }}
-            </div>
-            <div class="profile-details">
-              <h4>{{ userName }}</h4>
-              <p>{{ userEmail }}</p>
-            </div>
-          </div>
-          <div class="dropdown-divider"></div>
-          <div class="dropdown-menu">
-            <button class="dropdown-item" @click="selectPage('profile')">
-              <i class="material-icons">person</i>
-              <span>My Profile</span>
-            </button>
-            <button class="dropdown-item" @click="selectPage('settings')">
-              <i class="material-icons">settings</i>
-              <span>Settings</span>
-            </button>
-            <button class="dropdown-item" @click="selectPage('bookings')">
-              <i class="material-icons">event</i>
-              <span>My Bookings</span>
-            </button>
-            <button class="dropdown-item" @click="selectPage('help')">
-              <i class="material-icons">help_outline</i>
-              <span>Help & Support</span>
-            </button>
-          </div>
-          <div class="dropdown-divider"></div>
-          <button class="dropdown-item logout-btn" @click="logout">
-            <i class="material-icons">logout</i>
-            <span>Logout</span>
-          </button>
-        </div>
+        <span class="user-greeting">Hi, {{ firstName }}</span>
       </div>
     </div>
     
     <!-- Overlay for closing dropdowns when clicking outside -->
-    <div v-if="showNotifications || showProfileDropdown || showMessages" 
-         class="dropdown-overlay" @click="closeAllDropdowns"></div>
+    <div v-if="showNotifications" class="dropdown-overlay" @click="closeAllDropdowns"></div>
   </header>
 </template>
 
@@ -158,6 +98,7 @@ const emit = defineEmits(['selectPage', 'logout']);
 
 const userName = computed(() => props.userInformation?.name || "User");
 const userEmail = computed(() => props.userInformation?.email || "user@email.com");
+const firstName = computed(() => userName.value.split(' ')[0]);
 const initials = computed(() =>
   userName.value
     .split(" ")
@@ -167,64 +108,98 @@ const initials = computed(() =>
     .substring(0, 2)
 );
 
-// Message and Notification data
-const messageList = ref([
-  { sender: "Travel Support", preview: "Your booking has been confirmed...", time: "2h ago" },
-  { sender: "John Doe", preview: "Thanks for joining our travel group...", time: "1d ago" },
-  { sender: "TravelHub", preview: "New destinations available in your area...", time: "3d ago" },
-]);
-
+// Enhanced Notifications data
 const notifications = ref([
-  { message: "Your booking has been confirmed!", time: "2h ago", type: "success", unread: true },
-  { message: "New destination added near you.", time: "5h ago", type: "info", unread: true },
-  { message: "Payment for your trip was successful", time: "1d ago", type: "success", unread: false },
-  { message: "Your review was helpful to 12 travelers", time: "2d ago", type: "info", unread: false },
+  { 
+    message: "Your booking for 'Surigao Island Hopping' has been confirmed!", 
+    time: "2h ago", 
+    type: "booking", 
+    category: "Booking",
+    unread: true 
+  },
+  { 
+    message: "New destination 'Siargao Cloud 9' has been added to your favorites", 
+    time: "5h ago", 
+    type: "favorite", 
+    category: "Favorite",
+    unread: true 
+  },
+  { 
+    message: "Payment for your trip to 'Enchanted River' was successful", 
+    time: "1d ago", 
+    type: "payment", 
+    category: "Payment",
+    unread: false 
+  },
+  { 
+    message: "Your review was helpful to 12 travelers", 
+    time: "2d ago", 
+    type: "review", 
+    category: "Review",
+    unread: false 
+  },
+  { 
+    message: "Special offer: 20% off on all island tours this weekend", 
+    time: "3d ago", 
+    type: "promo", 
+    category: "Promotion",
+    unread: true 
+  },
+  { 
+    message: "Reminder: Your tour to 'Tinuy-an Falls' starts in 2 days", 
+    time: "1d ago", 
+    type: "reminder", 
+    category: "Reminder",
+    unread: true 
+  },
 ]);
 
-// Dropdown toggles
+// Computed properties
+const unreadCount = computed(() => {
+  return notifications.value.filter(notif => notif.unread).length;
+});
+
+// Dropdown state
 const showNotifications = ref(false);
-const showProfileDropdown = ref(false);
-const showMessages = ref(false);
 
 const toggleNotifications = () => {
   showNotifications.value = !showNotifications.value;
-  showProfileDropdown.value = false;
-  showMessages.value = false;
-};
-
-const toggleProfileDropdown = () => {
-  showProfileDropdown.value = !showProfileDropdown.value;
-  showNotifications.value = false;
-  showMessages.value = false;
-};
-
-const toggleMessages = () => {
-  showMessages.value = !showMessages.value;
-  showNotifications.value = false;
-  showProfileDropdown.value = false;
 };
 
 const closeAllDropdowns = () => {
   showNotifications.value = false;
-  showProfileDropdown.value = false;
-  showMessages.value = false;
 };
 
-const selectPage = (page) => {
-  emit('selectPage', page);
+// Notification actions
+const markAsRead = (index) => {
+  notifications.value[index].unread = false;
+};
+
+const markAllAsRead = () => {
+  notifications.value.forEach(notif => notif.unread = false);
+};
+
+const viewAllNotifications = () => {
+  emit('selectPage', 'notifications');
   closeAllDropdowns();
 };
 
-const logout = () => {
-  emit('logout');
-  closeAllDropdowns();
+const getNotificationIcon = (type) => {
+  const icons = {
+    booking: 'confirmation_number',
+    favorite: 'favorite',
+    payment: 'payments',
+    review: 'star',
+    promo: 'local_offer',
+    reminder: 'event',
+    system: 'info'
+  };
+  return icons[type] || 'notifications';
 };
 
 // Close dropdowns when clicking outside
 const handleClickOutside = (event) => {
-  if (!event.target.closest('.icon-button') && 
-      !event.target.closest('.profile-button') && 
-      !event.target.closest('.dropdown')) {
+  if (!event.target.closest('.notification-wrapper')) {
     closeAllDropdowns();
   }
 };
@@ -241,13 +216,13 @@ onUnmounted(() => {
 <style scoped>
 .user-header {
   width: 100%;
-  height: 65px;
-  background: rgb(248, 250, 250);
+  height: 70px;
+  background: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
   padding: 0 30px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
   position: relative;
   z-index: 1000;
   border-bottom: 1px solid #f0f0f0;
@@ -263,14 +238,10 @@ onUnmounted(() => {
 .logo {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   font-weight: 700;
-  font-size: 1.3rem;
+  font-size: 1.4rem;
   color: #00b4db;
-}
-
-.logo i {
-  font-size: 28px;
 }
 
 .logo span {
@@ -278,12 +249,13 @@ onUnmounted(() => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  font-weight: 800;
 }
 
 .welcome-text {
-  font-size: 1rem;
+  font-size: 1.1rem;
   font-weight: 500;
-  color: #666;
+  color: #555;
   margin: 0;
 }
 
@@ -291,171 +263,168 @@ onUnmounted(() => {
 .right-controls {
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 20px;
   position: relative;
 }
 
-/* Icon Buttons */
+/* Notification Wrapper */
+.notification-wrapper {
+  position: relative;
+  cursor: pointer;
+}
+
+/* Icon Button */
 .icon-button {
   position: relative;
   background: #f8f9fa;
-  width: 40px;
-  height: 40px;
-  border-radius: 10px;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   color: #666;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
   cursor: pointer;
+  border: 2px solid transparent;
 }
 
 .icon-button:hover {
   background: #00b4db;
   color: white;
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0, 180, 219, 0.3);
+  box-shadow: 0 6px 20px rgba(0, 180, 219, 0.3);
+  border-color: #e8f7fb;
 }
 
 .icon-button i {
-  font-size: 22px;
+  font-size: 24px;
 }
 
 .notification-badge {
   position: absolute;
-  top: -4px;
-  right: -4px;
-  background: #ff4757;
+  top: -6px;
+  right: -6px;
+  background: linear-gradient(135deg, #ff6b6b 0%, #ee5a52 100%);
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  min-width: 18px;
-  height: 18px;
-  padding: 0 4px;
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: 2px solid white;
-  box-shadow: 0 2px 6px rgba(255, 71, 87, 0.4);
+  box-shadow: 0 3px 8px rgba(255, 107, 107, 0.4);
+  animation: pulse 2s infinite;
 }
 
-/* ===== PROFILE BUTTON ===== */
-.profile-button {
-  display: flex;
-  align-items: center;
-  background: #f8f9fa;
-  padding: 6px 12px 6px 6px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  position: relative;
-  gap: 10px;
-  margin-left: 8px;
+@keyframes pulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
-.profile-button:hover {
-  background: #e8f7fb;
-  box-shadow: 0 4px 12px rgba(0, 180, 219, 0.2);
-}
-
-.profile-avatar {
-  width: 36px;
-  height: 36px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: white;
-  font-size: 0.85rem;
-  flex-shrink: 0;
-}
-
-.profile-info-inline {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.profile-name {
-  font-weight: 600;
-  font-size: 0.9rem;
-  color: #333;
-  line-height: 1;
-}
-
-.profile-role {
-  font-size: 0.75rem;
-  color: #999;
-  line-height: 1;
-}
-
-.chevron {
-  font-size: 20px;
-  color: #999;
-  transition: transform 0.3s ease;
-}
-
-.chevron.rotated {
-  transform: rotate(180deg);
-}
-
-/* ===== DROPDOWN BASE ===== */
+/* ===== DROPDOWN ===== */
 .dropdown {
   position: absolute;
   right: 0;
-  top: 52px;
+  top: 60px;
   background: white;
-  border-radius: 12px;
-  min-width: 320px;
-  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+  border-radius: 16px;
+  width: 400px;
+  max-height: 500px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
   color: #333;
   z-index: 1001;
   overflow: hidden;
   animation: dropdownFadeIn 0.2s ease-out;
-  border: 1px solid #f0f0f0;
+  border: 1px solid #e8e8e8;
 }
 
 @keyframes dropdownFadeIn {
   from {
     opacity: 0;
-    transform: translateY(-10px);
+    transform: translateY(-10px) scale(0.95);
   }
   to {
     opacity: 1;
-    transform: translateY(0);
+    transform: translateY(0) scale(1);
   }
 }
 
+/* Dropdown Header */
 .dropdown-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
-  background: #f8f9fa;
+  padding: 20px;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e8f7fb 100%);
   border-bottom: 1px solid #e8e8e8;
 }
 
-.dropdown-header h3 {
+.header-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.header-title i {
+  color: #00b4db;
+  font-size: 22px;
+}
+
+.header-title h3 {
   margin: 0;
-  font-size: 1rem;
-  font-weight: 600;
+  font-size: 1.1rem;
+  font-weight: 700;
   color: #333;
 }
 
-.dropdown-header .badge {
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(0, 180, 219, 0.1);
+  border: none;
+  padding: 6px 12px;
+  border-radius: 8px;
+  color: #00b4db;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.action-btn:hover {
+  background: rgba(0, 180, 219, 0.2);
+  transform: translateY(-1px);
+}
+
+.action-btn i {
+  font-size: 16px;
+}
+
+.badge {
   background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
   color: white;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   font-weight: 700;
-  padding: 4px 8px;
-  border-radius: 10px;
+  padding: 4px 10px;
+  border-radius: 12px;
   min-width: 20px;
   text-align: center;
 }
 
+/* Dropdown Content */
 .dropdown-content {
   max-height: 350px;
   overflow-y: auto;
@@ -478,46 +447,33 @@ onUnmounted(() => {
   background: #bbb;
 }
 
-.dropdown-footer {
-  padding: 12px 20px;
-  border-top: 1px solid #e8e8e8;
-  text-align: center;
-  background: #f8f9fa;
-}
-
-.view-all-btn {
-  background: none;
-  border: none;
-  color: #00b4db;
-  font-weight: 600;
-  cursor: pointer;
-  transition: color 0.2s;
-  font-size: 0.9rem;
-}
-
-.view-all-btn:hover {
-  color: #0083b0;
-}
-
+/* Empty State */
 .empty-state {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 40px 20px;
+  padding: 50px 20px;
   color: #999;
   text-align: center;
 }
 
 .empty-state i {
-  font-size: 48px;
-  margin-bottom: 12px;
-  opacity: 0.5;
+  font-size: 52px;
+  margin-bottom: 16px;
+  opacity: 0.4;
 }
 
 .empty-state p {
-  margin: 0;
-  font-size: 0.9rem;
+  margin: 0 0 8px 0;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #666;
+}
+
+.empty-state small {
+  font-size: 0.85rem;
+  color: #999;
 }
 
 /* ===== NOTIFICATION LIST ===== */
@@ -528,10 +484,11 @@ onUnmounted(() => {
 .notification-item {
   display: flex;
   align-items: flex-start;
-  padding: 14px 20px;
-  transition: background 0.2s;
-  gap: 12px;
+  padding: 16px 20px;
+  transition: all 0.3s ease;
+  gap: 14px;
   border-bottom: 1px solid #f8f9fa;
+  position: relative;
 }
 
 .notification-item:last-child {
@@ -540,92 +497,179 @@ onUnmounted(() => {
 
 .notification-item:hover {
   background: #f8f9fa;
+  transform: translateX(4px);
 }
 
 .notification-item.unread {
-  background: #e8f7fb;
+  background: #f0f9ff;
+  border-left: 4px solid #00b4db;
 }
 
 .notification-item.unread:hover {
-  background: #d9f2f9;
+  background: #e6f7ff;
 }
 
+/* Notification Icon */
 .notification-icon {
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
+  margin-top: 2px;
 }
 
 .notification-icon i {
-  font-size: 18px;
+  font-size: 20px;
 }
 
-.notification-icon.success {
-  background: #d4edda;
+.notification-item.booking .notification-icon {
+  background: #e8f5e8;
   color: #28a745;
 }
 
-.notification-icon.info {
-  background: #d1ecf1;
-  color: #00b4db;
+.notification-item.favorite .notification-icon {
+  background: #ffe8ec;
+  color: #e91e63;
 }
 
-.notification-icon.warning {
-  background: #fff3cd;
-  color: #ffc107;
+.notification-item.payment .notification-icon {
+  background: #e8f4fd;
+  color: #2196f3;
 }
 
+.notification-item.review .notification-icon {
+  background: #fff8e1;
+  color: #ff9800;
+}
+
+.notification-item.promo .notification-icon {
+  background: #f3e5f5;
+  color: #9c27b0;
+}
+
+.notification-item.reminder .notification-icon {
+  background: #e8f5e8;
+  color: #4caf50;
+}
+
+/* Notification Content */
 .notification-content {
   flex: 1;
   min-width: 0;
 }
 
-.notification-content p {
-  margin: 0 0 4px 0;
-  font-size: 0.875rem;
+.notification-message {
+  margin: 0 0 8px 0;
+  font-size: 0.9rem;
   line-height: 1.4;
   color: #333;
+  font-weight: 500;
 }
 
-.notification-content small {
-  color: #999;
-  font-size: 0.75rem;
-}
-
-/* ===== MESSAGE LIST ===== */
-.messages-dropdown {
-  min-width: 360px;
-}
-
-.message-list {
-  padding: 8px 0;
-}
-
-.message-item {
+.notification-meta {
   display: flex;
-  align-items: flex-start;
-  padding: 14px 20px;
-  transition: background 0.2s;
+  align-items: center;
   gap: 12px;
+}
+
+.notification-time {
+  color: #999;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.notification-category {
+  background: rgba(0, 180, 219, 0.1);
+  color: #00b4db;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 10px;
+}
+
+/* Mark Read Button */
+.mark-read-btn {
+  background: none;
+  border: none;
+  color: #28a745;
   cursor: pointer;
-  border-bottom: 1px solid #f8f9fa;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  opacity: 0;
 }
 
-.message-item:last-child {
-  border-bottom: none;
+.notification-item:hover .mark-read-btn,
+.notification-item.unread .mark-read-btn {
+  opacity: 1;
 }
 
-.message-item:hover {
+.mark-read-btn:hover {
+  background: rgba(40, 167, 69, 0.1);
+  transform: scale(1.1);
+}
+
+.mark-read-btn i {
+  font-size: 18px;
+}
+
+/* Dropdown Footer */
+.dropdown-footer {
+  padding: 16px 20px;
+  border-top: 1px solid #e8e8e8;
+  text-align: center;
   background: #f8f9fa;
 }
 
-.message-avatar {
-  width: 42px;
-  height: 42px;
+.view-all-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 0.9rem;
+  padding: 12px 24px;
+  border-radius: 10px;
+  width: 100%;
+}
+
+.view-all-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(0, 180, 219, 0.4);
+}
+
+.view-all-btn i {
+  font-size: 18px;
+}
+
+/* ===== USER MINIMAL ===== */
+.user-minimal {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.user-minimal:hover {
+  background: #e8f7fb;
+  border-color: #00b4db;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
   border-radius: 10px;
   background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
   display: flex;
@@ -633,128 +677,15 @@ onUnmounted(() => {
   justify-content: center;
   font-weight: 700;
   color: white;
+  font-size: 0.85rem;
   flex-shrink: 0;
+}
+
+.user-greeting {
+  font-weight: 600;
   font-size: 0.9rem;
-}
-
-.message-content {
-  flex: 1;
-  min-width: 0;
-}
-
-.message-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 4px;
-}
-
-.sender {
-  font-weight: 600;
-  font-size: 0.875rem;
   color: #333;
-}
-
-.time {
-  color: #999;
-  font-size: 0.75rem;
-  flex-shrink: 0;
-  margin-left: 8px;
-}
-
-.message-preview {
-  margin: 0;
-  font-size: 0.8125rem;
-  color: #666;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  line-height: 1.4;
-}
-
-/* ===== PROFILE DROPDOWN ===== */
-.profile-dropdown {
-  min-width: 280px;
-}
-
-.profile-info {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  gap: 15px;
-  background: linear-gradient(135deg, #e8f7fb 0%, #f8f9fa 100%);
-}
-
-.profile-avatar-large {
-  width: 50px;
-  height: 50px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, #00b4db 0%, #0083b0 100%);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-  color: white;
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
-
-.profile-details h4 {
-  margin: 0 0 4px 0;
-  font-size: 1rem;
-  color: #333;
-  font-weight: 600;
-}
-
-.profile-details p {
-  margin: 0;
-  color: #666;
-  font-size: 0.8125rem;
-}
-
-.dropdown-divider {
-  height: 1px;
-  background: #e8e8e8;
-  margin: 0;
-}
-
-.dropdown-menu {
-  padding: 8px 0;
-}
-
-.dropdown-item {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  background: none;
-  border: none;
-  padding: 12px 20px;
-  text-align: left;
-  cursor: pointer;
-  transition: all 0.2s;
-  gap: 12px;
-  color: #555;
-  font-size: 0.875rem;
-}
-
-.dropdown-item:hover {
-  background: #f8f9fa;
-  color: #00b4db;
-}
-
-.dropdown-item i {
-  flex-shrink: 0;
-  font-size: 20px;
-  color: inherit;
-}
-
-.logout-btn {
-  color: #e74c3c;
-}
-
-.logout-btn:hover {
-  background: #ffebee;
-  color: #c0392b;
 }
 
 /* ===== OVERLAY ===== */
@@ -778,62 +709,57 @@ onUnmounted(() => {
     display: none;
   }
   
-  .logo span {
-    display: none;
+  .dropdown {
+    width: 350px;
   }
 }
 
 @media (max-width: 768px) {
-  .profile-info-inline {
+  .user-greeting {
     display: none;
   }
   
-  .profile-button {
-    padding: 6px;
+  .user-minimal {
+    padding: 8px;
   }
   
   .dropdown {
-    width: 300px;
-  }
-  
-  .messages-dropdown {
     width: 320px;
+    right: -10px;
   }
 }
 
 @media (max-width: 480px) {
   .user-header {
     padding: 0 15px;
-    height: 60px;
+    height: 65px;
   }
   
-  .right-controls {
-    gap: 8px;
+  .logo span {
+    display: none;
   }
   
   .icon-button {
-    width: 36px;
-    height: 36px;
-  }
-  
-  .icon-button i {
-    font-size: 20px;
+    width: 44px;
+    height: 44px;
   }
   
   .dropdown {
     width: calc(100vw - 30px);
     right: -5px;
   }
+  
+  .notification-meta {
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-start;
+  }
 }
-.icon-image {
-  width: 24px;
-  height: 24px;
-  object-fit: contain;
-}
+
 .icon-image {
   width: 40px;
   height: 40px;
   border-radius: 50%;
+  object-fit: cover;
 }
-
 </style>
