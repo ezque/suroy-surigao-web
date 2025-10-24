@@ -42,6 +42,44 @@
 </template>
 
 <script setup>
+import { ref, computed } from "vue";
+
+// Components
+import Sidebar from "../../Components/Sidebar.vue";
+import Header from "@/Components/User/Header.vue";
+import Home from "./userDashboard.vue";
+import Spots from "./spots.vue";
+import ExploreSpots from "./exploreSpots.vue";
+import TourAgenciesPanel from "./tourAgencies.vue";
+import ExploreTourAgencies from "./exploreTourAgencies.vue";
+import Favorites from "./favorites.vue";
+import Messages from "./messages.vue";
+import UserSettings from "./settings.vue";
+import AddPackage from "../../Components/Forms/addPackage.vue";
+import Reserve from "../../Components/Forms/reserve.vue";
+
+const props = defineProps({
+  userInformation: {
+    type: Object,
+    required: true,
+  },
+});
+
+const userRole = computed(() => props.userInformation.role);
+const activePage = ref("userDashboard");
+
+// Navigation states
+const selectedSpot = ref(null);
+const selectedAgency = ref(null);
+
+// Sample Tour Agencies
+const agencies = ref([
+  {
+    id: 1,
+    name: "Surigao Eco Tours",
+    location: "Surigao City",
+    shortDesc: "Eco-friendly island hopping and mountain adventures.",
+    packages: [
     import { ref, computed } from "vue";
 
     import Sidebar from "../../Components/Sidebar.vue";
