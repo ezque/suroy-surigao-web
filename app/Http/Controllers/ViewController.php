@@ -17,12 +17,16 @@ class ViewController extends Controller
         $allUsers = $adminServices->getAllUsers();
         $agencyDetails = $adminServices->getAgencyDetails();
         $allSpots = $spotsServices->getAllSpots();
+        $totalUsers = $userServices->getUserTotal();
+        $agencyTotal = $userServices->getAgencyTotal();
 
         return Inertia::render('Admin/index', [
             'userInformation' => $userInformation,
             'agencyDetails'   => $agencyDetails,
             'allUsers'        => $allUsers,
             'allSpots'     => $allSpots,
+            'totalUsers' => $totalUsers,
+            'agencyTotal' => $agencyTotal
         ]);
     }
 

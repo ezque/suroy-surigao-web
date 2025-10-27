@@ -8,6 +8,8 @@
             <Header />
             <Dashboard
                 v-if="activePage === 'dashboard'"
+                :totalUsers="totalUsers"
+                :agencyTotal="agencyTotal"
             />
             <Agency
                 v-else-if="activePage === 'agency'"
@@ -67,6 +69,8 @@
         agencyDetails: Array,
         allUsers: Array,
         allSpots: Array,
+        totalUsers: Number,
+        agencyTotal: Number,
     })
 
     const userRole = computed(() => props.userInformation.role);
