@@ -268,7 +268,7 @@ const spot = props.spot || {}; // assume data passed from parent
 
 const mapUrl = computed(() => {
   if (!spot || !spot.location) return "";
-  const query = encodeURIComponent(`${spot.name}, ${spot.location}`);
+  const query = encodeURIComponent(`${spot.location}`);
   return `https://maps.google.com/maps?q=${query}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
 });
 
@@ -1045,35 +1045,35 @@ onMounted(() => checkIfFavorited());
     flex-direction: column;
     gap: 20px;
   }
-  
+
   .spot-title {
     font-size: 2rem;
   }
-  
+
   .spot-tabs {
     flex-direction: column;
   }
-  
+
   .service-card {
     flex-direction: column;
     gap: 20px;
     text-align: center;
   }
-  
+
   .reviews-header {
     flex-direction: column;
     gap: 20px;
     text-align: center;
   }
-  
+
   .details-grid {
     grid-template-columns: 1fr;
   }
-  
+
   .lightbox-nav.prev {
     left: 10px;
   }
-  
+
   .lightbox-nav.next {
     right: 10px;
   }
@@ -1083,25 +1083,25 @@ onMounted(() => checkIfFavorited());
   .spot-content {
     padding: 20px 15px;
   }
-  
+
   .spot-title {
     font-size: 1.8rem;
   }
-  
+
   .spot-stats {
     grid-template-columns: 1fr;
   }
-  
+
   .tab-content {
     padding: 20px;
   }
-  
+
   .banner-overlay {
     flex-direction: column;
     align-items: flex-start;
     gap: 10px;
   }
-  
+
   .banner-actions {
     width: 100%;
     justify-content: space-between;
