@@ -37,17 +37,25 @@
                     <td>{{ user.email }}</td>
                     <td>{{ user.user_info?.phone_num }}</td>
                     <td>
-                          <span class="status" :class="getStatus(user.status).toLowerCase()">
+                        <span class="status" :class="getStatus(user.status).toLowerCase()">
                             {{ getStatus(user.status) }}
-                          </span>
+                        </span>
                     </td>
 
                     <td class="action-buttons">
+                        <!-- View Button -->
                         <button class="edit-btn" @click="openUser(user)">
                             <i class="material-icons">visibility</i>
                         </button>
-                        <button class="delete-btn" @click="blockUser(user.id)">
-                            <i class="material-icons">block</i>
+
+                        <!-- Block/Unblock Button -->
+                        <button
+                            class="delete-btn"
+                            @click="toggleUserStatus(user)"
+                        >
+                            <i class="material-icons">
+                                {{ user.status == 1 ? 'block' : 'check_circle' }}
+                            </i>
                         </button>
                     </td>
                 </tr>
@@ -90,11 +98,16 @@
                             {{ getStatus(selectedUser.status) }}
                         </span>
                     </div>
-
                 </div>
+
                 <div class="popup-actions">
                     <button class="close-btn" @click="closePopup">Close</button>
-                    <button class="block-btn" @click="blockUser(selectedUser.id)">Block User</button>
+                    <button
+                        class="delete-btn"
+                        @click="toggleUserStatus(selectedUser)"
+                    >
+                        {{ selectedUser.status == 1 ? 'Block User' : 'Unblock User' }}
+                    </button>
                 </div>
             </div>
         </div>
@@ -114,7 +127,7 @@
         },
     });
 
-
+    // Convert numeric status to readable label
     const getStatus = (status) => {
         switch (status) {
             case "1":
@@ -131,8 +144,6 @@
         }
     };
 
-
-
     const selectedUser = ref(null);
 
     function openUser(user) {
@@ -143,6 +154,7 @@
         selectedUser.value = null;
     }
 
+    // Filter users by name or email
     const filteredUsers = computed(() => {
         if (!searchQuery.value) return props.allUsers;
         return props.allUsers.filter((user) => {
@@ -155,33 +167,39 @@
         });
     });
 
-    function blockUser(userId) {
-        axios.post("/update-user-status", {
-            id: userId,
-            status: "2" // send the new status explicitly
-        })
-            .then(response => {
+    // Toggle user status between Active (1) and Blocked (2)
+    function toggleUserStatus(user) {
+        const newStatus = user.status == 1 ? 2 : 1;
+        const action = newStatus === 2 ? "blocked" : "unblocked";
+
+        axios
+            .post("/update-user-status", {
+                id: user.id,
+                status: newStatus,
+            })
+            .then((response) => {
                 console.log(response.data.message);
 
-                const userIndex = props.allUsers.findIndex(u => u.id === userId);
+                // Update user in list
+                const userIndex = props.allUsers.findIndex((u) => u.id === user.id);
                 if (userIndex !== -1) {
-                    props.allUsers[userIndex].status = "2";
+                    props.allUsers[userIndex].status = newStatus;
                 }
 
-                if (selectedUser.value && selectedUser.value.id === userId) {
-                    selectedUser.value.status = "2";
+                // Update selected user if popup open
+                if (selectedUser.value && selectedUser.value.id === user.id) {
+                    selectedUser.value.status = newStatus;
                 }
 
-                alert("User has been blocked!");
-                closePopup();
+                alert(`User has been ${action} successfully.`);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error.response?.data || error);
-                alert("Failed to block user.");
+                alert("Failed to update user status.");
             });
     }
-
 </script>
+
 
 <style scoped>
     .manage-user-body {
