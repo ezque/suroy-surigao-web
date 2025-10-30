@@ -1,0 +1,261 @@
+<template>
+    <div
+        class="min-h-screen p-8 bg-gradient-to-br from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0] animate-[fadeIn_0.5s_ease-out]"
+    >
+        <!-- Header -->
+        <header class="flex flex-wrap justify-between items-end mb-10 border-b border-[#e2e8f0] pb-6">
+            <div class="flex-1">
+                <h1
+                    class="capitalize text-[2.5rem] font-extrabold mb-2 bg-gradient-to-tr from-[#1e293b] to-[#3b82f6] bg-clip-text text-transparent"
+                >
+                    discover tour agencies
+                </h1>
+                <p class="capitalize text-lg text-[#64748b] m-0 max-w-[520px]">
+                    find the perfect adventure with trusted local experts in surigao
+                </p>
+            </div>
+
+            <div class="flex gap-10">
+                <div class="text-center">
+                    <span class="text-3xl font-extrabold text-[#1e293b] block">{{ totalAgencies }}</span>
+                    <span class="uppercase text-sm tracking-wide text-[#64748b]">Agencies</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-3xl font-extrabold text-[#1e293b] block">{{ totalPackages }}</span>
+                    <span class="uppercase text-sm tracking-wide text-[#64748b]">Packages</span>
+                </div>
+                <div class="text-center">
+                    <span class="text-3xl font-extrabold text-[#1e293b] block">{{ availablePackages }}</span>
+                    <span class="uppercase text-sm tracking-wide text-[#64748b]">Available</span>
+                </div>
+            </div>
+        </header>
+
+        <!-- Search & Filter -->
+        <section class="flex flex-wrap items-center gap-5 mb-8">
+            <div class="relative flex-1 min-w-[320px]">
+                <input
+                    v-model="searchQuery"
+                    type="text"
+                    placeholder="Search Agencies or Packages..."
+                    class="w-full pl-12 pr-12 py-3 rounded-xl border-2 border-[#e2e8f0] text-base bg-white shadow-sm transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6]/30 focus:border-[#3b82f6] outline-none"
+                />
+                <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#94a3b8]">🔍</span>
+                <button
+                    v-if="searchQuery"
+                    @click="clearSearch"
+                    class="absolute right-4 top-1/2 -translate-y-1/2 text-[#94a3b8] hover:text-[#475569]"
+                >
+                    ✕
+                </button>
+            </div>
+
+            <div class="flex gap-3">
+                <select
+                    v-model="sortBy"
+                    @change="sortAgencies"
+                    class="px-5 py-3 rounded-xl border-2 border-[#e2e8f0] bg-white cursor-pointer text-sm font-medium hover:border-[#3b82f6] focus:border-[#3b82f6] transition"
+                >
+                    <option value="name">Sort by Name</option>
+                    <option value="packages">Most Packages</option>
+                    <option value="availability">Most Available</option>
+                </select>
+
+                <button
+                    @click="showFilters = !showFilters"
+                    :class="[
+                          'flex items-center gap-2 px-5 py-3 rounded-xl border-2 text-sm font-medium transition-all duration-300',
+                          showFilters
+                          ? 'bg-[#3b82f6] text-white border-[#3b82f6] shadow-md'
+                          : 'bg-white text-[#1e293b] border-[#e2e8f0] hover:border-[#3b82f6]'
+                     ]"
+                >
+                    ⚙️ Filters
+                </button>
+            </div>
+        </section>
+
+        <!-- Filters -->
+        <div
+            v-if="showFilters"
+            class="bg-white p-6 rounded-2xl shadow-lg border border-[#e2e8f0] mb-8 animate-[slideDown_0.3s_ease-out]"
+        >
+            <label class="block mb-2 font-semibold text-[#1e293b]">Price Range</label>
+            <div>
+                <input type="range" v-model="priceRange[0]" min="0" max="10000" step="500" class="w-full accent-[#3b82f6]" />
+                <input type="range" v-model="priceRange[1]" min="0" max="10000" step="500" class="w-full mt-3 accent-[#3b82f6]" />
+                <p class="text-center mt-3 font-semibold text-[#3b82f6]">
+                    ₱{{ priceRange[0] }} - ₱{{ priceRange[1] }}
+                </p>
+            </div>
+        </div>
+
+        <!-- Loading -->
+        <div v-if="loading" class="text-center py-20">
+            <div class="w-10 h-10 border-4 border-[#e2e8f0] border-t-[#3b82f6] rounded-full animate-spin mx-auto mb-5"></div>
+            <p class="text-[#64748b]">Finding the best agencies for you...</p>
+        </div>
+
+        <!-- Agencies -->
+        <UserAgency
+            v-if="!selectedAgency"
+            :filteredAgencies="filteredAgencies"
+            :loading="loading"
+            :searchQuery="searchQuery"
+            :isLiked="isLiked"
+            :toggleLike="toggleLike"
+            :startingPrice="startingPrice"
+            @selectAgency="openAgencyDetails"
+        />
+        <!-- Packages -->
+        <AgencyPackage
+            v-if="selectedAgency"
+            :agency="selectedAgency"
+            :isLiked="isLiked"
+            :toggleLike="toggleLike"
+            @goBack="closeAgencyDetails"
+        />
+
+        <!-- Empty -->
+        <div v-if="!loading && filteredAgencies.length === 0" class="text-center py-20">
+            <p class="text-[#94a3b8] text-lg">No agencies found for this spot.</p>
+        </div>
+    </div>
+</template>
+
+
+<script setup>
+    import { ref, computed, onMounted, watch } from "vue";
+    import axios from "axios";
+    import UserAgency from "./UserAgency.vue";
+    import AgencyPackage from "./AgencyPackage.vue";
+
+    const props = defineProps({
+        agencies: Array,
+        activePackages: Array,
+        spotId: Number,
+    });
+
+    const agencies = ref([]);
+    const searchQuery = ref("");
+    const sortBy = ref("name");
+    const showFilters = ref(false);
+    const loading = ref(false);
+    const priceRange = ref([0, 10000]);
+    const likedAgencies = ref([]);
+    const selectedAgency = ref(null);
+
+    // Fetch agencies
+    const fetchAgencies = async () => {
+        if (!props.spotId) return;
+        loading.value = true;
+        try {
+            const response = await axios.get(`/agencies-by-spot/${props.spotId}`);
+            agencies.value = response.data;
+        } catch (error) {
+            console.error(error);
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    // Fetch liked agencies
+    const fetchLikedAgencies = async () => {
+        try {
+            const response = await axios.get("/check-if-agency-is-liked");
+            likedAgencies.value = response.data; // array of IDs
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    // Check if agency is liked
+    const isLiked = (agencyID) => likedAgencies.value.includes(agencyID);
+
+    // Toggle like/unlike
+    const toggleLike = async (agency) => {
+        try {
+            const response = await axios.post("/like-unlike-agency", { agencyID: agency.id });
+            if (response.data.status === "liked") {
+                likedAgencies.value.push(agency.id);
+            } else {
+                likedAgencies.value = likedAgencies.value.filter(id => id !== agency.id);
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    onMounted(() => {
+        fetchAgencies();
+        fetchLikedAgencies();
+    });
+
+    watch(() => props.spotId, fetchAgencies);
+
+    // Computed totals
+    const totalAgencies = computed(() => agencies.value?.length || 0);
+    const totalPackages = computed(() => props.activePackages?.length || 0);
+    const availablePackages = computed(() =>
+        props.activePackages?.filter(pkg => pkg.status === "1").length || 0
+    );
+
+    // Filtered agencies
+    const filteredAgencies = computed(() => {
+        if (!searchQuery.value) {
+            console.log("Filtered (no search):", agencies.value);
+            return agencies.value;
+        }
+
+        const result = agencies.value.filter(a =>
+            (a.agency?.agency_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+                a.agency?.description?.toLowerCase().includes(searchQuery.value.toLowerCase()))
+        );
+
+        console.log("Filtered (with search):", result);
+        return result;
+    });
+
+    // Sorting
+    const sortAgencies = () => {
+        if (sortBy.value === "name") {
+            agencies.value.sort((a, b) =>
+                (a.agency?.agency_name || "").localeCompare(b.agency?.agency_name || "")
+            );
+        } else if (sortBy.value === "packages") {
+            agencies.value.sort((a, b) => (b.packages?.length || 0) - (a.packages?.length || 0));
+        } else if (sortBy.value === "availability") {
+            agencies.value.sort((a, b) => {
+                const aAvailable = a.packages?.filter(pkg => pkg.status === "1").length || 0;
+                const bAvailable = b.packages?.filter(pkg => pkg.status === "1").length || 0;
+                return bAvailable - aAvailable;
+            });
+        }
+    };
+
+    const startingPrice = (agency) => {
+        if (!agency.packages || agency.packages.length === 0) return 0;
+
+        // Only consider available packages if needed
+        const availablePackages = agency.packages.filter(pkg => pkg.available_slot > 0);
+
+        if (availablePackages.length === 0) return 0;
+
+        // Find the minimum price
+        return Math.min(...availablePackages.map(pkg => Number(pkg.price)));
+    };
+
+
+    // Clear search
+    const clearSearch = () => {
+        searchQuery.value = "";
+    };
+
+    const openAgencyDetails = (agency) => {
+        selectedAgency.value = agency;
+        console.log("Selected agency:", agency);
+    }
+    const closeAgencyDetails = () => {
+        selectedAgency.value = null;
+    }
+</script>

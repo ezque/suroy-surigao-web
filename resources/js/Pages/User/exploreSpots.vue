@@ -1,328 +1,337 @@
 <template>
-  <div class="exploreSpots-body" v-if="spot">
-    <div class="spot-banner">
-      <img :src="spot.image" :alt="spot.name" class="spot-banner-img" />
-      <div class="banner-overlay">
-        <button class="back-btn" @click="$emit('back')">
-          <span class="back-icon">←</span> Back to Explore
-        </button>
-        <div class="banner-actions">
-          <button class="share-btn" @click="shareSpot">
-            <span class="share-icon">📤</span> Share
-          </button>
-          <button
-            class="favorite-btn"
-            :class="{ favorited: isFavorited }"
-            @click="toggleFavorite"
-          >
-            <span class="heart-icon">{{ isFavorited ? '❤️' : '🤍' }}</span>
-            {{ isFavorited ? 'Favorited' : 'Add to Favorites' }}
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="spot-content">
-      <div class="spot-header">
-        <div class="spot-title-section">
-          <h1 class="spot-title">{{ spot.name }}</h1>
-          <div class="spot-location">
-            <span class="location-icon">📍</span>
-            {{ spot.location }}
-          </div>
-        </div>
-        <div class="spot-rating">
-          <div class="rating-stars">
-            <span
-              v-for="n in 5"
-              :key="n"
-              class="star"
-              :class="{ filled: n <= spot.rating }"
-            >
-              {{ n <= spot.rating ? '⭐' : '☆' }}
-            </span>
-          </div>
-          <div class="rating-value">{{ spot.rating }}/5</div>
-          <div class="review-count">({{ spot.reviewCount }} reviews)</div>
-        </div>
-      </div>
-
-      <!-- ✅ Tabs -->
-      <div class="spot-tabs">
-        <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'overview' }"
-          @click="activeTab = 'overview'"
-        >
-          <span class="tab-icon">📖</span> Overview
-        </button>
-
-        <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'tourAgencies' }"
-          @click="activeTab = 'tourAgencies'"
-        >
-          <i class="fas fa-building"></i>
-          <span>Tour Agencies</span>
-        </button>
-
-        <button
-          class="tab-btn"
-          :class="{ active: activeTab === 'reviews' }"
-          @click="activeTab = 'reviews'"
-        >
-          <span class="tab-icon">💬</span> Reviews
-        </button>
-      </div>
-
-      <div class="tab-content">
-        <!-- ✅ Overview -->
-        <div v-if="activeTab === 'overview'" class="tab-panel overview-panel">
-          <div class="description-section">
-            <h3>About This Place</h3>
-            <p class="spot-description">{{ spot.description }}</p>
-
-            <div class="highlights-grid">
-              <div
-                class="highlight-card"
-                v-for="highlight in spot.highlights"
-                :key="highlight"
-              >
-                <span class="highlight-icon">✅</span>
-                <span>{{ highlight }}</span>
-              </div>
+    <div class="exploreSpots-body" v-if="spot">
+        <div class="spot-banner">
+            <img
+                v-if="spot.images && spot.images.length > 0"
+                :src="`/storage/${spot.images[0].spot_image}`"
+                :alt="spot.spot_name"
+                class="spot-banner-img"
+            />
+            <div class="banner-overlay">
+                <button class="back-btn" @click="$emit('back')">
+                    <span class="back-icon">←</span> Back to Explore
+                </button>
+                <div class="banner-actions">
+                    <button class="share-btn" @click="shareSpot">
+                        <span class="share-icon">📤</span> Share
+                    </button>
+                    <button
+                        class="favorite-btn"
+                        :class="{ favorited: isFavorited }"
+                        @click="toggleFavorite"
+                    >
+                        <span class="heart-icon">{{ isFavorited ? "❤️" : "🤍" }}</span>
+                        {{ isFavorited ? "Favorited" : "Add to Favorites" }}
+                    </button>
+                </div>
             </div>
-          </div>
+        </div>
 
-          <div class="details-grid">
-            <div class="detail-section">
-              <h4>📍 How to Get There</h4>
-              <p>{{ spot.howToGetThere }}</p>
+        <div class="spot-content">
+            <div class="spot-header">
+                <div class="spot-title-section">
+                    <h1 class="spot-title">{{ spot.name }}</h1>
+                    <div class="spot-location">
+                        <span class="location-icon">📍</span>
+                        {{ spot.location }}
+                    </div>
+                </div>
+                <div class="spot-rating">
+                    <div class="rating-stars">
+                        <span
+                            v-for="n in 5"
+                            :key="n"
+                            class="star"
+                            :class="{ filled: n <= spot.rating }"
+                        >
+                          {{ n <= spot.rating ? "⭐" : "☆" }}
+                        </span>
+                    </div>
+                    <div class="rating-value">{{ spot.rating }}/5</div>
+                    <div class="review-count">({{ spot.reviewCount }} reviews)</div>
+                </div>
             </div>
-            <div class="detail-section">
-              <h4>⏰ Operating Hours</h4>
-              <p>{{ spot.operatingHours }}</p>
-            </div>
-            <div class="detail-section">
-              <h4>🎒 What to Bring</h4>
-              <div class="items-list">
-                <span
-                  class="item-tag"
-                  v-for="item in spot.whatToBring"
-                  :key="item"
-                  >{{ item }}</span
+
+            <!-- ✅ Tabs -->
+            <div class="spot-tabs">
+                <button
+                    class="tab-btn"
+                    :class="{ active: activeTab === 'overview' }"
+                    @click="activeTab = 'overview'"
                 >
-              </div>
+                    📖 Overview
+                </button>
+
+                <button
+                    class="tab-btn"
+                    :class="{ active: activeTab === 'tourAgencies' }"
+                    @click="activeTab = 'tourAgencies'"
+                >
+                    🏢 Tour Agencies
+                </button>
+
+                <button
+                    class="tab-btn"
+                    :class="{ active: activeTab === 'reviews' }"
+                    @click="activeTab = 'reviews'"
+                >
+                    💬 Reviews
+                </button>
             </div>
-          </div>
-        </div>
 
-        <!-- ✅ Tour Agencies Tab -->
-        <div v-if="activeTab === 'tourAgencies'" class="tab-panel agencies-panel">
-          <TourAgencies
-            :spotId="spot.id"
-            @viewAgency="openAgencyDetails"
-          />
+            <div class="tab-content">
+                <!-- ✅ Overview -->
+                <div v-if="activeTab === 'overview'" class="tab-panel overview-panel">
+                    <div class="description-section">
+                        <h3>About This Place</h3>
+                        <p class="spot-description">{{ spot.description }}</p>
 
-          <!-- Nested details panel -->
-          <ExploreTourAgency
-            v-if="selectedAgency"
-            :agency="selectedAgency"
-            @close="selectedAgency = null"
-          />
-        </div>
+                        <div class="highlights-grid">
+                            <div
+                                class="highlight-card"
+                                v-for="highlight in spot.highlights"
+                                :key="highlight"
+                            >
+                                ✅ {{ highlight }}
+                            </div>
+                        </div>
+                    </div>
 
-        <!-- ✅ Reviews -->
-        <div v-if="activeTab === 'reviews'" class="tab-panel reviews-panel">
-          <div class="reviews-header">
-            <div class="reviews-summary">
-              <div class="overall-rating">
-                <div class="rating-big">{{ spot.rating }}</div>
-                <div class="rating-stars">
+                    <div class="details-grid">
+                        <div class="detail-section">
+                            <h4>📍 How to Get There</h4>
+                            <p>{{ spot.howToGetThere }}</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>⏰ Operating Hours</h4>
+                            <p>{{ spot.operatingHours }}</p>
+                        </div>
+                        <div class="detail-section">
+                            <h4>🎒 What to Bring</h4>
+                            <div class="items-list">
+                <span
+                    class="item-tag"
+                    v-for="item in spot.whatToBring"
+                    :key="item"
+                >{{ item }}</span
+                >
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- ✅ Tour Agencies Tab -->
+                <div v-if="activeTab === 'tourAgencies'" class="tab-panel agencies-panel">
+                    <TourAgencies :spotId="spot.id" @viewAgency="openAgencyDetails" />
+                    <ExploreTourAgencies
+                        v-if="selectedAgency"
+                        :agency="selectedAgency"
+                        @close="selectedAgency = null"
+                    />
+                </div>
+
+                <!-- ✅ Reviews -->
+                <div v-if="activeTab === 'reviews'" class="tab-panel reviews-panel">
+                    <div class="reviews-header">
+                        <div class="reviews-summary">
+                            <div class="overall-rating">
+                                <div class="rating-big">{{ spot.rating }}</div>
+                                <div class="rating-stars">
                   <span
+                      v-for="n in 5"
+                      :key="n"
+                      class="star"
+                      :class="{ filled: n <= spot.rating }"
+                  >
+                    {{ n <= spot.rating ? "⭐" : "☆" }}
+                  </span>
+                                </div>
+                                <div class="rating-text">
+                                    Based on {{ spot.reviewCount }} reviews
+                                </div>
+                            </div>
+                        </div>
+                        <button class="add-review-btn" @click="showReviewForm = true">
+                            ✍️ Write a Review
+                        </button>
+                    </div>
+
+                    <div class="reviews-list">
+                        <div
+                            class="review-card"
+                            v-for="review in spot.reviews"
+                            :key="review.id"
+                        >
+                            <div class="reviewer-info">
+                                <div class="reviewer-avatar">{{ review.user.charAt(0) }}</div>
+                                <div class="reviewer-details">
+                                    <div class="reviewer-name">{{ review.user }}</div>
+                                    <div class="review-date">{{ review.date }}</div>
+                                </div>
+                            </div>
+                            <div class="review-rating">
+                <span
                     v-for="n in 5"
                     :key="n"
                     class="star"
-                    :class="{ filled: n <= spot.rating }"
-                  >
-                    {{ n <= spot.rating ? '⭐' : '☆' }}
-                  </span>
-                </div>
-                <div class="rating-text">
-                  Based on {{ spot.reviewCount }} reviews
-                </div>
-              </div>
-            </div>
-            <button class="add-review-btn" @click="showReviewForm = true">
-              ✍️ Write a Review
-            </button>
-          </div>
-
-          <div class="reviews-list">
-            <div
-              class="review-card"
-              v-for="review in spot.reviews"
-              :key="review.id"
-            >
-              <div class="reviewer-info">
-                <div class="reviewer-avatar">{{ review.user.charAt(0) }}</div>
-                <div class="reviewer-details">
-                  <div class="reviewer-name">{{ review.user }}</div>
-                  <div class="review-date">{{ review.date }}</div>
-                </div>
-              </div>
-              <div class="review-rating">
-                <span
-                  v-for="n in 5"
-                  :key="n"
-                  class="star"
-                  :class="{ filled: n <= review.rating }"
+                    :class="{ filled: n <= review.rating }"
                 >
-                  {{ n <= review.rating ? '⭐' : '☆' }}
+                  {{ n <= review.rating ? "⭐" : "☆" }}
                 </span>
-              </div>
-              <p class="review-content">{{ review.content }}</p>
+                            </div>
+                            <p class="review-content">{{ review.content }}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- Map -->
-      <div class="map-section">
-        <h3>📍 Location Map</h3>
-        <div class="map-container">
-          <iframe
-            v-if="mapUrl"
-            :src="mapUrl"
-            allowfullscreen=""
-            loading="lazy"
-            referrerpolicy="no-referrer-when-downgrade"
-          ></iframe>
-        </div>
-        <button class="directions-btn" @click="getDirections">
-          🚗 Get Directions
-        </button>
-      </div>
-    </div>
-
-    <!-- Review Modal -->
-    <div v-if="showReviewForm" class="modal-overlay" @click="showReviewForm = false">
-      <div class="modal-content" @click.stop>
-        <h3>Write a Review</h3>
-        <form @submit.prevent="submitReview">
-          <div class="rating-input">
-            <label>Your Rating:</label>
-            <div class="star-rating">
-              <span
-                v-for="n in 5"
-                :key="n"
-                class="star-selectable"
-                :class="{ selected: n <= newReview.rating }"
-                @click="newReview.rating = n"
-              >
-                ⭐
-              </span>
+            <!-- ✅ Map -->
+            <div class="map-section">
+                <h3>📍 Location Map</h3>
+                <div class="map-container">
+                    <iframe
+                        v-if="mapUrl"
+                        :src="mapUrl"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                </div>
+                <button class="directions-btn" @click="getDirections">
+                    🚗 Get Directions
+                </button>
             </div>
-          </div>
-          <textarea
-            v-model="newReview.content"
-            placeholder="Share your experience..."
-            rows="5"
-          ></textarea>
-          <div class="modal-actions">
-            <button type="button" @click="showReviewForm = false">Cancel</button>
-            <button type="submit">Submit Review</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
+        </div>
 
-  <!-- Not Found -->
-  <div v-else class="not-found">
-    <div class="not-found-content">
-      <h2>📍 Spot Not Found</h2>
-      <p>The tourist spot you're looking for doesn't exist or has been removed.</p>
-      <button class="back-btn" @click="$emit('back')">← Back to Explore</button>
+        <!-- ✅ Review Modal -->
+        <div
+            v-if="showReviewForm"
+            class="modal-overlay"
+            @click="showReviewForm = false"
+        >
+            <div class="modal-content" @click.stop>
+                <h3>Write a Review</h3>
+                <form @submit.prevent="submitReview">
+                    <div class="rating-input">
+                        <label>Your Rating:</label>
+                        <div class="star-rating">
+                  <span
+                      v-for="n in 5"
+                      :key="n"
+                      class="star-selectable"
+                      :class="{ selected: n <= newReview.rating }"
+                      @click="newReview.rating = n"
+                  >
+                    ⭐
+                  </span>
+                        </div>
+                    </div>
+                    <textarea
+                        v-model="newReview.content"
+                        placeholder="Share your experience..."
+                        rows="5"
+                    ></textarea>
+                    <div class="modal-actions">
+                        <button type="button" @click="showReviewForm = false">Cancel</button>
+                        <button type="submit">Submit Review</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
+
+    <!-- ✅ Not Found -->
+    <div v-else class="not-found">
+        <div class="not-found-content">
+            <h2>📍 Spot Not Found</h2>
+            <p>The tourist spot you're looking for doesn't exist or has been removed.</p>
+            <button class="back-btn" @click="$emit('back')">← Back to Explore</button>
+        </div>
+    </div>
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, computed } from "vue";
-import TourAgencies from "./tourAgencies.vue";
-import ExploreTourAgencies from "./exploreTourAgencies.vue";
+    import { ref, reactive, onMounted, computed } from "vue";
+    import TourAgencies from "./tourAgencies.vue";
+    import ExploreTourAgencies from "./exploreTourAgencies.vue";
 
-const props = defineProps({
-  spot: Object,
-});
-const emit = defineEmits(["back"]);
-
-const activeTab = ref("overview");
-const selectedAgency = ref(null);
-const isFavorited = ref(false);
-const showReviewForm = ref(false);
-const newReview = reactive({ rating: 0, content: "" });
-
-const spot = props.spot || {}; // assume data passed from parent
-
-const mapUrl = computed(() => {
-  if (!spot || !spot.location) return "";
-  const query = encodeURIComponent(`${spot.location}`);
-  return `https://maps.google.com/maps?q=${query}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
-});
-
-const openAgencyDetails = (agency) => {
-  selectedAgency.value = agency;
-};
-
-const checkIfFavorited = () => {
-  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  isFavorited.value = favorites.some((fav) => fav.id === spot.id);
-};
-
-const toggleFavorite = () => {
-  let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
-  if (isFavorited.value) {
-    favorites = favorites.filter((fav) => fav.id !== spot.id);
-    isFavorited.value = false;
-  } else {
-    favorites.push(spot);
-    isFavorited.value = true;
-  }
-  localStorage.setItem("favorites", JSON.stringify(favorites));
-};
-
-const shareSpot = () => {
-  if (navigator.share) {
-    navigator.share({
-      title: spot.name,
-      text: `Check out ${spot.name} in Surigao!`,
-      url: window.location.href,
+    const props = defineProps({
+        spot: Object,
     });
-  } else {
-    navigator.clipboard.writeText(window.location.href);
-    alert("Link copied to clipboard!");
-  }
-};
 
-const getDirections = () => {
-  if (spot && spot.location) {
-    const query = encodeURIComponent(`${spot.name}, ${spot.location}`);
-    const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
-    window.open(mapsUrl, "_blank");
-  }
-};
 
-const submitReview = () => {
-  console.log("New review:", newReview);
-  showReviewForm.value = false;
-  newReview.rating = 0;
-  newReview.content = "";
-  alert("Thank you for your review!");
-};
+    const emit = defineEmits(["back", "navigate"]);
 
-onMounted(() => checkIfFavorited());
+    const activeTab = ref("overview");
+    const selectedAgency = ref(null);
+    const isFavorited = ref(false);
+    const showReviewForm = ref(false);
+    const newReview = reactive({ rating: 0, content: "" });
+
+    const spot = props.spot || {};
+    console.log(spot.id);
+
+    const mapUrl = computed(() => {
+        if (!spot || !spot.location) return "";
+        const query = encodeURIComponent(`${spot.location}`);
+        return `https://maps.google.com/maps?q=${query}&t=&z=15&ie=UTF8&iwloc=&output=embed`;
+    });
+
+    const openAgencyDetails = (agency) => {
+        selectedAgency.value = agency;
+    };
+
+    const navigate = (page, payload = null) => {
+        emit("navigate", { page, payload });
+    };
+
+    const checkIfFavorited = () => {
+        const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        isFavorited.value = favorites.some((fav) => fav.id === spot.id);
+    };
+
+    const toggleFavorite = () => {
+        let favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+        if (isFavorited.value) {
+            favorites = favorites.filter((fav) => fav.id !== spot.id);
+            isFavorited.value = false;
+        } else {
+            favorites.push(spot);
+            isFavorited.value = true;
+        }
+        localStorage.setItem("favorites", JSON.stringify(favorites));
+    };
+
+    const shareSpot = () => {
+        if (navigator.share) {
+            navigator.share({
+                title: spot.name,
+                text: `Check out ${spot.name} in Surigao!`,
+                url: window.location.href,
+            });
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert("Link copied to clipboard!");
+        }
+    };
+
+    const getDirections = () => {
+        if (spot && spot.location) {
+            const query = encodeURIComponent(`${spot.name}, ${spot.location}`);
+            const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${query}`;
+            window.open(mapsUrl, "_blank");
+        }
+    };
+
+    const submitReview = () => {
+        console.log("New review:", newReview);
+        showReviewForm.value = false;
+        newReview.rating = 0;
+        newReview.content = "";
+        alert("Thank you for your review!");
+    };
+
+    onMounted(() => checkIfFavorited());
 </script>
 
 

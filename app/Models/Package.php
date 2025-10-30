@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Models;
-
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Package extends Model
@@ -25,5 +25,28 @@ class Package extends Model
         'exclusions',
         'status',
     ];
+    protected $appends = ['duration'];
+
+    public function getDurationAttribute()
+    {
+        $start = Carbon::parse($this->start_date . ' ' . $this->start_time);
+        $end = Carbon::parse($this->end_date . ' ' . $this->end_time);
+
+        $days = $start->diffInDays($end);
+        $hours = $start->diffInHours($end) % 24;
+
+        if ($days > 0 && $hours > 0) {
+            return "{$days} day(s) {$hours} hour(s)";
+        } elseif ($days > 0) {
+            return "{$days} day(s)";
+        } else {
+            return "{$hours} hour(s)";
+        }
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'userID', 'id');
+    }
+
 
 }

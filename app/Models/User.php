@@ -40,6 +40,13 @@ class User extends Authenticatable
         return $this->hasOne(Agency::class, 'user_ID', 'id');
     }
 
+    public function packages()
+    {
+        return $this->hasMany(Package::class, 'userID', 'id');
+    }
+
+
+
 
 
 }

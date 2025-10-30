@@ -6,6 +6,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400&family=Rouge+Script&display=swap" rel="stylesheet">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    @vite('resources/css/app.css')
 
     <title>Suroy Surigao</title>
     @vite('resources/js/app.js')

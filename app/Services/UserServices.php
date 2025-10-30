@@ -2,7 +2,9 @@
 
 namespace App\Services;
 use App\Models\User;
+use App\Models\IsSave;
 use App\Models\UserInfo;
+use App\Models\Spot;
 use Illuminate\Support\Facades\Auth;
 
 class UserServices
@@ -24,5 +26,12 @@ class UserServices
         $agencyTotal = User::where('role', '2')->count();
 
         return $agencyTotal;
+    }
+
+    public function getAgencies()
+    {
+        $agencies = User::where('role', '2')
+            ->get();
+        return $agencies;
     }
 }

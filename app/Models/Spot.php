@@ -19,4 +19,5 @@ class Spot extends Model
     {
         return $this->hasMany(SpotImage::class, 'spot_id');
     }
+
 }

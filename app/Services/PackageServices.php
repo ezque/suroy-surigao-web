@@ -13,4 +13,11 @@ class PackageServices
 
         return $packages;
     }
+
+    public function getActivePackages()
+    {
+        $activePackage = Package::orderBy('created_at', 'desc')->get();
+
+        return $activePackage;
+    }
 }

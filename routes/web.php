@@ -28,5 +28,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
 
+    Route::get('/agencies-by-spot/{spotId}', [UserController::class, 'getAgencyInSpots']);
+
+
+    Route::post('/saved-unsave-spot', [UserController::class, 'saveUnsaveSpot']);
+    Route::get('/check-saved-unsave-spot/{id}', [UserController::class, 'getSpotSavedStatus']);
+    Route::get('/agencies-by-spot/{spotId}', [UserController::class, 'getAgenciesByPackageAndSpot']);
+    Route::get('/check-if-agency-is-liked', [UserController::class, 'checkIfAgencyIsLiked']);
+    Route::post('/like-unlike-agency', [UserController::class, 'likeUnlikeAgency']);
+    Route::get('/get-spots', [UserController::class, 'getSpots']);
     Route::post('/add-reservation', [UserController::class, 'addReservation']);
 });

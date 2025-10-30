@@ -31,58 +31,58 @@
           </div>
         </div>
       </div>
-      
+
       <div class="agency-info">
         <h1 class="agency-name">{{ agency.name }}</h1>
         <p class="agency-desc">{{ agency.shortDesc }}</p>
-        
+
         <div class="agency-meta">
-          <div class="meta-item" v-if="agency.established">
-            <span class="meta-icon">📅</span>
-            <span>Est. {{ agency.established }}</span>
-          </div>
-          <div class="meta-item" v-if="agency.toursCompleted">
-            <span class="meta-icon">🚌</span>
-            <span>{{ agency.toursCompleted.toLocaleString() }}+ Tours</span>
-          </div>
-          <div class="meta-item" v-if="agency.responseTime">
-            <span class="meta-icon">💬</span>
-            <span>Response: {{ agency.responseTime }}</span>
-          </div>
+              <div class="meta-item" v-if="agency.established">
+                <span class="meta-icon">📅</span>
+                <span>Est. {{ agency.established }}</span>
+              </div>
+              <div class="meta-item" v-if="agency.toursCompleted">
+                <span class="meta-icon">🚌</span>
+                <span>{{ agency.toursCompleted.toLocaleString() }}+ Tours</span>
+              </div>
+              <div class="meta-item" v-if="agency.responseTime">
+                <span class="meta-icon">💬</span>
+                <span>Response: {{ agency.responseTime }}</span>
+              </div>
         </div>
       </div>
     </div>
 
     <!-- Quick Stats -->
     <div class="quick-stats">
-      <div class="stat-card">
-        <div class="stat-icon">🏢</div>
-        <div class="stat-info">
-          <div class="stat-value">{{ agency.packages?.length || 0 }}</div>
-          <div class="stat-label">Tour Packages</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">⭐</div>
-        <div class="stat-info">
-          <div class="stat-value">{{ agency.rating || 'N/A' }}</div>
-          <div class="stat-label">Rating</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">👥</div>
-        <div class="stat-info">
-          <div class="stat-value">{{ agency.totalCustomers?.toLocaleString() || '500+' }}</div>
-          <div class="stat-label">Customers</div>
-        </div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-icon">📍</div>
-        <div class="stat-info">
-          <div class="stat-value">{{ agency.location || 'Surigao' }}</div>
-          <div class="stat-label">Location</div>
-        </div>
-      </div>
+          <div class="stat-card">
+            <div class="stat-icon">🏢</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ agency.packages?.length || 0 }}</div>
+              <div class="stat-label">Tour Packages</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ agency.rating || 'N/A' }}</div>
+              <div class="stat-label">Rating</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ agency.totalCustomers?.toLocaleString() || '500+' }}</div>
+              <div class="stat-label">Customers</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon">📍</div>
+            <div class="stat-info">
+              <div class="stat-value">{{ agency.location || 'Surigao' }}</div>
+              <div class="stat-label">Location</div>
+            </div>
+          </div>
     </div>
 
     <!-- Packages Section -->
@@ -90,15 +90,15 @@
       <div class="section-header">
         <h2 class="section-title">Available Tour Packages</h2>
         <div class="filter-controls">
-          <button 
-            class="filter-btn" 
+          <button
+            class="filter-btn"
             :class="{ active: filter === 'all' }"
             @click="filter = 'all'"
           >
             All Packages
           </button>
-          <button 
-            class="filter-btn" 
+          <button
+            class="filter-btn"
             :class="{ active: filter === 'available' }"
             @click="filter = 'available'"
           >
@@ -186,8 +186,8 @@
               Destinations
             </h4>
             <div class="destinations-grid">
-              <span 
-                v-for="destination in pkg.destinations" 
+              <span
+                v-for="destination in pkg.destinations"
                 :key="destination"
                 class="destination-tag"
               >
