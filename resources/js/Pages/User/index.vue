@@ -42,7 +42,6 @@
             />
 
             <Favorites v-if="activePage === 'favorites'" />
-            <Messages v-if="activePage === 'messages'" />
             <UserSettings v-if="activePage === 'settings'" />
         </div>
     </div>
@@ -61,7 +60,6 @@
     import TourAgenciesPanel from "./tourAgencies.vue";
     import ExploreTourAgencies from "./exploreTourAgencies.vue";
     import Favorites from "./favorites.vue";
-    import Messages from "./messages.vue";
     import UserSettings from "./settings.vue";
 
     const props = defineProps({

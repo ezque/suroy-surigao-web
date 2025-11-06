@@ -50,46 +50,9 @@
                 </button>
             </div>
 
-            <div class="flex gap-3">
-                <select
-                    v-model="sortBy"
-                    @change="sortAgencies"
-                    class="px-5 py-3 rounded-xl border-2 border-[#e2e8f0] bg-white cursor-pointer text-sm font-medium hover:border-[#3b82f6] focus:border-[#3b82f6] transition"
-                >
-                    <option value="name">Sort by Name</option>
-                    <option value="packages">Most Packages</option>
-                    <option value="availability">Most Available</option>
-                </select>
-
-                <button
-                    @click="showFilters = !showFilters"
-                    :class="[
-                          'flex items-center gap-2 px-5 py-3 rounded-xl border-2 text-sm font-medium transition-all duration-300',
-                          showFilters
-                          ? 'bg-[#3b82f6] text-white border-[#3b82f6] shadow-md'
-                          : 'bg-white text-[#1e293b] border-[#e2e8f0] hover:border-[#3b82f6]'
-                     ]"
-                >
-                    ⚙️ Filters
-                </button>
-            </div>
         </section>
 
-        <!-- Filters -->
-        <div
-            v-if="showFilters"
-            class="bg-white p-6 rounded-2xl shadow-lg border border-[#e2e8f0] mb-8 animate-[slideDown_0.3s_ease-out]"
-        >
-            <label class="block mb-2 font-semibold text-[#1e293b]">Price Range</label>
-            <div>
-                <input type="range" v-model="priceRange[0]" min="0" max="10000" step="500" class="w-full accent-[#3b82f6]" />
-                <input type="range" v-model="priceRange[1]" min="0" max="10000" step="500" class="w-full mt-3 accent-[#3b82f6]" />
-                <p class="text-center mt-3 font-semibold text-[#3b82f6]">
-                    ₱{{ priceRange[0] }} - ₱{{ priceRange[1] }}
-                </p>
-            </div>
-        </div>
-
+       
         <!-- Loading -->
         <div v-if="loading" class="text-center py-20">
             <div class="w-10 h-10 border-4 border-[#e2e8f0] border-t-[#3b82f6] rounded-full animate-spin mx-auto mb-5"></div>
