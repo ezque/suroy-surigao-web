@@ -12,22 +12,16 @@
         <thead>
           <tr>
             <th>ID</th>
-            <th>User ID</th>
             <th>Title</th>
             <th>URL</th>
-            <th>Created At</th>
-            <th>Updated At</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
           <tr v-for="post in posts" :key="post.id">
             <td>{{ post.id }}</td>
-            <td>{{ post.userId }}</td>
             <td>{{ post.title }}</td>
             <td><a :href="post.url" target="_blank">{{ post.url }}</a></td>
-            <td>{{ post.createdAt }}</td>
-            <td>{{ post.updatedAt }}</td>
             <td class="action-buttons">
               <button class="edit-btn" @click="editPost(post)">
                 <i class="material-icons">edit</i>
@@ -53,19 +47,13 @@ const emit = defineEmits(['selectPage']);
 const posts = ref([
   {
     id: 1,
-    userId: 12,
     title: 'Beautiful Surigao Beach',
     url: 'https://example.com/post1',
-    createdAt: '2025-10-10',
-    updatedAt: '2025-10-10',
   },
   {
     id: 2,
-    userId: 15,
     title: 'Top 5 Hidden Spots',
     url: 'https://example.com/post2',
-    createdAt: '2025-10-08',
-    updatedAt: '2025-10-09',
   },
 ]);
 
@@ -93,13 +81,6 @@ const deletePost = (id) => {
     // await axios.delete(`/api/posts/${id}`);
   }
 };
-
-// Later, you can replace the sample data with an API call using axios, e.g.:
-// import axios from 'axios';
-// onMounted(async () => {
-//   const response = await axios.get('/api/posts');
-//   posts.value = response.data;
-// });
 </script>
 
 <style scoped>

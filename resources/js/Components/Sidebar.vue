@@ -18,37 +18,6 @@
           {{ roleLabel }}
         </div>
       </div>
-
-      <!-- Stats Section -->
-      <div v-if="userRole === '2'" class="stats-section">
-        <div class="stat-item">
-          <span class="stat-number">{{ agencyStats.tours }}</span>
-          <span class="stat-label">Tours</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">{{ agencyStats.bookings }}</span>
-          <span class="stat-label">Bookings</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">{{ agencyStats.rating }}</span>
-          <span class="stat-label">Rating</span>
-        </div>
-      </div>
-
-      <div v-else-if="userRole === '3'" class="stats-section">
-        <div class="stat-item">
-          <span class="stat-number">{{ userStats.bookings }}</span>
-          <span class="stat-label">Bookings</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">{{ userStats.favorites }}</span>
-          <span class="stat-label">Favorites</span>
-        </div>
-        <div class="stat-item">
-          <span class="stat-number">{{ userStats.reviews }}</span>
-          <span class="stat-label">Reviews</span>
-        </div>
-      </div>
     </div>
 
     <!-- Navigation Section -->
@@ -85,7 +54,7 @@
           @click="$emit('selectPage', 'managePost')"
         >
           <i class="material-icons">article</i>
-          <span class="nav-label">Manage Post</span>
+          <span class="nav-label">Manage Blog</span>
         </button>
         <button
           class="nav-item"
@@ -183,17 +152,6 @@
         >
           <i class="material-icons">favorite</i>
           <span class="nav-label">Favorites</span>
-        </button>
-        <button
-          class="nav-item"
-          :class="{ active: currentPage === 'messages' }"
-          @click="$emit('selectPage', 'messages')"
-        >
-          <i class="material-icons">chat</i>
-          <span class="nav-label">Messages</span>
-          <span v-if="userStats.unreadMessages > 0" class="nav-badge">
-            {{ userStats.unreadMessages }}
-          </span>
         </button>
         <button
           class="nav-item"
