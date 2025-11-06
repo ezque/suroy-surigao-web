@@ -47,6 +47,12 @@ class Package extends Model
     {
         return $this->belongsTo(User::class, 'userID', 'id');
     }
+    public function reservations()
+    {
+        return $this->hasMany(Reservation::class, 'package_id', 'id');
+    }
+
+
 
 
 }

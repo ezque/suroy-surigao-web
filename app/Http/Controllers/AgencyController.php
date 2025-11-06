@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Package;
+use App\Models\Reservation;
 
 
 class AgencyController extends Controller
@@ -98,6 +99,35 @@ class AgencyController extends Controller
             'message' => 'Package updated successfully!',
             'package' => $package,
         ], 200);
+    }
+
+    public function updateReservation(Request $request, $id)
+    {
+        try {
+            // Validate the incoming status
+            $request->validate([
+                'status' => 'required|string|in:pending,confirmed,rejected',
+            ]);
+
+            $reservation = Reservation::findOrFail($id);
+
+            $reservation->update([
+                'status' => $request->status,
+            ]);
+
+
+
+            return response()->json([
+                'message' => 'Reservation updated successfully',
+                'data' => $reservation,
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Failed to update reservation',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
     }
 
 

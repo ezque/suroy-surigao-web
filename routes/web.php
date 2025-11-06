@@ -38,4 +38,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/like-unlike-agency', [UserController::class, 'likeUnlikeAgency']);
     Route::get('/get-spots', [UserController::class, 'getSpots']);
     Route::post('/add-reservation', [UserController::class, 'addReservation']);
+    Route::post('/update-reservation/{id}', [AgencyController::class, 'updateReservation']);
 });

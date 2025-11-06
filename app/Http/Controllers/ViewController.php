@@ -2,12 +2,14 @@
 
 namespace App\Http\Controllers;
 
+
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use App\Services\UserServices;
 use App\Services\AdminServices;
 use App\Services\SpotsServices;
 use App\Services\PackageServices;
+use App\Services\AgencyServices;
 
 class ViewController extends Controller
 {
@@ -44,16 +46,19 @@ class ViewController extends Controller
             'activePackages' => $activePackages,
         ]);
     }
-    public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices, PackageServices $packageServices): \Inertia\Response
+    public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices, PackageServices $packageServices, AgencyServices $agencyServices): \Inertia\Response
     {
         $userInformation = $userServices->getUserInformation();
         $allSpots = $spotsServices->getAllSpots();
         $allPackages = $packageServices->getAllOwnedPackages();
+        $reservationData = $agencyServices->getAllReservation();
 
         return Inertia::render('Agency/index', [
             'userInformation' => $userInformation,
             'allSpots'     => $allSpots,
             'allPackages'  => $allPackages,
+            'allReservations' => $reservationData['reservations'],
+            'totalReservations' => $reservationData['totalReservations'],
         ]);
     }
 

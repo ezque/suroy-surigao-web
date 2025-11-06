@@ -14,6 +14,7 @@
             />
             <ManageReservation
                 v-if="activePage === 'manageReservation'"
+                :allReservations="allReservations"
             />
             <Packages
                 v-if="activePage === 'ManageTours'"
@@ -23,6 +24,11 @@
             />
             <ReviewsAndFeedbacks
                 v-if="activePage === 'agencyFeedbacks'"
+            />
+            <Reservation
+                v-if="activePage === 'Reservation'"
+                :allReservations="allReservations"
+                :totalReservations="totalReservations"
             />
         </div>
     </div>
@@ -37,11 +43,14 @@
     import {computed, onMounted, ref} from "vue";
     import Header from "../../Components/Header.vue";
     import ManageReservation from "./manageReservation.vue";
+    import Reservation from "./Reservation.vue";
 
     const props = defineProps({
         userInformation: Object,
         allSpots: Array,
         allPackages: Array,
+        allReservations: Array,
+        totalReservations: Number,
     })
 
     onMounted(() => {

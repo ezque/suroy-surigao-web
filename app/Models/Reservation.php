@@ -22,4 +22,8 @@ class Reservation extends Model
         'e_relationship',
         'status',
     ];
+    public function package()
+    {
+        return $this->belongsTo(Package::class, 'package_id', 'id');
+    }
 }

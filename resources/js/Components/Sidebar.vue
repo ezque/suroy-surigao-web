@@ -3,14 +3,14 @@
     <!-- Profile Section -->
     <div class="profile-section">
       <div class="profile-avatar">
-        <img 
-          :src="userData.avatar || '/images/default-avatar.png'" 
+        <img
+          :src="userData.avatar || '/images/default-avatar.png'"
           :alt="userData.name"
           class="avatar-image"
         />
         <div class="online-status" :class="{ online: userData.isOnline }"></div>
       </div>
-      
+
       <div class="profile-info">
         <h3 class="user-name">{{ userData.name }}</h3>
         <p class="user-email">{{ userData.email }}</p>
@@ -55,56 +55,56 @@
     <div class="navigation-section">
       <!-- ================= ADMIN ================= -->
       <template v-if="userRole === '1'">
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'dashboard' }"
           @click="$emit('selectPage', 'dashboard')"
         >
           <i class="material-icons">dashboard</i>
           <span class="nav-label">Dashboard</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'agency' }"
           @click="$emit('selectPage', 'agency')"
         >
           <i class="material-icons">business</i>
           <span class="nav-label">Agencies</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'spots' }"
           @click="$emit('selectPage', 'spots')"
         >
           <i class="material-icons">map</i>
           <span class="nav-label">Manage Spots</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'managePost' }"
           @click="$emit('selectPage', 'managePost')"
         >
           <i class="material-icons">article</i>
           <span class="nav-label">Manage Post</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'manageUser' }"
           @click="$emit('selectPage', 'manageUser')"
         >
           <i class="material-icons">group</i>
           <span class="nav-label">Manage Users</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'reviewsAndFeedbacks' }"
           @click="$emit('selectPage', 'reviewsAndFeedbacks')"
         >
           <i class="material-icons">feedback</i>
           <span class="nav-label">Reviews & Feedbacks</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'settings' }"
           @click="$emit('selectPage', 'settings')"
         >
@@ -115,43 +115,41 @@
 
       <!-- ================= AGENCY ================= -->
       <template v-else-if="userRole === '2'">
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'agencyDashboard' }"
           @click="$emit('selectPage', 'agencyDashboard')"
         >
           <i class="material-icons">dashboard</i>
           <span class="nav-label">Dashboard</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'ManageTours' }"
           @click="$emit('selectPage', 'ManageTours')"
         >
           <i class="material-icons">work</i>
           <span class="nav-label">Manage Tours & Packages</span>
         </button>
-        <button 
-          class="nav-item" 
-          :class="{ active: currentPage === 'manageReservation' }"
-          @click="$emit('selectPage', 'manageReservation')"
-        >
-          <i class="material-icons">book</i>
-          <span class="nav-label">Manage Reservation</span>
-          <span v-if="agencyStats.pendingBookings > 0" class="nav-badge">
-            {{ agencyStats.pendingBookings }}
-          </span>
-        </button>
-        <button 
-          class="nav-item" 
+          <button
+              class="nav-item"
+              :class="{ active: currentPage === 'Reservation' }"
+              @click="$emit('selectPage', 'Reservation')"
+          >
+              <i class="material-icons">work</i>
+              <span class="nav-label">Reservation</span>
+          </button>
+
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'agencyFeedbacks' }"
           @click="$emit('selectPage', 'agencyFeedbacks')"
         >
           <i class="material-icons">star</i>
           <span class="nav-label">Reviews & Feedbacks</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'agencySettings' }"
           @click="$emit('selectPage', 'agencySettings')"
         >
@@ -162,32 +160,32 @@
 
       <!-- ================= USER ================= -->
       <template v-else>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'userDashboard' }"
           @click="$emit('selectPage', 'userDashboard')"
         >
           <i class="material-icons">home</i>
           <span class="nav-label">Home</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'spots' }"
           @click="$emit('selectPage', 'spots')"
         >
           <i class="material-icons">place</i>
           <span class="nav-label">Spots</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'favorites' }"
           @click="$emit('selectPage', 'favorites')"
         >
           <i class="material-icons">favorite</i>
           <span class="nav-label">Favorites</span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'messages' }"
           @click="$emit('selectPage', 'messages')"
         >
@@ -197,8 +195,8 @@
             {{ userStats.unreadMessages }}
           </span>
         </button>
-        <button 
-          class="nav-item" 
+        <button
+          class="nav-item"
           :class="{ active: currentPage === 'settings' }"
           @click="$emit('selectPage', 'settings')"
         >
@@ -519,34 +517,34 @@ const handleLogout = () => {
   .sidebar-container {
     width: 70px;
   }
-  
+
   .profile-info,
   .stats-section,
   .nav-label,
   .logout-btn span {
     display: none;
   }
-  
+
   .profile-avatar {
     width: 40px;
     height: 40px;
     margin-bottom: 0;
   }
-  
+
   .profile-section {
     padding: 20px 10px;
   }
-  
+
   .nav-item {
     justify-content: center;
     padding: 16px 0;
   }
-  
+
   .logout-btn {
     justify-content: center;
     padding: 16px 0;
   }
-  
+
   .nav-badge {
     position: absolute;
     top: 8px;
