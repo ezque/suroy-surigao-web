@@ -39,4 +39,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/get-spots', [UserController::class, 'getSpots']);
     Route::post('/add-reservation', [UserController::class, 'addReservation']);
     Route::post('/update-reservation/{id}', [AgencyController::class, 'updateReservation']);
+
+    Route::post('/spots/{id}/rate', [UserController::class, 'rating']);
+    Route::get('/spots/{id}/rating', [UserController::class, 'getRatings']);
+
+    Route::get('/spots/{id}/reviews', [UserController::class, 'getReviews']);
+    Route::post('/spots/{id}/reviews', [UserController::class, 'addReview']);
+
+
 });

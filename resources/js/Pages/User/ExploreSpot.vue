@@ -54,21 +54,29 @@
 
                 <!-- Rating -->
                 <div class="text-left flex flex-col justify-end items-end">
-                    <div class="flex g-[2px] mb-[5px] flex-row">
+                    <div class="flex gap-[2px] mb-[5px] flex-row cursor-pointer">
                         <span
                             v-for="n in 5"
                             :key="n"
-                            class="text-[1.2rem]"
-                            :class="{ filled: n <= spot.rating }"
+                            class="text-[1.8rem] transition-all duration-200 cursor-pointer"
+                            :class="{
+                                'text-yellow-400': n <= (hoverRating || userRating || spot.rating),
+                                'text-gray-400': n > (hoverRating || userRating || spot.rating)
+                            }"
+                            @mouseover="hoverRating = n"
+                            @mouseleave="hoverRating = 0"
+                            @click="setRating(n)"
                         >
-                          {{ n <= spot.rating ? "⭐" : "☆" }}
+                           ★
                         </span>
                     </div>
+
                     <div class="text-[1.5rem] font-bold text-[#1a3c5a]">
-                        {{ spot.rating || 0 }}/5
+                        {{ Math.round(spot.rating) || 0 }}/5
                     </div>
+
                     <div class="text-[#4a6572] text-[0.9rem]">
-                        ({{ spot.reviewCount || 0 }} reviews)
+                        ({{ spot.reviews_count || 0 }} reviews)
                     </div>
                 </div>
             </div>
@@ -121,12 +129,11 @@
                     :activePackages="activePackages"
                     :spotId="spot.id"
                 />
-                <div v-if="activeTab === 'reviews'">
-                    <!-- You can later replace this with your actual Reviews component -->
-                    <p class="text-gray-600 text-center text-lg">
-                        Reviews section coming soon...
-                    </p>
-                </div>
+                <Review
+                    v-if="activeTab === 'reviews'"
+                    :spotId="spot.id"
+                />
+
             </div>
         </div>
     </div>
@@ -138,6 +145,7 @@
 
     import Overview from "./Overview.vue";
     import SpotAgencies from "./SpotAgencies.vue";
+    import Review from "./Review.vue"
 
     const props = defineProps({
         spot: Object,
@@ -151,7 +159,27 @@
     let interval = null;
     const isSaved = ref("2");
     const activeTab = ref("overview");
+    const userRating = ref(0);
+    const hoverRating = ref(0);
 
+    const setRating = async (rating) => {
+        userRating.value = rating;
+
+        try {
+            const response = await axios.post(`/spots/${props.spot.id}/rate`, {
+                rating: rating,
+            });
+
+            if (response.data.new_average_rating) {
+                props.spot.rating = response.data.new_average_rating;
+            }
+
+            alert(`You rated ${rating} stars!`);
+        } catch (error) {
+            console.error("Error saving rating:", error);
+            alert("Failed to submit rating. Please try again.");
+        }
+    };
     const checkIfSpotSaved = async () => {
         try {
             const response = await axios.get(`/check-saved-unsave-spot/${props.spot.id}`);
@@ -193,4 +221,16 @@
             console.error(error);
         }
     };
+
+    onMounted(() => {
+        checkIfSpotSaved();
+
+        if (props.spot.images && props.spot.images.length > 1) {
+            interval = setInterval(() => {
+                currentImage.value = (currentImage.value + 1) % props.spot.images.length;
+            }, 4000);
+        }
+    });
+
+
 </script>

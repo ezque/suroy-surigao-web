@@ -9,6 +9,6 @@ class SpotsServices
      */
     public function getAllSpots()
     {
-        return Spot::with('images')->get();
+        return Spot::withCount('reviews')->with('images')->get();
     }
 }

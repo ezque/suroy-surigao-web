@@ -19,5 +19,13 @@ class Spot extends Model
     {
         return $this->hasMany(SpotImage::class, 'spot_id');
     }
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'spot_id');
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class, 'spot_id');
+    }
 
 }

@@ -12,6 +12,8 @@ use App\Models\LikeAgency;
 use App\Models\Spot;
 use App\Models\Reservation;
 use App\Models\Package;
+use App\Models\Rating;
+use App\Models\Review;
 
 
 class UserController extends Controller
@@ -223,5 +225,79 @@ class UserController extends Controller
             ], 500);
         }
     }
+    public function rating(Request $request, $id)
+    {
+        $request->validate([
+            'rating' => 'required|integer|min:1|max:5',
+        ]);
+
+        $userId = Auth::id();
+
+        // Update or create user's rating for this spot
+        $rating = Rating::updateOrCreate(
+            ['user_id' => $userId, 'spot_id' => $id],
+            ['rating' => $request->rating]
+        );
+
+        // Recalculate the average rating for the spot
+        $average = Rating::where('spot_id', $id)->avg('rating');
+
+        Spot::where('id', $id)->update(['rating' => $average]);
+
+        return response()->json([
+            'message' => 'Rating saved successfully!',
+            'new_average_rating' => round($average, 2),
+        ]);
+    }
+    public function getRatings(Request $request, $id)
+    {
+        $userId = Auth::id();
+
+        $rating = Rating::where('user_id', $userId)
+            ->where('spot_id', $id)
+            ->first();
+
+        $average = Rating::where('spot_id', $id)->avg('rating');
+
+        return response()->json([
+            'user_rating' => $rating ? (int)$rating->rating : 0,
+            'average_rating' => $average ? round($average, 2) : 0,
+        ]);
+    }
+    public function addReview(Request $request, $id)
+    {
+        $request->validate([
+            'review' => 'required|string|max:1000',
+        ]);
+
+        $review = Review::create([
+            'spot_id' => $id,
+            'user_id' => Auth::id(),
+            'review' => $request->review,
+        ]);
+
+        $review = Review::with('user.userInfo:id,user_ID,firstName,lastName')
+            ->find($review->id);
+
+        return response()->json([
+            'message' => 'Review added successfully!',
+            'review' => $review
+        ]);
+    }
+
+    public function getReviews($id)
+    {
+        $reviews = Review::where('spot_id', $id)
+            ->with(['user.userInfo:id,user_ID,firstName,lastName'])
+            ->latest()
+            ->get();
+
+        return response()->json($reviews);
+    }
+
+
+
+
+
 
 }
