@@ -31,9 +31,9 @@ class AuthController extends Controller
 
             $user = Auth::user();
 
-            $redirect = match ($user->role ?? '3') {
-                '1' => '/admin-dashboard',
-                '2' => '/agency-dashboard',
+            $redirect = match ($user->role ?? 'user') {
+                'admin' => '/admin-dashboard',
+                'agency' => '/agency-dashboard',
                 default => '/user-dashboard',
             };
 
@@ -62,7 +62,7 @@ class AuthController extends Controller
             $user = User::create([
                 'email'    => $request->email,
                 'password' => Hash::make($request->password),
-                'role'     => 3,
+                'role'     => 'user',
                 'status'   => 1,
             ]);
 

@@ -1,13 +1,15 @@
 <template>
-    <div class="agencyFeedbacks-body">
-        <div class="header-section">
-            <h1>Customer Reviews & Feedback</h1>
-            <p>Read and respond to feedback from your customers.</p>
+    <div class="min-h-screen overflow-y-auto bg-slate-50 p-6 md:p-8">
+        <!-- Header Section -->
+        <div class="mb-6">
+            <h1 class="text-3xl font-bold text-slate-800">Customer Reviews & Feedback</h1>
+            <p class="mt-1 text-slate-600">Read and respond to feedback from your customers.</p>
         </div>
 
-        <div class="search-section">
-            <div class="search-bar">
-                <svg class="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <!-- Search Section -->
+        <div class="mb-6">
+            <div class="relative max-w-md">
+                <svg class="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <circle cx="11" cy="11" r="8"></circle>
                     <path d="m21 21-4.35-4.35"></path>
                 </svg>
@@ -15,125 +17,135 @@
                     v-model="searchQuery"
                     type="text"
                     placeholder="Search by customer name or message..."
-                    class="search-input"
+                    class="w-full rounded-xl border border-slate-300 bg-white py-3 pl-10 pr-4 text-sm shadow-sm transition-all focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-400/20"
                 />
             </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-card stat-card-green">
-                <div class="stat-content">
-                    <div>
-                        <p class="stat-label">Total Reviews</p>
-                        <p class="stat-value">{{ stats.totalReviews }}</p>
-                    </div>
-                    <div class="stat-icon stat-icon-green">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
-                        </svg>
-                    </div>
+        <!-- Stats Grid -->
+        <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
+            <!-- Total Reviews -->
+            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-green-50 p-6 shadow-sm">
+                <div>
+                    <p class="text-sm font-medium text-green-800">Total Reviews</p>
+                    <p class="text-4xl font-bold text-green-900">{{ stats.totalReviews }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-green-200 text-green-900">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
                 </div>
             </div>
 
-            <div class="stat-card stat-card-purple">
-                <div class="stat-content">
-                    <div>
-                        <p class="stat-label">Response Rate</p>
-                        <p class="stat-value">{{ stats.responseRate }}%</p>
-                    </div>
-                    <div class="stat-icon stat-icon-purple">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
-                            <polyline points="17 6 23 6 23 12"></polyline>
-                        </svg>
-                    </div>
+            <!-- Response Rate -->
+            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-purple-50 p-6 shadow-sm">
+                <div>
+                    <p class="text-sm font-medium text-purple-800">Response Rate</p>
+                    <p class="text-4xl font-bold text-purple-900">{{ stats.responseRate }}%</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-purple-200 text-purple-900">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <polyline points="23 6 13.5 15.5 8.5 10.5 1 18"></polyline>
+                        <polyline points="17 6 23 6 23 12"></polyline>
+                    </svg>
                 </div>
             </div>
 
-            <div class="stat-card stat-card-orange">
-                <div class="stat-content">
-                    <div>
-                        <p class="stat-label">Average Rating</p>
-                        <p class="stat-value">{{ stats.averageRating }}</p>
-                    </div>
-                    <div class="stat-icon stat-icon-orange">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-                        </svg>
-                    </div>
+            <!-- Average Rating -->
+            <div class="flex items-center justify-between rounded-xl border border-slate-200 bg-amber-50 p-6 shadow-sm">
+                <div>
+                    <p class="text-sm font-medium text-amber-800">Average Rating</p>
+                    <p class="text-4xl font-bold text-amber-900">{{ stats.averageRating }}</p>
+                </div>
+                <div class="flex h-12 w-12 items-center justify-center rounded-full bg-amber-200 text-amber-900">
+                    <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+                    </svg>
                 </div>
             </div>
         </div>
 
-        <div class="reviews-container">
+        <!-- Reviews Container -->
+        <div class="space-y-4">
             <div
                 v-for="review in filteredReviews"
                 :key="review.id"
-                class="review-card"
-                :class="{ 'review-card-active': selectedReview === review.id }"
+                class="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-all"
+                :class="{ 'border-blue-400 shadow-lg': selectedReview === review.id }"
             >
-                <div class="review-content">
-                    <div class="review-header">
-                        <div class="avatar">{{ review.avatar }}</div>
-                        <div class="review-info">
-                            <div class="review-top">
+                <!-- Review Content -->
+                <div class="p-6">
+                    <div class="flex gap-4">
+                        <!-- Avatar -->
+                        <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-blue-400 to-purple-400 text-sm font-semibold text-white">
+                            {{ review.avatar }}
+                        </div>
+
+                        <!-- Review Info -->
+                        <div class="flex-1">
+                            <div class="mb-2 flex flex-wrap items-start justify-between gap-2">
                                 <div>
-                                    <h3 class="review-author">{{ review.author }}</h3>
-                                    <p class="review-date">{{ review.date }}</p>
+                                    <h3 class="font-semibold text-gray-900">{{ review.author }}</h3>
+                                    <p class="text-sm text-gray-500">{{ review.date }}</p>
                                 </div>
-                                <div class="rating">
+                                <div class="flex gap-1">
                                     <svg
                                         v-for="i in 5"
                                         :key="i"
-                                        class="star-icon"
-                                        width="16" height="16" viewBox="0 0 24 24"
+                                        class="h-4 w-4"
                                         :fill="i <= review.rating ? '#fbbf24' : 'none'"
                                         :stroke="i <= review.rating ? '#fbbf24' : '#d1d5db'"
                                         stroke-width="2"
+                                        viewBox="0 0 24 24"
                                     >
                                         <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
                                     </svg>
                                 </div>
                             </div>
-                            <p class="review-message">{{ review.message }}</p>
-                            
-                            <div v-if="review.status === 'pending'" class="action-buttons">
-                                <button @click="handleReply(review.id)" class="btn btn-reply">
+
+                            <p class="mb-4 text-gray-700 leading-relaxed">{{ review.message }}</p>
+
+                            <!-- Action Buttons or Status -->
+                            <div v-if="review.status === 'pending'" class="flex gap-3">
+                                <button @click="handleReply(review.id)" class="flex items-center gap-2 rounded-full bg-blue-500 px-6 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
                                     Reply
                                 </button>
-                                <button @click="handleHide(review.id)" class="btn btn-hide">
+                                <button @click="handleHide(review.id)" class="flex items-center gap-2 rounded-full bg-gray-200 px-6 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-300">
                                     Hide
                                 </button>
                             </div>
 
-                            <div v-if="review.status === 'replied'" class="status-badge">
-                                <span class="status-dot"></span>
+                            <div v-if="review.status === 'replied'" class="inline-flex items-center gap-2 rounded-full bg-emerald-100 px-4 py-2 text-sm font-medium text-emerald-800">
+                                <span class="h-2 w-2 rounded-full bg-emerald-500"></span>
                                 Replied
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div v-if="selectedReview === review.id" class="reply-section">
-                    <div class="reply-form">
-                        <div class="reply-avatar">A</div>
-                        <div class="reply-input-container">
-                            <textarea
-                                v-model="replyText"
-                                placeholder="Write your response..."
-                                class="reply-textarea"
-                                rows="3"
-                            ></textarea>
-                            <div class="reply-actions">
-                                <button @click="handleCloseReply" class="btn btn-cancel">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <!-- Reply Section -->
+                <div v-if="selectedReview === review.id" class="border-t border-gray-200 bg-gray-50 p-6">
+                    <div class="flex gap-4">
+                        <div class="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-pink-500 to-purple-400 text-sm font-semibold text-white">
+                            A
+                        </div>
+                        <div class="flex-1">
+              <textarea
+                  v-model="replyText"
+                  placeholder="Write your response..."
+                  rows="3"
+                  class="w-full resize-y rounded-lg border border-gray-300 p-3 text-sm focus:border-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-400/20"
+              ></textarea>
+                            <div class="mt-3 flex justify-end gap-3">
+                                <button @click="handleCloseReply" class="flex items-center gap-2 rounded-full bg-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-300">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <line x1="18" y1="6" x2="6" y2="18"></line>
                                         <line x1="6" y1="6" x2="18" y2="18"></line>
                                     </svg>
                                     Cancel
                                 </button>
-                                <button @click="handleSubmitReply(review.id)" class="btn btn-send">
-                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <button @click="handleSubmitReply(review.id)" class="flex items-center gap-2 rounded-full bg-blue-500 px-4 py-2 text-sm font-medium text-white transition hover:bg-blue-600">
+                                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <line x1="22" y1="2" x2="11" y2="13"></line>
                                         <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                                     </svg>
@@ -149,403 +161,102 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
+    import { ref, computed } from 'vue';
 
-const searchQuery = ref('');
-const selectedReview = ref(null);
-const replyText = ref('');
+    const searchQuery = ref('');
+    const selectedReview = ref(null);
+    const replyText = ref('');
 
-const reviews = ref([
-    {
-        id: 1,
-        author: "John Anderson",
-        avatar: "JA",
-        message: "The store is providing the facilities are on range, and the front view unforgettable!",
-        date: "2 days ago",
-        rating: 5,
-        status: "pending"
-    },
-    {
-        id: 2,
-        author: "Sarah Mitchell",
-        avatar: "SM",
-        message: "The area is breathing! The facilities are on range, and the front tool were unforgettable!",
-        date: "3 days ago",
-        rating: 4,
-        status: "pending"
-    },
-    {
-        id: 3,
-        author: "Michael Chen",
-        avatar: "MC",
-        message: "An absolutely fantastic experience from start to finish. Highly recommended!",
-        date: "5 days ago",
-        rating: 5,
-        status: "replied"
-    },
-    {
-        id: 4,
-        author: "Emily Rodriguez",
-        avatar: "ER",
-        message: "Good tour, but the bus was a bit crowded. The guide was very knowledgeable.",
-        date: "1 week ago",
-        rating: 3,
-        status: "pending"
-    },
-    {
-        id: 5,
-        author: "David Lee",
-        avatar: "DL",
-        message: "Our family had a wonderful time. Thank you for the great memories!",
-        date: "2 weeks ago",
-        rating: 5,
-        status: "replied"
-    }
-]);
-
-// --- Computed Properties for dynamic data ---
-const filteredReviews = computed(() => {
-    if (!searchQuery.value) {
-        return reviews.value;
-    }
-    const query = searchQuery.value.toLowerCase();
-    return reviews.value.filter(review => 
-        review.author.toLowerCase().includes(query) || 
-        review.message.toLowerCase().includes(query)
-    );
-});
-
-const stats = computed(() => {
-    const total = reviews.value.length;
-    const replied = reviews.value.filter(r => r.status === 'replied').length;
-    const responseRate = total > 0 ? Math.round((replied / total) * 100) : 0;
-    const totalRating = reviews.value.reduce((sum, r) => sum + r.rating, 0);
-    const averageRating = total > 0 ? (totalRating / total).toFixed(1) : 'N/A';
-    
-    return {
-        totalReviews: total,
-        responseRate: responseRate,
-        averageRating: averageRating
-    };
-});
-
-
-// --- Event Handlers ---
-const handleReply = (reviewId) => {
-    selectedReview.value = reviewId;
-    replyText.value = '';
-};
-
-const handleCloseReply = () => {
-    selectedReview.value = null;
-    replyText.value = '';
-};
-
-const handleSubmitReply = (reviewId) => {
-    if (replyText.value.trim()) {
-        const reviewIndex = reviews.value.findIndex(r => r.id === reviewId);
-        if (reviewIndex !== -1) {
-            reviews.value[reviewIndex].status = 'replied';
+    const reviews = ref([
+        {
+            id: 1,
+            author: "John Anderson",
+            avatar: "JA",
+            message: "The store is providing the facilities are on range, and the front view unforgettable!",
+            date: "2 days ago",
+            rating: 5,
+            status: "pending"
+        },
+        {
+            id: 2,
+            author: "Sarah Mitchell",
+            avatar: "SM",
+            message: "The area is breathing! The facilities are on range, and the front tool were unforgettable!",
+            date: "3 days ago",
+            rating: 4,
+            status: "pending"
+        },
+        {
+            id: 3,
+            author: "Michael Chen",
+            avatar: "MC",
+            message: "An absolutely fantastic experience from start to finish. Highly recommended!",
+            date: "5 days ago",
+            rating: 5,
+            status: "replied"
+        },
+        {
+            id: 4,
+            author: "Emily Rodriguez",
+            avatar: "ER",
+            message: "Good tour, but the bus was a bit crowded. The guide was very knowledgeable.",
+            date: "1 week ago",
+            rating: 3,
+            status: "pending"
+        },
+        {
+            id: 5,
+            author: "David Lee",
+            avatar: "DL",
+            message: "Our family had a wonderful time. Thank you for the great memories!",
+            date: "2 weeks ago",
+            rating: 5,
+            status: "replied"
         }
+    ]);
+
+    const filteredReviews = computed(() => {
+        if (!searchQuery.value) return reviews.value;
+        const query = searchQuery.value.toLowerCase();
+        return reviews.value.filter(
+            (review) =>
+                review.author.toLowerCase().includes(query) ||
+                review.message.toLowerCase().includes(query)
+        );
+    });
+
+    const stats = computed(() => {
+        const total = reviews.value.length;
+        const replied = reviews.value.filter((r) => r.status === 'replied').length;
+        const responseRate = total > 0 ? Math.round((replied / total) * 100) : 0;
+        const totalRating = reviews.value.reduce((sum, r) => sum + r.rating, 0);
+        const averageRating = total > 0 ? (totalRating / total).toFixed(1) : 'N/A';
+
+        return { totalReviews: total, responseRate, averageRating };
+    });
+
+    const handleReply = (reviewId) => {
+        selectedReview.value = reviewId;
+        replyText.value = '';
+    };
+
+    const handleCloseReply = () => {
         selectedReview.value = null;
         replyText.value = '';
-    }
-};
+    };
 
-const handleHide = (reviewId) => {
-    // In a real app, you might want a confirmation dialog here
-    reviews.value = reviews.value.filter(review => review.id !== reviewId);
-};
+    const handleSubmitReply = (reviewId) => {
+        if (replyText.value.trim()) {
+            const reviewIndex = reviews.value.findIndex((r) => r.id === reviewId);
+            if (reviewIndex !== -1) {
+                reviews.value[reviewIndex].status = 'replied';
+            }
+            selectedReview.value = null;
+            replyText.value = '';
+        }
+    };
+
+    const handleHide = (reviewId) => {
+        reviews.value = reviews.value.filter((review) => review.id !== reviewId);
+    };
 </script>
-
-<style scoped>
-/* Main body styling for the agency feedback page */
-.agencyFeedbacks-body {
-    width: 100%;
-    height: 100%;
-    overflow-y: auto;
-    padding: 24px 32px;
-    background: #f8fafc; /* A clean, light background */
-}
-
-/* Header */
-.header-section {
-    margin-bottom: 24px;
-}
-.header-section h1 {
-    font-size: 1.75rem;
-    font-weight: 700;
-    color: #1e293b;
-    margin: 0;
-}
-.header-section p {
-    margin-top: 4px;
-    color: #64748b;
-}
-
-
-/* Search Section */
-.search-section {
-    margin-bottom: 24px;
-}
-
-.search-bar {
-    position: relative;
-    max-width: 448px;
-}
-
-.search-icon {
-    position: absolute;
-    left: 12px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: #9ca3af;
-}
-
-.search-input {
-    width: 100%;
-    padding: 12px 16px 12px 40px;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
-    background: white;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    font-size: 14px;
-    outline: none;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.search-input:focus {
-    border-color: #60a5fa;
-    box-shadow: 0 0 0 3px rgba(96, 165, 250, 0.2);
-}
-
-/* Stats Grid */
-.stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 24px;
-    margin-bottom: 32px;
-}
-
-.stat-card {
-    border-radius: 16px;
-    padding: 24px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
-    border: 1px solid #e2e8f0;
-}
-
-.stat-card-green { background: #f0fdf4; }
-.stat-card-purple { background: #faf5ff; }
-.stat-card-orange { background: #fffbeb; }
-
-.stat-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
-.stat-label {
-    font-size: 14px;
-    font-weight: 500;
-    margin-bottom: 4px;
-}
-
-.stat-card-green .stat-label { color: #166534; }
-.stat-card-purple .stat-label { color: #6b21a8; }
-.stat-card-orange .stat-label { color: #9a3412; }
-
-.stat-value {
-    font-size: 36px;
-    font-weight: bold;
-}
-
-.stat-card-green .stat-value { color: #14532d; }
-.stat-card-purple .stat-value { color: #581c87; }
-.stat-card-orange .stat-value { color: #7c2d12; }
-
-.stat-icon {
-    width: 48px;
-    height: 48px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.stat-icon-green { background: #dcfce7; color: #14532d; }
-.stat-icon-purple { background: #f3e8ff; color: #581c87; }
-.stat-icon-orange { background: #fef3c7; color: #7c2d12; }
-
-/* Reviews Container */
-.reviews-container {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-}
-
-.review-card {
-    background: white;
-    border-radius: 16px;
-    border: 1px solid #e2e8f0;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
-    transition: all 0.3s;
-}
-
-.review-card-active {
-    border-color: #60a5fa;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.review-content {
-    padding: 24px;
-}
-
-.review-header {
-    display: flex;
-    gap: 16px;
-}
-
-.avatar {
-    width: 56px;
-    height: 56px;
-    border-radius: 50%;
-    background: linear-gradient(to bottom right, #60a5fa, #a78bfa);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    flex-shrink: 0;
-}
-
-.review-info { flex: 1; }
-
-.review-top {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-    flex-wrap: wrap;
-    gap: 8px;
-}
-
-.review-author {
-    font-weight: 600;
-    color: #1f2937;
-    margin: 0 0 4px 0;
-}
-
-.review-date {
-    font-size: 14px;
-    color: #6b7280;
-    margin: 0;
-}
-
-.rating { display: flex; gap: 4px; }
-.star-icon { flex-shrink: 0; }
-
-.review-message {
-    color: #374151;
-    margin: 0 0 16px 0;
-    line-height: 1.5;
-}
-
-.action-buttons { display: flex; gap: 12px; }
-
-.btn {
-    padding: 8px 24px;
-    border-radius: 9999px;
-    font-size: 14px;
-    font-weight: 500;
-    border: none;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-}
-
-.btn-reply { background: #3b82f6; color: white; }
-.btn-reply:hover { background: #2563eb; }
-.btn-hide { background: #e5e7eb; color: #374151; }
-.btn-hide:hover { background: #d1d5db; }
-
-.status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: #d1fae5;
-    color: #065f46;
-    border-radius: 9999px;
-    font-size: 14px;
-    font-weight: 500;
-}
-
-.status-dot {
-    width: 8px;
-    height: 8px;
-    background: #10b981;
-    border-radius: 50%;
-}
-
-/* Reply Section */
-.reply-section {
-    border-top: 1px solid #e5e7eb;
-    background: #f9fafb;
-    padding: 24px;
-}
-
-.reply-form { display: flex; gap: 16px; }
-
-.reply-avatar {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    background: linear-gradient(to bottom right, #ec4899, #a78bfa);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 600;
-    font-size: 14px;
-    flex-shrink: 0;
-}
-
-.reply-input-container { flex: 1; }
-
-.reply-textarea {
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 12px;
-    border: 1px solid #d1d5db;
-    font-size: 14px;
-    font-family: inherit;
-    resize: vertical;
-    min-height: 80px;
-    outline: none;
-    transition: border-color 0.2s;
-}
-
-.reply-textarea:focus { border-color: #60a5fa; }
-
-.reply-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 12px;
-    margin-top: 12px;
-}
-
-.btn-cancel { background: #e5e7eb; color: #374151; }
-.btn-cancel:hover { background: #d1d5db; }
-.btn-send { background: #3b82f6; color: white; }
-.btn-send:hover { background: #2563eb; }
-
-/* Scrollbar Styling */
-.agencyFeedbacks-body::-webkit-scrollbar { width: 8px; }
-.agencyFeedbacks-body::-webkit-scrollbar-track { background: transparent; }
-.agencyFeedbacks-body::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
-.agencyFeedbacks-body::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
-</style>

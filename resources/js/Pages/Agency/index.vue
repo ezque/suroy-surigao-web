@@ -2,10 +2,11 @@
     <div class="agency-body-container">
         <Sidebar
             :userRole="userRole"
+            :agencyDetails="agencyDetails"
             @selectPage="selectActivePage"
+            :currentPage="activePage"
         />
         <div class="agency-main-body">
-            <Header></Header>
             <AgencyDashboard
                 v-if="activePage === 'agencyDashboard'"
             />
@@ -47,6 +48,7 @@
 
     const props = defineProps({
         userInformation: Object,
+        agencyDetails: Object,
         allSpots: Array,
         allPackages: Array,
         allReservations: Array,

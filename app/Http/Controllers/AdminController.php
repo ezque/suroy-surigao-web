@@ -28,7 +28,7 @@ class AdminController extends Controller
             $user = User::create([
                 'email'    => $generatedEmail,
                 'password' => Hash::make($agencyNameSlug),
-                'role'     => 2,
+                'role'     => 'agency',
                 'status'   => 1,
             ]);
 

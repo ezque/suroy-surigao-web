@@ -15,6 +15,12 @@ class UserServices
 
         return $userInformation;
     }
+    public function getAgencyInformation()
+    {
+        $agencyInformation = Auth::user()->load('agency');
+
+        return $agencyInformation;
+    }
     public function getUserTotal()
     {
         $usersTotal = User::where('role', '3')->count();

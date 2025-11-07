@@ -2,7 +2,9 @@
     <div class="user-body-container">
         <Sidebar
             :userRole="userRole"
+            :userInformation="userInformation"
             @selectPage="(p) => navigate(p)"
+            :currentPage="activePage"
         />
 
         <div class="user-main-body">

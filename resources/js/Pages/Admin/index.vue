@@ -3,9 +3,13 @@
         <Sidebar
             :userRole="userRole"
             @selectPage="selectActivePage"
+            :userInformation="userInformation"
+            :currentPage="activePage"
         />
         <div class="admin-main-body">
-            <Header />
+            <Header
+                :userInformation="userInformation"
+            />
             <Dashboard
                 v-if="activePage === 'dashboard'"
                 :totalUsers="totalUsers"

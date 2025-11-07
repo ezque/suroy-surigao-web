@@ -49,12 +49,14 @@ class ViewController extends Controller
     public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices, PackageServices $packageServices, AgencyServices $agencyServices): \Inertia\Response
     {
         $userInformation = $userServices->getUserInformation();
+        $getAgencyInformation = $userServices->getAgencyInformation();
         $allSpots = $spotsServices->getAllSpots();
         $allPackages = $packageServices->getAllOwnedPackages();
         $reservationData = $agencyServices->getAllReservation();
 
         return Inertia::render('Agency/index', [
             'userInformation' => $userInformation,
+            'agencyDetails'   => $getAgencyInformation,
             'allSpots'     => $allSpots,
             'allPackages'  => $allPackages,
             'allReservations' => $reservationData['reservations'],
