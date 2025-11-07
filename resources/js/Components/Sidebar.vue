@@ -94,9 +94,9 @@
                 </button>
 
                 <button
-                    @click="$emit('selectPage', 'settings')"
+                    @click="$emit('selectPage', 'adminSettings')"
                     class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-white/80 transition-all hover:bg-white/10 hover:text-white"
-                    :class="{ 'bg-white/15 font-semibold text-white ring-2 ring-emerald-500 ring-inset': currentPage === 'settings' }"
+                    :class="{ 'bg-white/15 font-semibold text-white ring-2 ring-emerald-500 ring-inset': currentPage === 'adminSettings' }"
                 >
                     <span class="material-icons text-xl">settings</span>
                     <span class="flex-1">Settings</span>
