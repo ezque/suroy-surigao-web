@@ -50,6 +50,10 @@
                 v-else-if="activePage === 'reviewsAndFeedbacks'"
                 :allUsers="allUsers"
             />
+            <AdminSettings
+                v-else-if="activePage === 'adminSettings'"
+                :userInformation="userInformation"
+            />
         </div>
     </div>
 </template>
@@ -66,6 +70,7 @@
     import ManageUser from "./manageUser.vue";
     import Spots from "./spots.vue";
     import ReviewsAndFeedbacks from "./reviewsAndFeedbacks.vue";
+    import AdminSettings from "./adminSettings.vue";
 
 
     const props = defineProps({
@@ -91,11 +96,6 @@
             editingSpot.value = payload.spot
         }
     }
-
-
-
-
-
 </script>
 
 <style scoped>
