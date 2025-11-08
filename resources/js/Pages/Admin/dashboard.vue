@@ -15,9 +15,6 @@
                 <div class="card-content">
                     <h3>Total Users</h3>
                     <p class="stat-number">{{ totalUsers }}</p>
-                    <span class="growth positive">
-                        <i class="material-icons">trending_up</i> +12.5% from last month
-                    </span>
                 </div>
             </div>
 
@@ -28,9 +25,6 @@
             <div class="card-content">
                 <h3>Total Agencies</h3>
                 <p class="stat-number">{{ agencyTotal }}</p>
-                <span class="growth positive">
-                    <i class="material-icons">trending_up</i> +8.3% from last month
-                </span>
             </div>
         </div>
 
@@ -41,9 +35,6 @@
         <div class="card-content">
         <h3>Total Spots</h3>
         <p class="stat-number">136</p>
-        <span class="growth positive">
-        <i class="material-icons">trending_up</i> +15.7% from last month
-        </span>
         </div>
         </div>
         </main>
@@ -70,15 +61,7 @@
         </div>
         </div>
 
-        <div class="stat-item">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-        <i class="material-icons">bookmark</i>
-        </div>
-        <div class="stat-details">
-        <p class="stat-label">Bookmarks</p>
-        <p class="stat-value">8,932</p>
-        </div>
-        </div>
+      
 
         <div class="stat-item">
         <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">

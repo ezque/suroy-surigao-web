@@ -6,20 +6,6 @@
                 <h1 class="main-title">Discover Tour Agencies</h1>
                 <p class="subtitle">Find the perfect adventure with trusted local experts in Surigao</p>
             </div>
-            <div class="header-stats">
-                <div class="stat-item">
-                    <div class="stat-number">{{ totalAgencies }}</div>
-                    <div class="stat-label">Agencies</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">{{ totalPackages }}</div>
-                    <div class="stat-label">Packages</div>
-                </div>
-                <div class="stat-item">
-                    <div class="stat-number">{{ availablePackages }}</div>
-                    <div class="stat-label">Available</div>
-                </div>
-            </div>
         </div>
 
         <!-- Search and Filter Section -->
