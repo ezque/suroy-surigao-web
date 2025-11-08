@@ -14,65 +14,11 @@
             <div class="stat-number">{{ visitedCount }}</div>
             <div class="stat-label">Visited</div>
           </div>
-          <div class="stat">
-            <div class="stat-number">{{ categories.length }}</div>
-            <div class="stat-label">Categories</div>
-          </div>
         </div>
-      </div>
-      <div class="header-actions">
-        <button class="action-btn share-all" @click="shareAllFavorites">
-          <span class="btn-icon">📤</span>
-          Share All
-        </button>
-        <button class="action-btn clear-all" @click="clearAllFavorites" v-if="favorites.length">
-          <span class="btn-icon">🗑️</span>
-          Clear All
-        </button>
       </div>
     </div>
 
-    <!-- Filter and Sort Controls -->
-    <div class="controls-section" v-if="favorites.length">
-      <div class="filter-controls">
-        <div class="filter-group">
-          <label>Filter by Category:</label>
-          <select v-model="selectedCategory" class="filter-select">
-            <option value="all">All Categories</option>
-            <option v-for="category in categories" :key="category" :value="category">
-              {{ category }}
-            </option>
-          </select>
-        </div>
-        <div class="filter-group">
-          <label>Sort by:</label>
-          <select v-model="sortBy" class="filter-select">
-            <option value="dateAdded">Date Added</option>
-            <option value="name">Name</option>
-            <option value="rating">Rating</option>
-            <option value="distance">Distance</option>
-          </select>
-        </div>
-      </div>
-      <div class="view-controls">
-        <button 
-          class="view-btn" 
-          :class="{ active: viewMode === 'grid' }" 
-          @click="viewMode = 'grid'"
-        >
-          <span class="btn-icon">⏹️</span>
-          Grid
-        </button>
-        <button 
-          class="view-btn" 
-          :class="{ active: viewMode === 'list' }" 
-          @click="viewMode = 'list'"
-        >
-          <span class="btn-icon">📋</span>
-          List
-        </button>
-      </div>
-    </div>
+
 
     <!-- Favorites Grid/List -->
     <div v-if="filteredFavorites.length" class="favorites-container">
@@ -87,9 +33,6 @@
             <div class="image-overlay">
               <button class="quick-action favorite" @click="toggleFavorite(spot.id)">
                 <span class="action-icon">{{ spot.favorited ? '❤️' : '🤍' }}</span>
-              </button>
-              <button class="quick-action share" @click="shareSpot(spot)">
-                <span class="action-icon">📤</span>
               </button>
               <div class="spot-badges">
                 <span class="badge category" :style="{ backgroundColor: getCategoryColor(spot.category) }">
@@ -120,14 +63,6 @@
                 <span class="detail-icon">📍</span>
                 <span class="detail-text">{{ spot.distance }} from city</span>
               </div>
-              <div class="detail">
-                <span class="detail-icon">⏱️</span>
-                <span class="detail-text">{{ spot.bestTime }}</span>
-              </div>
-              <div class="detail" v-if="spot.entryFee">
-                <span class="detail-icon">💰</span>
-                <span class="detail-text">{{ spot.entryFee }}</span>
-              </div>
             </div>
 
             <div class="spot-actions">
@@ -143,17 +78,6 @@
                 <span class="btn-icon">🗑️</span>
                 Remove
               </button>
-            </div>
-
-            <div class="spot-meta">
-              <span class="meta-item">
-                <span class="meta-icon">📅</span>
-                Added {{ formatDate(spot.dateAdded) }}
-              </span>
-              <span v-if="spot.lastVisited" class="meta-item">
-                <span class="meta-icon">👣</span>
-                Last visited {{ formatDate(spot.lastVisited) }}
-              </span>
             </div>
           </div>
         </div>
@@ -183,46 +107,6 @@
             <li>Read reviews and check ratings before adding to favorites</li>
             <li>Use the map view to discover spots near your location</li>
           </ul>
-        </div>
-      </div>
-    </div>
-
-    <!-- Categories Overview -->
-    <div class="categories-section" v-if="favorites.length">
-      <h3>Your Favorites by Category</h3>
-      <div class="categories-grid">
-        <div 
-          v-for="category in categories" 
-          :key="category" 
-          class="category-card"
-          @click="selectedCategory = category"
-          :class="{ active: selectedCategory === category }"
-        >
-          <div class="category-icon">{{ getCategoryIcon(category) }}</div>
-          <div class="category-info">
-            <div class="category-name">{{ category }}</div>
-            <div class="category-count">
-              {{ getCategoryCount(category) }} spots
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Recent Activity -->
-    <div class="activity-section" v-if="recentActivity.length">
-      <h3>Recent Activity</h3>
-      <div class="activity-list">
-        <div 
-          v-for="activity in recentActivity" 
-          :key="activity.id" 
-          class="activity-item"
-        >
-          <div class="activity-icon">{{ activity.icon }}</div>
-          <div class="activity-content">
-            <p class="activity-text">{{ activity.text }}</p>
-            <span class="activity-time">{{ activity.time }}</span>
-          </div>
         </div>
       </div>
     </div>
