@@ -410,6 +410,7 @@ watch(recentActivity, (newActivity) => {
   color: #1a3c5a;
   margin-bottom: 8px;
   background: linear-gradient(135deg, #1a3c5a, #2c5282);
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
