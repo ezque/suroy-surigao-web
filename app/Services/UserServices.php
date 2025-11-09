@@ -24,15 +24,21 @@ class UserServices
     }
     public function getUserTotal()
     {
-        $usersTotal = User::where('role', '3')->count();
+        $usersTotal = User::where('role', 'user')->count();
 
         return $usersTotal;
     }
     public function getAgencyTotal()
     {
-        $agencyTotal = User::where('role', '2')->count();
+        $agencyTotal = User::where('role', 'agency')->count();
 
         return $agencyTotal;
+    }
+    public function getTotalSpot()
+    {
+        $spotTotal = Spot::where('status', 'active')->count();
+
+        return $spotTotal;
     }
 
     public function getAgencies()

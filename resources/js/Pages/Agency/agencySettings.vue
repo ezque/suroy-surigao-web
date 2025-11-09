@@ -1,311 +1,171 @@
 <template>
-  <div class="agencySettings-body">
-    <header class="settings-header">
-      <h1>Agency Settings</h1>
-      <p>Manage your agency profile and account preferences.</p>
-    </header>
+    <div class="p-6 max-w-2xl mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-gray-800">Account Settings</h2>
 
-    <div class="settings-layout">
-      <nav class="settings-nav">
-        <a
-          href="#"
-          @click.prevent="activeSection = 'profile'"
-          :class="{ active: activeSection === 'profile' }"
-        >
-          <i class="material-icons">storefront</i>
-          <span>Agency Profile</span>
-        </a>
-        <a
-          href="#"
-          @click.prevent="activeSection = 'danger'"
-          :class="{ active: activeSection === 'danger' }"
-        >
-          <i class="material-icons">warning</i>
-          <span>Danger Zone</span>
-        </a>
-      </nav>
-
-      <main class="settings-content">
-        <!-- ===== AGENCY PROFILE ===== -->
-        <div v-if="activeSection === 'profile'" class="settings-card">
-          <div class="card-header">
-            <h3>Profile</h3>
-            <p>This information will be displayed publicly on your agency page.</p>
-          </div>
-          <div class="card-body">
-            <div class="form-group">
-              <label for="agencyName">Agency Name</label>
-              <input
-                type="text"
-                id="agencyName"
-                v-model="agencyData.name"
-                placeholder="e.g., Suroy Surigao Tours"
-              />
-            </div>
-            <div class="form-group">
-              <label for="agencyDescription">Description</label>
-              <textarea
-                id="agencyDescription"
-                v-model="agencyData.description"
-                rows="4"
-                placeholder="Tell us about your agency..."
-              ></textarea>
-            </div>
-            <div class="form-group">
-              <label for="agencyPhone">Phone Number</label>
-              <input
-                type="tel"
-                id="agencyPhone"
-                v-model="agencyData.phone"
-                placeholder="+63 912 345 6789"
-              />
-            </div>
-            <div class="form-group">
-              <label for="agencyAddress">Address</label>
-              <input
-                type="text"
-                id="agencyAddress"
-                v-model="agencyData.address"
-                placeholder="e.g., San Nicolas Street, Surigao City"
-              />
-            </div>
-          </div>
-          <div class="card-footer">
-            <button class="btn btn-primary" @click="saveProfile">Save Changes</button>
-          </div>
+        <!-- Tab Navigation -->
+        <div class="flex border-b border-gray-200 mb-8">
+            <button @click="activeTab = 'profile'" :class="tabClass('profile')">Profile</button>
+            <button @click="activeTab = 'password'" :class="tabClass('password')">Password</button>
         </div>
 
-        <!-- ===== DANGER ZONE ===== -->
-        <div v-if="activeSection === 'danger'" class="settings-card danger-zone">
-          <div class="card-header">
-            <h3>Danger Zone</h3>
-            <p>These actions are irreversible. Please be certain.</p>
-          </div>
-          <div class="card-body">
-            <div class="danger-action">
-              <div>
-                <h4>Deactivate Agency Account</h4>
-                <p>Your agency profile and packages will be hidden from public view.</p>
-              </div>
-              <button class="btn btn-danger-outline">Deactivate Account</button>
-            </div>
-          </div>
+        <!-- Profile Tab -->
+        <div v-if="activeTab === 'profile'" class="space-y-6">
+            <form @submit.prevent="updateProfile" class="bg-white p-8 rounded-2xl shadow-lg space-y-6">
+                <!-- Image Upload -->
+                <div class="flex flex-col items-center gap-4">
+                    <div class="w-28 h-28 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                        <img v-if="previewImage" :src="previewImage" class="w-full h-full object-cover" />
+                        <span v-else class="text-gray-400 material-icons text-5xl">person</span>
+                    </div>
+                    <input type="file" @change="handleImageChange" accept="image/*" />
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-6">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Agency Name</label>
+                        <input v-model="form.agency_name" type="text" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all" />
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone Number</label>
+                        <input v-model="form.contact_number" type="tel" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all" />
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Location Address</label>
+                    <input v-model="form.location_address" type="text" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all" />
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                    <textarea v-model="form.description" rows="4" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500 transition-all"></textarea>
+                </div>
+
+                <div class="flex justify-end pt-4">
+                    <button type="submit" :disabled="loading" class="px-6 py-2.5 bg-teal-600 text-white font-medium rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2">
+                        <span v-if="loading" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        {{ loading ? 'Updating...' : 'Update Profile' }}
+                    </button>
+                </div>
+            </form>
         </div>
-      </main>
+
+        <!-- Password Tab -->
+        <div v-if="activeTab === 'password'" class="bg-white p-8 rounded-2xl shadow-lg space-y-5">
+            <h3 class="text-xl font-semibold text-gray-800 mb-6">Change Password</h3>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Current Password</label>
+                <input v-model="passwordForm.current_password" type="password" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"/>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">New Password</label>
+                <input v-model="passwordForm.new_password" type="password" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"/>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-2">Confirm New Password</label>
+                <input v-model="passwordForm.new_password_confirmation" type="password" class="w-full px-4 py-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-teal-500 focus:border-teal-500"/>
+            </div>
+            <div class="pt-4">
+                <button @click.prevent="updatePassword" :disabled="loadingPassword" class="px-6 py-2.5 bg-teal-600 text-white rounded-lg hover:bg-teal-700 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span v-if="loadingPassword" class="inline-block w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                    {{ loadingPassword ? 'Updating...' : 'Update Password' }}
+                </button>
+            </div>
+        </div>
     </div>
-  </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+    import { ref, onMounted } from "vue";
+    import axios from "axios";
 
-const activeSection = ref("profile");
+    const activeTab = ref("profile");
+    const form = ref({
+        agency_name: "",
+        description: "",
+        location_address: "",
+        contact_number: "",
+    });
+    const imageFile = ref(null);
+    const previewImage = ref(null);
+    const loading = ref(false);
 
-// --- Reactive Data Models ---
-const agencyData = ref({});
+    const passwordForm = ref({ current_password: "", new_password: "", new_password_confirmation: "" });
+    const loadingPassword = ref(false);
 
-// --- Functions ---
-const saveProfile = () => {
-  console.log("Saving Agency Profile:", agencyData.value);
-  alert("Agency profile saved!");
-  // Add API call here
-};
+    const tabClass = (tab) => [
+        'px-6 py-3 font-medium text-sm transition-colors duration-200 border-b-2 -mb-px',
+        activeTab.value === tab ? 'border-teal-600 text-teal-600' : 'border-transparent text-gray-500 hover:text-gray-700'
+    ];
 
-// --- Data Fetching Simulation ---
-onMounted(() => {
-  fetchSettingsData();
-});
+    // Fetch agency info
+    const getUserInfo = async () => {
+        try {
+            const response = await axios.get("/agency-information");
+            const data = response.data.agency;
+            if (data) {
+                form.value = {
+                    agency_name: data.agency_name || "",
+                    description: data.description || "",
+                    location_address: data.location_address || "",
+                    contact_number: data.contact_number || "",
+                };
+                // Use /storage/ + image_path for preview
+                if (data.image_path) previewImage.value = `/storage/${data.image_path}`;
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    };
 
-const fetchSettingsData = () => {
-  agencyData.value = {
-    name: "Suroy Surigao Tours",
-    description:
-      "Your premier guide to the beautiful islands and landscapes of Surigao. We offer the best local tours with experienced guides.",
-    phone: "+63 917 123 4567",
-    address: "San Nicolas Street, Surigao City, 8400",
-  };
-};
+
+    // Handle image selection
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        if (file) {
+            imageFile.value = file;
+            previewImage.value = URL.createObjectURL(file);
+        }
+    };
+
+    // Update profile
+    const updateProfile = async () => {
+        loading.value = true;
+        try {
+            const formData = new FormData();
+            Object.entries(form.value).forEach(([key, value]) => formData.append(key, value));
+            if (imageFile.value) formData.append('image_path', imageFile.value);
+
+            const response = await axios.post("/agency-information", formData, {
+                headers: { 'Content-Type': 'multipart/form-data' }
+            });
+
+            alert("Profile updated successfully!");
+            // Update preview after save using /storage/ + returned path
+            if (response.data.user_info.image_path) {
+                previewImage.value = `/storage/${response.data.user_info.image_path}`;
+            }
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update profile.");
+        } finally {
+            loading.value = false;
+        }
+    };
+
+    // Update password
+    const updatePassword = async () => {
+        loadingPassword.value = true;
+        try {
+            await axios.put("/user-password", passwordForm.value);
+            alert("Password updated successfully!");
+            passwordForm.value = { current_password: "", new_password: "", new_password_confirmation: "" };
+        } catch (error) {
+            console.error(error);
+            alert(error.response?.data?.message || "Failed to update password.");
+        } finally { loadingPassword.value = false; }
+    };
+
+    onMounted(getUserInfo);
 </script>
-
-<style scoped>
-/* ===== MAIN LAYOUT ===== */
-.agencySettings-body {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background-color: #f8fafc;
-  padding: 24px 32px;
-}
-.settings-header {
-  margin-bottom: 24px;
-}
-.settings-header h1 {
-  font-size: 1.75rem;
-  font-weight: 700;
-  color: #1e293b;
-  margin: 0;
-}
-.settings-header p {
-  margin-top: 4px;
-  color: #64748b;
-  font-size: 1rem;
-}
-.settings-layout {
-  display: grid;
-  grid-template-columns: 240px 1fr;
-  gap: 32px;
-  align-items: start;
-}
-
-/* ===== NAVIGATION SIDEBAR ===== */
-.settings-nav {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-.settings-nav a {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  border-radius: 8px;
-  text-decoration: none;
-  color: #334155;
-  font-weight: 500;
-  transition: background-color 0.2s, color 0.2s;
-}
-.settings-nav a:hover {
-  background-color: #f1f5f9;
-}
-.settings-nav a.active {
-  background-color: #007a8c;
-  color: white;
-}
-.settings-nav a .material-icons {
-  font-size: 20px;
-}
-
-/* ===== CONTENT CARD ===== */
-.settings-card {
-  background: #fff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-}
-.card-header {
-  padding: 24px;
-  border-bottom: 1px solid #e2e8f0;
-}
-.card-header h3 {
-  margin: 0 0 4px 0;
-  font-size: 1.25rem;
-  color: #1e293b;
-}
-.card-header p {
-  margin: 0;
-  color: #64748b;
-}
-.card-body {
-  padding: 24px;
-}
-.card-footer {
-  padding: 16px 24px;
-  background-color: #f8fafc;
-  border-top: 1px solid #e2e8f0;
-  border-radius: 0 0 12px 12px;
-  display: flex;
-  justify-content: flex-end;
-}
-
-/* ===== FORM ELEMENTS ===== */
-.form-group {
-  margin-bottom: 20px;
-}
-.form-group label {
-  display: block;
-  font-weight: 500;
-  color: #334155;
-  margin-bottom: 8px;
-}
-.form-group input,
-.form-group textarea {
-  width: 100%;
-  padding: 10px 14px;
-  border-radius: 8px;
-  border: 1px solid #cbd5e1;
-  font-size: 1rem;
-  transition: border-color 0.2s, box-shadow 0.2s;
-}
-.form-group input:focus,
-.form-group textarea:focus {
-  outline: none;
-  border-color: #007a8c;
-  box-shadow: 0 0 0 3px rgba(0, 122, 140, 0.15);
-}
-
-/* ===== DANGER ZONE ===== */
-.danger-zone {
-  border-color: #ef4444;
-}
-.danger-zone .card-header h3 {
-  color: #b91c1c;
-}
-.danger-action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.danger-action h4 {
-  color: #1e293b;
-  margin: 0 0 4px 0;
-}
-.danger-action p {
-  color: #64748b;
-  margin: 0;
-  font-size: 0.9rem;
-}
-.btn {
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.btn-primary {
-  background-color: #007a8c;
-  color: white;
-}
-.btn-primary:hover {
-  background-color: #009fb7;
-}
-.btn-danger-outline {
-  background-color: transparent;
-  color: #b91c1c;
-  border: 1px solid #ef4444;
-}
-.btn-danger-outline:hover {
-  background-color: #fee2e2;
-}
-
-/* ===== RESPONSIVENESS ===== */
-@media (max-width: 992px) {
-  .settings-layout {
-    grid-template-columns: 1fr;
-  }
-  .settings-nav {
-    flex-direction: row;
-    overflow-x: auto;
-    padding-bottom: 8px;
-  }
-}
-@media (max-width: 768px) {
-  .agencySettings-body {
-    padding: 16px;
-  }
-  .danger-action {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 16px;
-  }
-}
-</style>

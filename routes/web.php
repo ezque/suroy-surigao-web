@@ -51,4 +51,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user-information', [UserSettings::class , 'getPersonalInformation']);
     Route::put('/user-information', [UserSettings::class, 'updatePersonalInformation']);
     Route::put('/user-password', [UserSettings::class, 'updatePassword']);
+    Route::post('/agency-information', [UserSettings::class, 'updateAgencyInformation']);
+    Route::get('/agency-information', [UserSettings::class , 'getAgencyInformation']);
 });

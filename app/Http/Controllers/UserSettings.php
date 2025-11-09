@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Agency;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -13,6 +14,10 @@ class UserSettings extends Controller
     public function getPersonalInformation()
     {
         return Auth::user()->load('userInfo');
+    }
+    public function getAgencyInformation()
+    {
+        return Auth::user()->load('agency');
     }
     public function updatePersonalInformation(Request $request)
     {
@@ -35,6 +40,41 @@ class UserSettings extends Controller
             'user_info' => $userInfo,
         ]);
     }
+    public function updateAgencyInformation(Request $request)
+    {
+        $request->validate([
+            'agency_name' => 'sometimes|string|max:255',
+            'description' => 'sometimes|string|max:1000',
+            'image_path' => 'sometimes|image|mimes:jpeg,png,jpg,gif,svg|max:20048',
+            'location_address' => 'sometimes|string|max:255',
+            'contact_number' => 'sometimes|string|max:20',
+        ]);
+
+        $user = Auth::user();
+
+        $data = $request->only(['agency_name', 'description', 'location_address', 'contact_number']);
+
+        // Handle image upload
+        if ($request->hasFile('image_path')) {
+            $image = $request->file('image_path');
+            $path = $image->store('agency_images', 'public'); // storage/app/public/agency_images
+            $data['image_path'] = $path; // save path in DB
+        }
+
+        // Update or create agency info
+        $agencyInfo = Agency::updateOrCreate(
+            ['user_ID' => $user->id], // lowercase
+            $data
+        );
+
+        return response()->json([
+            'message' => 'Profile updated successfully',
+            'user_info' => $agencyInfo,
+            'image_url' => $agencyInfo->image_path ? asset("storage/{$agencyInfo->image_path}") : null,
+        ]);
+    }
+
+
 
     public function updatePassword(Request $request)
     {

@@ -36,13 +36,11 @@
 </template>
 <script setup>
     import Sidebar from "../../Components/Sidebar.vue";
-    import AddPackages from "./addPackages.vue";
     import AgencyDashboard from "./agencyDashboard.vue";
     import AgencySettings from "./agencySettings.vue";
     import Packages from "./Packages.vue";
     import ReviewsAndFeedbacks from "./agencyFeedbacks.vue";
     import {computed, onMounted, ref} from "vue";
-    import Header from "../../Components/Header.vue";
     import ManageReservation from "./manageReservation.vue";
     import Reservation from "./Reservation.vue";
 

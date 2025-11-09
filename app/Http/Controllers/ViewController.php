@@ -22,6 +22,7 @@ class ViewController extends Controller
         $totalUsers = $userServices->getUserTotal();
         $agencyTotal = $userServices->getAgencyTotal();
         $allBlogs = $adminServices->getAllBlogs();
+        $spotTotal = $userServices->getTotalSpot();
 
         return Inertia::render('Admin/index', [
             'userInformation' => $userInformation,
@@ -31,6 +32,7 @@ class ViewController extends Controller
             'totalUsers' => $totalUsers,
             'agencyTotal' => $agencyTotal,
             'allBlogs' => $allBlogs,
+            'spotTotal' => $spotTotal,
         ]);
     }
 

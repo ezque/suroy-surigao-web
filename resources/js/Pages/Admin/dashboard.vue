@@ -21,75 +21,32 @@
                 </div>
             </div>
 
-        <div class="card card-agencies">
-            <div class="card-icon-wrapper">
-                <img src="/public/images/agency.png" alt="Agencies" class="card-icon" />
+            <div class="card card-agencies">
+                <div class="card-icon-wrapper">
+                    <img src="/public/images/agency.png" alt="Agencies" class="card-icon" />
+                </div>
+                <div class="card-content">
+                    <h3>Total Agencies</h3>
+                    <p class="stat-number">{{ agencyTotal }}</p>
+                    <span class="growth positive">
+                        <i class="material-icons">trending_up</i> +8.3% from last month
+                    </span>
+                </div>
             </div>
-            <div class="card-content">
-                <h3>Total Agencies</h3>
-                <p class="stat-number">{{ agencyTotal }}</p>
-                <span class="growth positive">
-                    <i class="material-icons">trending_up</i> +8.3% from last month
-                </span>
-            </div>
-        </div>
 
-        <div class="card card-spots">
-        <div class="card-icon-wrapper">
-        <img src="/public/images/manage-spots.png" alt="Spots" class="card-icon" />
-        </div>
-        <div class="card-content">
-        <h3>Total Spots</h3>
-        <p class="stat-number">136</p>
-        <span class="growth positive">
-        <i class="material-icons">trending_up</i> +15.7% from last month
-        </span>
-        </div>
-        </div>
+            <div class="card card-spots">
+                <div class="card-icon-wrapper">
+                    <img src="/public/images/manage-spots.png" alt="Spots" class="card-icon" />
+                </div>
+                <div class="card-content">
+                    <h3>Total Spots</h3>
+                    <p class="stat-number">{{ spotTotal }}</p>
+                    <span class="growth positive">
+                        <i class="material-icons">trending_up</i> +15.7% from last month
+                    </span>
+                </div>
+            </div>
         </main>
-
-        <!-- Additional Stats Section -->
-        <section class="quick-stats">
-        <div class="stat-item">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-        <i class="material-icons">visibility</i>
-        </div>
-        <div class="stat-details">
-        <p class="stat-label">Total Views</p>
-        <p class="stat-value">24,589</p>
-        </div>
-        </div>
-
-        <div class="stat-item">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);">
-        <i class="material-icons">star</i>
-        </div>
-        <div class="stat-details">
-        <p class="stat-label">Reviews</p>
-        <p class="stat-value">3,421</p>
-        </div>
-        </div>
-
-        <div class="stat-item">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);">
-        <i class="material-icons">bookmark</i>
-        </div>
-        <div class="stat-details">
-        <p class="stat-label">Bookmarks</p>
-        <p class="stat-value">8,932</p>
-        </div>
-        </div>
-
-        <div class="stat-item">
-        <div class="stat-icon" style="background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);">
-        <i class="material-icons">verified</i>
-        </div>
-        <div class="stat-details">
-        <p class="stat-label">Verified</p>
-        <p class="stat-value">42</p>
-        </div>
-        </div>
-        </section>
     </div>
 </template>
 
@@ -97,6 +54,7 @@
     const props = defineProps({
         totalUsers: Number,
         agencyTotal: Number,
+        spotTotal: Number,
     })
 </script>
 

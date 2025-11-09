@@ -101,7 +101,7 @@ font-size: 1rem;
 .stats-grid {
 display: grid;
 /* Adjusted to handle a single item gracefully */
-grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); 
+grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
 gap: 24px;
 margin-bottom: 24px;
 }
