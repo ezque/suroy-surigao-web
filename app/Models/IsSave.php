@@ -13,4 +13,10 @@ class IsSave extends Model
         'spot_id',
         'is_save',
     ];
+
+    public function spot()
+    {
+        return $this->belongsTo(Spot::class, 'spot_id');
+    }
+
 }

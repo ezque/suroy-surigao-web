@@ -53,7 +53,7 @@ class AuthController extends Controller
             'firstName'  => 'required|string|max:100',
             'lastName'   => 'required|string|max:100',
             'phone_num'  => 'nullable|string|max:20',
-            'gender'     => 'nullable|in:1,2',
+            'gender'     => 'nullable|in:male,female',
         ]);
 
         try {

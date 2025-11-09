@@ -52,8 +52,8 @@
             />
             <select v-model="registerForm.gender">
                 <option disabled value="">Select Gender</option>
-                <option value="1">Male</option>
-                <option value="2">Female</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
             </select>
         </div>
         <span v-if="errors.phone_num && errors.phone_num.length" class="error">

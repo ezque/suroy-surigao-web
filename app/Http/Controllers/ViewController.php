@@ -21,6 +21,7 @@ class ViewController extends Controller
         $allSpots = $spotsServices->getAllSpots();
         $totalUsers = $userServices->getUserTotal();
         $agencyTotal = $userServices->getAgencyTotal();
+        $allBlogs = $adminServices->getAllBlogs();
 
         return Inertia::render('Admin/index', [
             'userInformation' => $userInformation,
@@ -28,7 +29,8 @@ class ViewController extends Controller
             'allUsers'        => $allUsers,
             'allSpots'     => $allSpots,
             'totalUsers' => $totalUsers,
-            'agencyTotal' => $agencyTotal
+            'agencyTotal' => $agencyTotal,
+            'allBlogs' => $allBlogs,
         ]);
     }
 
@@ -38,12 +40,16 @@ class ViewController extends Controller
         $allSpots = $spotsServices->getAllSpots();
         $agencies = $userServices->getAgencies();
         $activePackages = $packageServices->getActivePackages();
+        $blogsURL = $userServices->getAllBlogUrlsRandom();
+        $getAllSaveSpots = $spotsServices->getAllSaveSpots();
 
         return Inertia::render('User/index', [
             'userInformation' => $userInformation,
             'allSpots'     => $allSpots,
             'agencies' => $agencies,
             'activePackages' => $activePackages,
+            'blogsURL' => $blogsURL,
+            'saveSpots' => $getAllSaveSpots,
         ]);
     }
     public function agencyDashboard(UserServices $userServices, SpotsServices $spotsServices, PackageServices $packageServices, AgencyServices $agencyServices): \Inertia\Response

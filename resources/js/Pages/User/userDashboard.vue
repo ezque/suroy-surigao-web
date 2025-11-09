@@ -1,617 +1,193 @@
 <template>
-  <div class="userDashboard-body">
-    <!-- Welcome Header -->
-    <header class="dashboard-header">
-      <div class="user-welcome">
-        <div class="user-avatar">
-          <span class="avatar-icon">👤</span>
-        </div>
-        <div class="welcome-text">
-          <h1 class="title">Welcome back, Traveler!</h1>
-          <p class="subtitle">
-            Ready to explore Surigao's hidden gems? Check out our latest recommendations below 🌊
-          </p>
-        </div>
-      </div>
-    
-    </header>
-   
-    <!-- Blog / News Embed -->
-    <section class="blog-section">
-      <div class="section-header">
-        <h2 class="blog-title">Latest from Our Blog</h2>
-        <p class="blog-desc">
-          Read featured news and stories about Surigao tourism and community events.
-        </p>
-      </div>
+    <div class="w-full h-full bg-gradient-to-b from-cyan-50 to-blue-50 p-6 md:p-8 lg:p-12 xl:p-16 overflow-y-auto flex flex-col gap-8">
+        <!-- Welcome Header -->
+        <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+            <div class="flex items-center gap-4">
+                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-teal-700 to-teal-900 flex items-center justify-center shadow-lg">
+                    <span class="text-2xl md:text-3xl">User</span>
+                </div>
+                <div class="max-w-lg">
+                    <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-teal-900">Welcome back, Traveler!</h1>
+                    <p class="text-sm md:text-base text-gray-700 mt-1">
+                        Ready to explore Surigao's hidden gems? Check out our latest recommendations below.
+                    </p>
+                </div>
+            </div>
+        </header>
 
-      <!-- iFrame showing sample blog/news -->
-      <div class="iframe-container">
-        <div class="iframe-header">
-          <div class="iframe-tabs">
-            <button 
-              :class="['tab-button', { active: activeTab === 'blog' }]" 
-              @click="activeTab = 'blog'"
-            >
-              Travel Blog
-            </button>
-            <button 
-              :class="['tab-button', { active: activeTab === 'news' }]" 
-              @click="activeTab = 'news'"
-            >
-              Local News
-            </button>
-          </div>
-          <button class="refresh-button" @click="refreshContent">
-            <span class="refresh-icon">🔄</span>
-            Refresh
-          </button>
-        </div>
-        <iframe
-          :src="activeTab === 'blog' ? blogUrl : newsUrl"
-          :title="activeTab === 'blog' ? 'Surigao Blog' : 'Surigao News'"
-          frameborder="0"
-          allowfullscreen
-          ref="blogIframe"
-        ></iframe>
-      </div>
-    </section>
-  </div>
+        <!-- Mini Browser Section -->
+        <section class="w-full max-w-6xl mx-auto">
+            <div class="mb-6">
+                <h2 class="text-xl md:text-2xl font-bold text-teal-900">Live Blog & News Preview</h2>
+                <p class="text-sm md:text-base text-gray-600 mt-1">
+                    {{ hasBlogs ? 'Previewing your latest blog post.' : 'No blog posts available.' }}
+                </p>
+            </div>
+
+            <!-- Browser Toolbar -->
+            <div class="bg-gray-100 p-3 rounded-t-2xl border border-gray-300 flex flex-col sm:flex-row gap-3 items-center justify-between">
+                <!-- Tabs -->
+                <div class="flex gap-1">
+                    <button
+                        @click="activeTab = 'blog'"
+                        :disabled="!hasBlogs"
+                        :class="[
+              'px-4 py-2 rounded-full font-medium transition-all',
+              activeTab === 'blog' && hasBlogs
+                ? 'bg-teal-900 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-50',
+              !hasBlogs && 'opacity-50 cursor-not-allowed'
+            ]"
+                    >
+                        Travel Blog
+                    </button>
+                    <button
+                        @click="activeTab = 'news'"
+                        :class="[
+              'px-4 py-2 rounded-full font-medium transition-all',
+              activeTab === 'news'
+                ? 'bg-teal-900 text-white'
+                : 'bg-white text-gray-700 hover:bg-gray-50'
+            ]"
+                    >
+                        Local News
+                    </button>
+                </div>
+
+                <!-- Address Bar -->
+                <div class="flex items-center bg-white rounded-full px-3 py-1.5 shadow-inner flex-1 max-w-md">
+                    <span class="text-xs text-gray-500 mr-2">Web</span>
+                    <input
+                        :value="displayUrl"
+                        readonly
+                        class="flex-1 text-xs text-gray-700 bg-transparent outline-none truncate"
+                        title="Current URL"
+                    />
+                    <button @click="refreshContent" class="ml-2 text-teal-700 hover:text-teal-900">
+                        Refresh
+                    </button>
+                </div>
+
+                <!-- Zoom Button -->
+                <button
+                    @click="toggleZoom"
+                    class="px-3 py-1.5 bg-white rounded-full text-sm font-medium hover:bg-gray-50 transition-colors"
+                >
+                    Zoom {{ zoomLevel }}%
+                </button>
+            </div>
+
+            <!-- Mini Browser Window -->
+            <div class="bg-white rounded-b-2xl shadow-2xl overflow-hidden border-x border-b border-gray-300">
+                <!-- Loading State -->
+                <div v-if="isLoading" class="h-96 md:h-[550px] flex items-center justify-center bg-gray-50">
+                    <div class="text-center">
+                        <div class="inline-block animate-spin w-8 h-8 border-4 border-teal-600 border-t-transparent rounded-full"></div>
+                        <p class="mt-3 text-gray-600">Loading preview...</p>
+                    </div>
+                </div>
+
+                <!-- No Blog Posts -->
+                <div v-else-if="activeTab === 'blog' && !hasBlogs" class="h-96 md:h-[550px] flex flex-col items-center justify-center bg-yellow-50 p-6 text-center">
+                    <p class="text-yellow-800 font-medium">No blog posts available</p>
+                    <p class="text-sm text-yellow-700 mt-2">Add a post in the admin panel to preview it here.</p>
+                </div>
+
+                <!-- Error State -->
+                <div v-else-if="hasError" class="h-96 md:h-[550px] flex flex-col items-center justify-center bg-red-50 p-6 text-center">
+                    <p class="text-red-700 font-medium">Failed to load content</p>
+                    <button @click="refreshContent" class="mt-3 text-teal-700 underline hover:text-teal-800">
+                        Try Again
+                    </button>
+                </div>
+
+                <!-- iFrame Preview -->
+                <iframe
+                    v-else
+                    :src="currentUrl"
+                    :title="iframeTitle"
+                    class="w-full h-96 md:h-[550px] border-0"
+                    :style="{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', width: zoomLevel !== 100 ? '133%' : '100%' }"
+                    sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
+                    @load="onIframeLoad"
+                    @error="hasError = true"
+                ></iframe>
+            </div>
+        </section>
+    </div>
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+    import { ref, computed, watch, onMounted, nextTick } from 'vue'
 
-// Reactive data
-const activeTab = ref('blog')
-const blogIframe = ref(null)
+    // === Props from Laravel ===
+    const props = defineProps({
+        blogsURL: {
+            type: Array,
+            default: () => []
+        }
+    })
 
-// URLs for iframe content
-const blogUrl = 'https://www.choosephilippines.com/specials/travel/5485/surigao-hidden-paradise'
-const newsUrl = 'https://surigaodelnorte.gov.ph/news/'
+    // === State ===
+    const activeTab = ref('blog')
+    const isLoading = ref(true)
+    const hasError = ref(false)
+    const zoomLevel = ref(100)
 
-// Methods
-const navigateTo = (destination) => {
-  // In a real app, this would use Vue Router
-  alert(`Navigating to ${destination} section`)
-}
+    // === Computed Values ===
+    const hasBlogs = computed(() => props.blogsURL.length > 0)
 
-const refreshContent = () => {
-  if (blogIframe.value) {
-    blogIframe.value.src = activeTab.value === 'blog' ? blogUrl : newsUrl
-  }
-}
+    const blogUrl = computed(() => hasBlogs.value ? props.blogsURL[0] : null)
+
+    const currentUrl = computed(() => {
+        return activeTab.value === 'blog' && blogUrl.value
+            ? blogUrl.value
+            : 'https://surigaodelnorte.gov.ph/news/'
+    })
+
+    const displayUrl = computed(() => {
+        if (activeTab.value === 'blog' && blogUrl.value) {
+            return blogUrl.value.length > 50 ? blogUrl.value.substring(0, 50) + '...' : blogUrl.value
+        }
+        return currentUrl.value
+    })
+
+    const iframeTitle = computed(() => {
+        return activeTab.value === 'blog' ? 'Your Blog Post Preview' : 'Surigao Local News'
+    })
+
+    // === iFrame Handlers ===
+    const onIframeLoad = () => {
+        isLoading.value = false
+        hasError.value = false
+    }
+
+    // === Actions ===
+    const refreshContent = () => {
+        isLoading.value = true
+        hasError.value = false
+        nextTick(() => {
+            const iframe = document.querySelector('iframe')
+            if (iframe) {
+                iframe.src = iframe.src // Force reload
+            }
+        })
+    }
+
+    const toggleZoom = () => {
+        zoomLevel.value = zoomLevel.value === 100 ? 75 : zoomLevel.value === 75 ? 50 : 100
+    }
+
+    // === Watchers ===
+    watch(activeTab, () => {
+        isLoading.value = true
+        hasError.value = false
+    })
+
+    // === Lifecycle ===
+    onMounted(() => {
+        setTimeout(() => {
+            if (isLoading.value) isLoading.value = false
+        }, 1500)
+    })
 </script>
-
-<style scoped>
-.userDashboard-body {
-  width: 100%;
-  height: 100%;
-  overflow-y: auto;
-  background: linear-gradient(to bottom, #e1f3f9, #f9fdfd);
-  padding: 30px 60px;
-  display: flex;
-  flex-direction: column;
-  gap: 30px;
-}
-
-/* Header */
-.dashboard-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 10px;
-}
-.user-welcome {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-.user-avatar {
-  width: 60px;
-  height: 60px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #2a7a7a, #213f3f);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.avatar-icon {
-  font-size: 1.8rem;
-}
-.welcome-text {
-  max-width: 500px;
-}
-.title {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: #213f3f;
-  margin-bottom: 5px;
-}
-.subtitle {
-  color: #4b4b4b;
-  font-size: 1.1rem;
-  margin-top: 5px;
-}
-.weather-widget {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  background: white;
-  border-radius: 15px;
-  padding: 10px 15px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-.weather-icon {
-  font-size: 2rem;
-}
-.weather-temp {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #213f3f;
-}
-.weather-location {
-  font-size: 0.8rem;
-  color: #666;
-}
-
-/* Stats Section */
-.stats-section {
-  margin: 10px 0;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 20px;
-}
-.stat-card {
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.stat-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-.stat-icon {
-  font-size: 2.5rem;
-  margin-right: 15px;
-}
-.stat-number {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #213f3f;
-  margin: 0;
-}
-.stat-label {
-  color: #666;
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-/* Banner */
-.featured-banner {
-  background-image: url("/images/siargao-banner.jpg");
-  background-size: cover;
-  background-position: center;
-  border-radius: 20px;
-  position: relative;
-  height: 300px;
-  overflow: hidden;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-}
-.banner-overlay {
-  background: linear-gradient(135deg, rgba(33, 63, 63, 0.75), rgba(42, 122, 122, 0.7));
-  color: white;
-  padding: 40px;
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-.banner-content {
-  max-width: 600px;
-}
-.popular-badge {
-  display: inline-flex;
-  align-items: center;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50px;
-  padding: 8px 15px;
-  margin-bottom: 15px;
-  backdrop-filter: blur(5px);
-}
-.popular-text {
-  font-size: 0.9rem;
-}
-.banner-title {
-  font-size: 2rem;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.banner-subtext {
-  font-size: 1.1rem;
-  margin-bottom: 20px;
-  opacity: 0.9;
-}
-.banner-stats {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 20px;
-}
-.banner-stat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-.stat-value {
-  font-size: 1.5rem;
-  font-weight: 700;
-}
-.stat-label {
-  font-size: 0.8rem;
-  opacity: 0.8;
-}
-.cta-button {
-  background: #ff7e5f;
-  color: white;
-  border: none;
-  border-radius: 50px;
-  padding: 12px 25px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 10px rgba(255, 126, 95, 0.3);
-}
-.cta-button:hover {
-  background: #ff6b4a;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 15px rgba(255, 126, 95, 0.4);
-}
-
-/* Actions Section */
-.actions-section {
-  margin: 20px 0;
-}
-.section-title {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #213f3f;
-  margin-bottom: 20px;
-}
-.actions-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 20px;
-}
-.action-card {
-  background: white;
-  border-radius: 15px;
-  padding: 25px 20px;
-  text-align: center;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-}
-.action-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-  background: #f0f9ff;
-}
-.action-icon {
-  font-size: 2.5rem;
-  margin-bottom: 15px;
-}
-.action-card h3 {
-  font-size: 1.2rem;
-  color: #213f3f;
-  margin-bottom: 10px;
-}
-.action-card p {
-  color: #666;
-  font-size: 0.9rem;
-  margin: 0;
-}
-
-/* Recommendations Section */
-.recommendations-section {
-  margin: 20px 0;
-}
-.section-header {
-  margin-bottom: 25px;
-}
-.section-desc {
-  font-size: 1rem;
-  color: #555;
-  max-width: 600px;
-  margin-top: 5px;
-}
-.recommendations-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-  gap: 20px;
-}
-.recommendation-card {
-  background: white;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.recommendation-card:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-}
-.rec-image {
-  height: 160px;
-  background-size: cover;
-  background-position: center;
-}
-.rec-content {
-  padding: 20px;
-}
-.rec-content h3 {
-  font-size: 1.2rem;
-  color: #213f3f;
-  margin-bottom: 8px;
-}
-.rec-content p {
-  color: #666;
-  font-size: 0.9rem;
-  margin-bottom: 15px;
-}
-.rec-meta {
-  display: flex;
-  justify-content: space-between;
-  font-size: 0.8rem;
-}
-.rec-distance {
-  color: #2a7a7a;
-}
-.rec-rating {
-  color: #ff7e5f;
-}
-
-/* Events Section */
-.events-section {
-  margin: 20px 0;
-}
-.events-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-.event-item {
-  display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 15px;
-  padding: 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
-}
-.event-item:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
-}
-.event-date {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  background: #f0f9ff;
-  border-radius: 10px;
-  padding: 10px 15px;
-  margin-right: 20px;
-}
-.date-day {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: #213f3f;
-}
-.date-month {
-  font-size: 0.8rem;
-  color: #666;
-}
-.event-details {
-  flex: 1;
-}
-.event-title {
-  font-size: 1.1rem;
-  color: #213f3f;
-  margin-bottom: 5px;
-}
-.event-location {
-  font-size: 0.9rem;
-  color: #666;
-}
-.event-action {
-  background: #2a7a7a;
-  color: white;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 15px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-.event-action:hover {
-  background: #213f3f;
-}
-
-/* Blog Section */
-.blog-section {
-  margin: 20px 0 40px;
-}
-.blog-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: #213f3f;
-  margin-bottom: 10px;
-}
-.blog-desc {
-  font-size: 1rem;
-  color: #555;
-  max-width: 600px;
-}
-
-/* iFrame */
-.iframe-container {
-  width: 100%;
-  max-width: 1000px;
-  height: 500px;
-  border-radius: 15px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-  margin: 0 auto;
-  background: white;
-}
-.iframe-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 15px 20px;
-  background: #f5f9fa;
-  border-bottom: 1px solid #e1e8ea;
-}
-.iframe-tabs {
-  display: flex;
-  gap: 5px;
-}
-.tab-button {
-  padding: 8px 16px;
-  border: none;
-  background: transparent;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-.tab-button.active {
-  background: #213f3f;
-  color: white;
-}
-.tab-button:not(.active):hover {
-  background: #e1f3f9;
-}
-.refresh-button {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: #e1f3f9;
-  border: none;
-  border-radius: 20px;
-  padding: 8px 15px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: all 0.3s ease;
-}
-.refresh-button:hover {
-  background: #cde9f2;
-}
-.refresh-icon {
-  font-size: 0.9rem;
-}
-.iframe-container iframe {
-  width: 100%;
-  height: calc(100% - 60px);
-  border: none;
-}
-
-/* Responsive Design */
-@media (max-width: 1024px) {
-  .userDashboard-body {
-    padding: 20px 30px;
-  }
-}
-
-@media (max-width: 768px) {
-  .userDashboard-body {
-    padding: 15px;
-  }
-  
-  .dashboard-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  
-  .title {
-    font-size: 1.8rem;
-  }
-  
-  .stats-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .actions-grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .featured-banner {
-    height: 250px;
-  }
-  
-  .banner-overlay {
-    padding: 25px;
-  }
-  
-  .banner-title {
-    font-size: 1.6rem;
-  }
-  
-  .recommendations-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .iframe-container {
-    height: 400px;
-  }
-  
-  .iframe-header {
-    flex-direction: column;
-    gap: 10px;
-    align-items: flex-start;
-  }
-}
-
-@media (max-width: 480px) {
-  .stats-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .actions-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .featured-banner {
-    height: 220px;
-  }
-  
-  .banner-overlay {
-    padding: 20px;
-  }
-  
-  .banner-title {
-    font-size: 1.4rem;
-  }
-  
-  .event-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-  
-  .event-date {
-    flex-direction: row;
-    gap: 10px;
-  }
-  
-  .iframe-container {
-    height: 350px;
-  }
-}
-</style>

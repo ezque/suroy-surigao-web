@@ -3,6 +3,7 @@
 namespace App\Services;
 use App\Models\User;
 use App\Models\Spot;
+use App\Models\Blog;
 
 class AdminServices
 {
@@ -21,6 +22,14 @@ class AdminServices
             ->where('role', 3)
             ->get();
     }
+    public function getAllBlogs()
+    {
+        return Blog::all();
+    }
+
+
+
+
 
 
 }

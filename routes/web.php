@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\ViewController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AgencyController;
+use App\Http\Controllers\UserSettings;
 
 
 
@@ -27,6 +28,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/update-package/{id}', [AgencyController::class, 'updatePackage']);
 
     Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
+    Route::post('/add-blog', [AdminController::class, 'addBlog']);
 
     Route::get('/agencies-by-spot/{spotId}', [UserController::class, 'getAgencyInSpots']);
 
@@ -46,5 +48,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/spots/{id}/reviews', [UserController::class, 'getReviews']);
     Route::post('/spots/{id}/reviews', [UserController::class, 'addReview']);
 
-
+    Route::get('/user-information', [UserSettings::class , 'getPersonalInformation']);
+    Route::put('/user-information', [UserSettings::class, 'updatePersonalInformation']);
+    Route::put('/user-password', [UserSettings::class, 'updatePassword']);
 });

@@ -15,6 +15,7 @@
 
             <Home
                 v-if="activePage === 'userDashboard'"
+                :blogsURL="blogsURL"
             />
 
             <Spots
@@ -43,7 +44,11 @@
                 @navigate="navigate"
             />
 
-            <Favorites v-if="activePage === 'favorites'" />
+            <Favorites
+                v-if="activePage === 'favorites'"
+                :saveSpots="saveSpots"
+                @navigate="navigate"
+            />
             <UserSettings v-if="activePage === 'settings'" />
         </div>
     </div>
@@ -80,7 +85,15 @@
         activePackages: {
             type: Array,
             required: true
-        }
+        },
+        blogsURL: {
+            type: Array,
+            required: true
+        },
+        saveSpots: {
+            type: Array,
+            required: true,
+        },
 
     });
 

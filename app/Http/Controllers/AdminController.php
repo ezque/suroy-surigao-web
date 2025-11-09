@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\Agency;
 use App\Models\Spot;
 use App\Models\SpotImage;
+use App\Models\Blog;
 
 class AdminController extends Controller
 {
@@ -161,6 +162,25 @@ class AdminController extends Controller
             'success' => true,
             'message' => 'User status updated successfully.',
             'user' => $user
+        ]);
+    }
+
+    public function addBlog(Request $request)
+    {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'url' => 'required|url',
+        ]);
+
+        $blog = Blog::create([
+            'title' => $request->title,
+            'url' => $request->url,
+            'status' => 'active',
+        ]);
+
+        return response()->json([
+            'message' => 'Blog post added successfully!',
+            'data' => $blog,
         ]);
     }
 

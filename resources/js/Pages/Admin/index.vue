@@ -36,6 +36,7 @@
 
             <ManagePost
                 v-else-if="activePage === 'managePost'"
+                :allBlogs="allBlogs"
                 @selectPage="selectActivePage"
             />
             <AddPost
@@ -80,6 +81,7 @@
         allSpots: Array,
         totalUsers: Number,
         agencyTotal: Number,
+        allBlogs: Array,
     })
 
     const userRole = computed(() => props.userInformation.role);

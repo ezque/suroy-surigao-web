@@ -5,6 +5,7 @@ use App\Models\User;
 use App\Models\IsSave;
 use App\Models\UserInfo;
 use App\Models\Spot;
+use App\Models\Blog;
 use Illuminate\Support\Facades\Auth;
 
 class UserServices
@@ -40,4 +41,9 @@ class UserServices
             ->get();
         return $agencies;
     }
+    public function getAllBlogUrlsRandom()
+    {
+        return Blog::inRandomOrder()->pluck('url');
+    }
+
 }

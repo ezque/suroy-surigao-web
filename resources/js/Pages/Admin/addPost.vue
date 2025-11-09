@@ -1,179 +1,98 @@
 <template>
-  <div class="add-post-body">
-    <div class="header-section">
-      <h2>Add New Post</h2>
-      <button @click="goBackToManagePosts" class="back-btn">
-        <i class="material-icons">arrow_back</i> Back to Manage Posts
-      </button>
-    </div>
+    <div class="w-full h-full bg-gradient-to-b from-cyan-50 to-white p-5 overflow-y-auto">
+        <!-- Header Section -->
+        <div class="flex justify-between items-center mb-6">
+            <h2 class="text-2xl font-bold text-teal-900">Add New Post</h2>
+            <button
+                @click="goBackToManagePosts"
+                class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"
+            >
+                <i class="material-icons text-lg">arrow_back</i> Back to Manage Posts
+            </button>
+        </div>
 
-    <div class="form-container">
-      <form @submit.prevent="submitPost">
-        <div class="form-group">
-          <label for="userId">User ID</label>
-          <input
-            type="number"
-            id="userId"
-            v-model="post.userId"
-            placeholder="Enter User ID"
-            required
-          />
+        <!-- Form Container -->
+        <div class="max-w-2xl mx-auto bg-white rounded-xl shadow-md p-6">
+            <form @submit.prevent="submitPost" class="space-y-5">
+                <!-- Title -->
+                <div>
+                    <label for="title" class="block text-teal-900 font-medium mb-1.5">Title</label>
+                    <input
+                        type="text"
+                        id="title"
+                        v-model="post.title"
+                        placeholder="Enter Post Title"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-600 transition"
+                    />
+                </div>
+
+                <!-- URL -->
+                <div>
+                    <label for="url" class="block text-teal-900 font-medium mb-1.5">URL</label>
+                    <input
+                        type="url"
+                        id="url"
+                        v-model="post.url"
+                        placeholder="Enter Post URL"
+                        required
+                        class="w-full px-3 py-2 border border-gray-300 rounded-md text-base focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-teal-600 transition"
+                    />
+                </div>
+
+                <!-- Submit Button -->
+                <div class="flex justify-end">
+                    <button
+                        type="submit"
+                        class="bg-teal-700 hover:bg-teal-600 text-white px-4 py-2 rounded-lg flex items-center gap-2 font-medium transition-colors"
+                    >
+                        <i class="material-icons text-lg">save</i> Save Post
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="form-group">
-          <label for="title">Title</label>
-          <input
-            type="text"
-            id="title"
-            v-model="post.title"
-            placeholder="Enter Post Title"
-            required
-          />
-        </div>
-        <div class="form-group">
-          <label for="url">URL</label>
-          <input
-            type="url"
-            id="url"
-            v-model="post.url"
-            placeholder="Enter Post URL"
-            required
-          />
-        </div>
-        <div class="form-actions">
-          <button type="submit" class="submit-btn">
-            <i class="material-icons">save</i> Save Post
-          </button>
-        </div>
-      </form>
     </div>
-  </div>
 </template>
 
 <script setup>
-import { ref } from 'vue';
+    import { ref } from 'vue';
+    import axios from 'axios';
 
-// Define emits to communicate with parent component
-const emit = defineEmits(['selectPage']);
+    const emit = defineEmits(['selectPage']);
 
-const post = ref({
-  userId: null,
-  title: '',
-  url: '',
-});
+    const post = ref({
+        title: '',
+        url: '',
+    });
 
-const submitPost = () => {
-  // Later, you can add API call here, e.g.:
-  // import axios from 'axios';
-  // await axios.post('/api/posts', post.value);
-  console.log('Submitting post:', post.value);
-  
-  // Reset form
-  post.value = { userId: null, title: '', url: '' };
-  
-  // Navigate back to Manage Posts using emit
-  goBackToManagePosts();
-};
+    const submitPost = async () => {
+        try {
+            const token = localStorage.getItem('authToken');
 
-const goBackToManagePosts = () => {
-  emit('selectPage', 'managePost');
-};
+            const response = await axios.post(
+                '/add-blog',
+                post.value,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: 'application/json',
+                    },
+                    withCredentials: true,
+                }
+            );
+
+            console.log('Post added:', response.data);
+            alert('Post successfully added!');
+
+            post.value = { title: '', url: '' };
+            goBackToManagePosts();
+        } catch (error) {
+            console.error('Error submitting post:', error.response?.data || error);
+            alert('Failed to add post. Please try again.');
+        }
+    };
+
+    const goBackToManagePosts = () => {
+        emit('selectPage', 'managePost');
+    };
 </script>
-
-<style scoped>
-.add-post-body {
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(to bottom, #E8F4F8, #FFFFFF);
-  padding: 20px;
-  overflow-y: auto;
-}
-
-/* ===== HEADER SECTION ===== */
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.header-section h2 {
-  color: #004C5E;
-  font-weight: 700;
-}
-
-.back-btn {
-  background-color: #6c757d;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-weight: 500;
-  text-decoration: none;
-  transition: 0.2s;
-}
-
-.back-btn:hover {
-  background-color: #5a6268;
-}
-
-/* ===== FORM ===== */
-.form-container {
-  max-width: 600px;
-  margin: 0 auto;
-  background: white;
-  border-radius: 10px;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.1);
-  padding: 20px;
-}
-
-.form-group {
-  margin-bottom: 15px;
-}
-
-.form-group label {
-  display: block;
-  color: #004C5E;
-  font-weight: 500;
-  margin-bottom: 5px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-  font-size: 16px;
-}
-
-.form-group input:focus {
-  outline: none;
-  border-color: #007A8C;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-}
-
-.submit-btn {
-  background-color: #007A8C;
-  color: white;
-  border: none;
-  padding: 8px 14px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  font-weight: 500;
-  transition: 0.2s;
-}
-
-.submit-btn:hover {
-  background-color: #009FB7;
-}
-</style>

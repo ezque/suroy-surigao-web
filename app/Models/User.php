@@ -44,6 +44,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Package::class, 'userID', 'id');
     }
+    public function savedSpots()
+    {
+        return $this->hasMany(IsSave::class, 'user_id');
+    }
 
 
 
