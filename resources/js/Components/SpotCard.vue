@@ -29,21 +29,51 @@
 
         <div class="p-5">
             <h3 class="text-lg font-bold text-gray-800 mb-3">{{ spot.spot_name }}</h3>
+
+            <!-- ⭐ Rating + Location -->
             <div class="flex justify-between text-gray-500 text-sm mb-3">
                 <div class="flex items-center gap-1">
-                    <i class="material-icons text-yellow-400 text-lg">star</i>
-                    <span>{{ spot.rating || 'No Rating' }}</span>
+                    <div class="flex items-center">
+                        <!-- Use Material Icons for full, half, and empty stars -->
+                        <template v-for="n in 5" :key="n">
+                            <i
+                                v-if="averageRating >= n"
+                                class="material-icons text-yellow-400 text-lg"
+                            >
+                                star
+                            </i>
+                            <i
+                                v-else-if="averageRating > n - 1 && averageRating < n"
+                                class="material-icons text-yellow-400 text-lg"
+                            >
+                                star_half
+                            </i>
+                            <i
+                                v-else
+                                class="material-icons text-gray-300 text-lg"
+                            >
+                                star_border
+                            </i>
+                        </template>
+                    </div>
+                    <span>{{ averageRating.toFixed(1) || 'No Rating' }}</span>
                 </div>
+
                 <div class="flex items-center gap-1">
                     <i class="material-icons text-[#00b4db] text-lg">place</i>
                     <span>{{ spot.location || 'Location not Found' }}</span>
                 </div>
             </div>
+
             <div class="flex gap-3 pt-3 border-t border-gray-200">
-                <button class="flex-1 bg-gray-50 rounded-lg py-2 text-gray-500 hover:bg-[#00b4db] hover:text-white transition">
+                <button
+                    class="flex-1 bg-gray-50 rounded-lg py-2 text-gray-500 hover:bg-[#00b4db] hover:text-white transition"
+                >
                     <i class="material-icons">bookmark_border</i>
                 </button>
-                <button class="flex-1 bg-gray-50 rounded-lg py-2 text-gray-500 hover:bg-[#00b4db] hover:text-white transition">
+                <button
+                    class="flex-1 bg-gray-50 rounded-lg py-2 text-gray-500 hover:bg-[#00b4db] hover:text-white transition"
+                >
                     <i class="material-icons">share</i>
                 </button>
             </div>
@@ -52,6 +82,8 @@
 </template>
 
 <script setup>
+    import { computed } from "vue";
+
     const props = defineProps({
         spot: {
             type: Object,
@@ -70,4 +102,10 @@
         };
         return labels[category] || category;
     };
+
+    // ✅ Compute average rating safely
+    const averageRating = computed(() => {
+        const rating = parseFloat(props.spot.average_rating);
+        return isNaN(rating) ? 0 : rating;
+    });
 </script>

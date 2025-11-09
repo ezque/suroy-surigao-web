@@ -55,6 +55,11 @@
                 v-else-if="activePage === 'adminSettings'"
                 :userInformation="userInformation"
             />
+            <SpotDetails
+                v-else-if="activePage ==='spotDetails'"
+                :spot="selectedSpot"
+                @back="activePage = 'spots'"
+            />
         </div>
     </div>
 </template>
@@ -72,6 +77,7 @@
     import Spots from "./spots.vue";
     import ReviewsAndFeedbacks from "./reviewsAndFeedbacks.vue";
     import AdminSettings from "./adminSettings.vue";
+    import SpotDetails from "./SpotDetails.vue";
 
 
     const props = defineProps({
@@ -87,17 +93,31 @@
     const userRole = computed(() => props.userInformation.role);
 
     const activePage = ref('dashboard');
-    const editingSpot = ref(null)
+    const editingSpot = ref(null);
+    const selectedSpot = ref(null);
 
     const selectActivePage = (payload) => {
         if (typeof payload === "string") {
-            activePage.value = payload
-            editingSpot.value = null
+            activePage.value = payload;
+            editingSpot.value = null;
+            selectedSpot.value = null;
         } else {
-            activePage.value = payload.page
-            editingSpot.value = payload.spot
+            activePage.value = payload.page;
+
+            // For editing spot
+            if (payload.spot && payload.page === "addSpots") {
+                editingSpot.value = payload.spot;
+                selectedSpot.value = null;
+            }
+
+            // For viewing spot
+            if (payload.spot && payload.page === "spotDetails") {
+                selectedSpot.value = payload.spot;
+                editingSpot.value = null;
+            }
         }
-    }
+    };
+
 </script>
 
 <style scoped>

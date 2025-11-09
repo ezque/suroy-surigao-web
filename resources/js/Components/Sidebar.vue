@@ -85,15 +85,6 @@
                 </button>
 
                 <button
-                    @click="$emit('selectPage', 'reviewsAndFeedbacks')"
-                    class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-white/80 transition-all hover:bg-white/10 hover:text-white"
-                    :class="{ 'bg-white/15 font-semibold text-white ring-2 ring-emerald-500 ring-inset': currentPage === 'reviewsAndFeedbacks' }"
-                >
-                    <span class="material-icons text-xl">feedback</span>
-                    <span class="flex-1">Reviews & Feedbacks</span>
-                </button>
-
-                <button
                     @click="$emit('selectPage', 'adminSettings')"
                     class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-white/80 transition-all hover:bg-white/10 hover:text-white"
                     :class="{ 'bg-white/15 font-semibold text-white ring-2 ring-emerald-500 ring-inset': currentPage === 'adminSettings' }"
@@ -130,15 +121,6 @@
                 >
                     <span class="material-icons text-xl">work</span>
                     <span class="flex-1">Reservation</span>
-                </button>
-
-                <button
-                    @click="$emit('selectPage', 'agencyFeedbacks')"
-                    class="flex w-full items-center gap-3 rounded-lg px-4 py-3 text-left text-white/80 transition-all hover:bg-white/10 hover:text-white"
-                    :class="{ 'bg-white/15 font-semibold text-white ring-2 ring-emerald-500 ring-inset': currentPage === 'agencyFeedbacks' }"
-                >
-                    <span class="material-icons text-xl">star</span>
-                    <span class="flex-1">Reviews & Feedbacks</span>
                 </button>
 
                 <button
