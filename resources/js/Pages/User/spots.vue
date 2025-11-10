@@ -42,23 +42,6 @@
                         class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl py-3 pl-12 pr-4 text-base outline-none focus:border-[#00b4db] focus:bg-white focus:shadow-md transition"
                     />
                 </div>
-
-                <!-- Category -->
-                <div class="relative flex-1 min-w-[250px]">
-                    <i class="material-icons absolute left-4 top-1/2 -translate-y-1/2 text-[#00b4db] text-xl">category</i>
-                    <select
-                        v-model="selectedCategory"
-                        class="w-full bg-gray-50 border-2 border-gray-200 rounded-xl py-3 pl-12 pr-10 text-base outline-none focus:border-[#00b4db] focus:bg-white focus:shadow-md transition appearance-none cursor-pointer"
-                    >
-                        <option value="">All Categories</option>
-                        <option value="beach">🏖️ Beaches</option>
-                        <option value="park">🌳 Parks</option>
-                        <option value="museum">🏛️ Museums</option>
-                        <option value="waterfall">💧 Waterfalls</option>
-                        <option value="mountain">⛰️ Mountains</option>
-                        <option value="island">🏝️ Islands</option>
-                    </select>
-                </div>
             </div>
 
             <!-- Quick Stats -->
@@ -66,14 +49,6 @@
                 <div class="flex items-center gap-2 px-4 py-2 text-white font-semibold text-sm rounded-full shadow-md bg-gradient-to-r from-[#00b4db] to-[#0083b0] hover:-translate-y-0.5 transition">
                     <i class="material-icons text-lg">explore</i>
                     <span>{{ filteredSpots.length }} Spots</span>
-                </div>
-                <div class="flex items-center gap-2 px-4 py-2 text-white font-semibold text-sm rounded-full shadow-md bg-gradient-to-r from-[#00b4db] to-[#0083b0] hover:-translate-y-0.5 transition">
-                    <i class="material-icons text-lg">star</i>
-                    <span>Top Rated</span>
-                </div>
-                <div class="flex items-center gap-2 px-4 py-2 text-white font-semibold text-sm rounded-full shadow-md bg-gradient-to-r from-[#00b4db] to-[#0083b0] hover:-translate-y-0.5 transition">
-                    <i class="material-icons text-lg">trending_up</i>
-                    <span>Trending</span>
                 </div>
             </div>
         </div>
@@ -92,12 +67,11 @@
             <div v-else class="text-center text-gray-500 py-20">
                 <i class="material-icons text-8xl text-gray-300 mb-5">search_off</i>
                 <h3 class="text-2xl font-semibold mb-2">No spots found</h3>
-                <p class="text-gray-400">Try adjusting your search or filter to find what you're looking for</p>
+                <p class="text-gray-400">Try adjusting your search to find what you're looking for</p>
             </div>
         </div>
     </div>
 </template>
-
 
 <script setup>
     import { ref, computed } from "vue";
@@ -113,7 +87,6 @@
     });
 
     const searchQuery = ref("");
-    const selectedCategory = ref("");
 
     const filteredSpots = computed(() => {
         return props.allSpots.filter((spot) => {
@@ -125,10 +98,7 @@
                     .toLowerCase()
                     .includes(searchQuery.value.toLowerCase());
 
-            const matchesCategory =
-                !selectedCategory.value || spot.category === selectedCategory.value;
-
-            return matchesSearch && matchesCategory;
+            return matchesSearch;
         });
     });
 

@@ -26,7 +26,7 @@
             {{ errors.password[0] }}
         </span>
 
-        <a>Forgot Password</a>
+    
         <button @click="handleLogin" :disabled="loading">Sign in</button>
 
         <p>

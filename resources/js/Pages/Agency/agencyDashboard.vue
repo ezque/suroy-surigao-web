@@ -3,7 +3,6 @@
      <header class="dashboard-header">
         <div class="header-text">
           <h1>Welcome back, {{ agencyName }}!</h1>
-          <p>Here's your business summary for {{ currentDate }}</p>
         </div>
      </header>
 

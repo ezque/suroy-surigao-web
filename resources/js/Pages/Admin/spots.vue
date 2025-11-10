@@ -7,13 +7,14 @@
             class="flex flex-col sm:flex-row justify-between sm:items-center mb-6 pb-4 border-b border-gray-200 space-y-3 sm:space-y-0"
         >
             <h2 class="text-2xl font-semibold text-gray-800">Spots Management</h2>
-            <button
-                class="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-700 to-blue-500 text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300"
+           <button
+                class="flex items-center justify-center gap-2 bg-[#007A8C] text-white font-semibold px-6 py-3 rounded-lg shadow-md hover:bg-[#009FB7] hover:translate-y-[-2px] hover:shadow-lg transition-all duration-300"
                 @click="$emit('selectPage', 'addSpots')"
-            >
+                >
                 <i class="fas fa-plus"></i>
                 Add New Spot
             </button>
+
         </div>
 
         <!-- 🔍 Search Bar -->

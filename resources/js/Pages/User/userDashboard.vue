@@ -18,7 +18,7 @@
         <!-- Mini Browser Section -->
         <section class="w-full max-w-6xl mx-auto">
             <div class="mb-6">
-                <h2 class="text-xl md:text-2xl font-bold text-teal-900">Live Blog & News Preview</h2>
+                <h2 class="text-xl md:text-2xl font-bold text-teal-900">Live Blog Preview</h2>
                 <p class="text-sm md:text-base text-gray-600 mt-1">
                     {{ hasBlogs ? 'Previewing your latest blog post.' : 'No blog posts available.' }}
                 </p>
@@ -26,31 +26,16 @@
 
             <!-- Browser Toolbar -->
             <div class="bg-gray-100 p-3 rounded-t-2xl border border-gray-300 flex flex-col sm:flex-row gap-3 items-center justify-between">
-                <!-- Tabs -->
+                <!-- Single Tab -->
                 <div class="flex gap-1">
                     <button
-                        @click="activeTab = 'blog'"
                         :disabled="!hasBlogs"
-                        :class="[
-              'px-4 py-2 rounded-full font-medium transition-all',
-              activeTab === 'blog' && hasBlogs
-                ? 'bg-teal-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50',
-              !hasBlogs && 'opacity-50 cursor-not-allowed'
-            ]"
+                        class="px-4 py-2 rounded-full font-medium transition-all"
+                        :class="hasBlogs
+                            ? 'bg-teal-900 text-white'
+                            : 'bg-white text-gray-700 opacity-50 cursor-not-allowed'"
                     >
                         Travel Blog
-                    </button>
-                    <button
-                        @click="activeTab = 'news'"
-                        :class="[
-              'px-4 py-2 rounded-full font-medium transition-all',
-              activeTab === 'news'
-                ? 'bg-teal-900 text-white'
-                : 'bg-white text-gray-700 hover:bg-gray-50'
-            ]"
-                    >
-                        Local News
                     </button>
                 </div>
 
@@ -88,7 +73,7 @@
                 </div>
 
                 <!-- No Blog Posts -->
-                <div v-else-if="activeTab === 'blog' && !hasBlogs" class="h-96 md:h-[550px] flex flex-col items-center justify-center bg-yellow-50 p-6 text-center">
+                <div v-else-if="!hasBlogs" class="h-96 md:h-[550px] flex flex-col items-center justify-center bg-yellow-50 p-6 text-center">
                     <p class="text-yellow-800 font-medium">No blog posts available</p>
                     <p class="text-sm text-yellow-700 mt-2">Add a post in the admin panel to preview it here.</p>
                 </div>
@@ -104,8 +89,8 @@
                 <!-- iFrame Preview -->
                 <iframe
                     v-else
-                    :src="currentUrl"
-                    :title="iframeTitle"
+                    :src="blogUrl"
+                    title="Your Blog Post Preview"
                     class="w-full h-96 md:h-[550px] border-0"
                     :style="{ transform: `scale(${zoomLevel / 100})`, transformOrigin: 'top left', width: zoomLevel !== 100 ? '133%' : '100%' }"
                     sandbox="allow-same-origin allow-scripts allow-popups allow-forms"
@@ -118,76 +103,57 @@
 </template>
 
 <script setup>
-    import { ref, computed, watch, onMounted, nextTick } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 
-    // === Props from Laravel ===
-    const props = defineProps({
-        blogsURL: {
-            type: Array,
-            default: () => []
+// === Props from Laravel ===
+const props = defineProps({
+    blogsURL: {
+        type: Array,
+        default: () => []
+    }
+})
+
+// === State ===
+const isLoading = ref(true)
+const hasError = ref(false)
+const zoomLevel = ref(100)
+
+// === Computed Values ===
+const hasBlogs = computed(() => props.blogsURL.length > 0)
+const blogUrl = computed(() => hasBlogs.value ? props.blogsURL[0] : null)
+const displayUrl = computed(() => {
+    if (blogUrl.value) {
+        return blogUrl.value.length > 50 ? blogUrl.value.substring(0, 50) + '...' : blogUrl.value
+    }
+    return 'No blog post URL available'
+})
+
+// === iFrame Handlers ===
+const onIframeLoad = () => {
+    isLoading.value = false
+    hasError.value = false
+}
+
+// === Actions ===
+const refreshContent = () => {
+    isLoading.value = true
+    hasError.value = false
+    nextTick(() => {
+        const iframe = document.querySelector('iframe')
+        if (iframe) {
+            iframe.src = iframe.src // Force reload
         }
     })
+}
 
-    // === State ===
-    const activeTab = ref('blog')
-    const isLoading = ref(true)
-    const hasError = ref(false)
-    const zoomLevel = ref(100)
+const toggleZoom = () => {
+    zoomLevel.value = zoomLevel.value === 100 ? 75 : zoomLevel.value === 75 ? 50 : 100
+}
 
-    // === Computed Values ===
-    const hasBlogs = computed(() => props.blogsURL.length > 0)
-
-    const blogUrl = computed(() => hasBlogs.value ? props.blogsURL[0] : null)
-
-    const currentUrl = computed(() => {
-        return activeTab.value === 'blog' && blogUrl.value
-            ? blogUrl.value
-            : 'https://surigaodelnorte.gov.ph/news/'
-    })
-
-    const displayUrl = computed(() => {
-        if (activeTab.value === 'blog' && blogUrl.value) {
-            return blogUrl.value.length > 50 ? blogUrl.value.substring(0, 50) + '...' : blogUrl.value
-        }
-        return currentUrl.value
-    })
-
-    const iframeTitle = computed(() => {
-        return activeTab.value === 'blog' ? 'Your Blog Post Preview' : 'Surigao Local News'
-    })
-
-    // === iFrame Handlers ===
-    const onIframeLoad = () => {
-        isLoading.value = false
-        hasError.value = false
-    }
-
-    // === Actions ===
-    const refreshContent = () => {
-        isLoading.value = true
-        hasError.value = false
-        nextTick(() => {
-            const iframe = document.querySelector('iframe')
-            if (iframe) {
-                iframe.src = iframe.src // Force reload
-            }
-        })
-    }
-
-    const toggleZoom = () => {
-        zoomLevel.value = zoomLevel.value === 100 ? 75 : zoomLevel.value === 75 ? 50 : 100
-    }
-
-    // === Watchers ===
-    watch(activeTab, () => {
-        isLoading.value = true
-        hasError.value = false
-    })
-
-    // === Lifecycle ===
-    onMounted(() => {
-        setTimeout(() => {
-            if (isLoading.value) isLoading.value = false
-        }, 1500)
-    })
+// === Lifecycle ===
+onMounted(() => {
+    setTimeout(() => {
+        if (isLoading.value) isLoading.value = false
+    }, 1500)
+})
 </script>
