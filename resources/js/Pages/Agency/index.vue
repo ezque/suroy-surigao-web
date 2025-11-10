@@ -7,6 +7,9 @@
             :currentPage="activePage"
         />
         <div class="agency-main-body">
+            <Header
+                :userInformation="userInformation"
+            />
             <AgencyDashboard
                 v-if="activePage === 'agencyDashboard'"
             />
@@ -36,6 +39,7 @@
 </template>
 <script setup>
     import Sidebar from "../../Components/Sidebar.vue";
+    import Header from "../../Components/Header.vue";
     import AgencyDashboard from "./agencyDashboard.vue";
     import AgencySettings from "./agencySettings.vue";
     import Packages from "./Packages.vue";

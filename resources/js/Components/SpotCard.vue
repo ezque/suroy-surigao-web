@@ -20,11 +20,6 @@
                     <span>Explore Now</span>
                 </button>
             </div>
-            <div
-                class="absolute top-3 right-3 bg-white/90 px-3 py-1.5 rounded-full text-sm font-semibold shadow-md"
-            >
-                {{ getCategoryLabel(spot.category) }}
-            </div>
         </div>
 
         <div class="p-5">
@@ -63,19 +58,6 @@
                     <i class="material-icons text-[#00b4db] text-lg">place</i>
                     <span>{{ spot.location || 'Location not Found' }}</span>
                 </div>
-            </div>
-
-            <div class="flex gap-3 pt-3 border-t border-gray-200">
-                <button
-                    class="flex-1 bg-gray-50 rounded-lg py-2 text-gray-500 hover:bg-[#00b4db] hover:text-white transition"
-                >
-                    <i class="material-icons">bookmark_border</i>
-                </button>
-                <button
-                    class="flex-1 bg-gray-50 rounded-lg py-2 text-gray-500 hover:bg-[#00b4db] hover:text-white transition"
-                >
-                    <i class="material-icons">share</i>
-                </button>
             </div>
         </div>
     </div>

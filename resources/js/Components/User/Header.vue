@@ -69,14 +69,6 @@
           </div>
         </div>
       </div>
-
-      <!-- User Info (Minimal) -->
-      <div class="user-minimal">
-        <div class="user-avatar">
-          {{ initials }}
-        </div>
-        <span class="user-greeting">Hi, {{ firstName }}</span>
-      </div>
     </div>
     
     <!-- Overlay for closing dropdowns when clicking outside -->

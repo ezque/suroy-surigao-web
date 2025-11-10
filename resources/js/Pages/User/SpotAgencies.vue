@@ -14,21 +14,6 @@
                     find the perfect adventure with trusted local experts in surigao
                 </p>
             </div>
-
-            <div class="flex gap-10">
-                <div class="text-center">
-                    <span class="text-3xl font-extrabold text-[#1e293b] block">{{ totalAgencies }}</span>
-                    <span class="uppercase text-sm tracking-wide text-[#64748b]">Agencies</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-3xl font-extrabold text-[#1e293b] block">{{ totalPackages }}</span>
-                    <span class="uppercase text-sm tracking-wide text-[#64748b]">Packages</span>
-                </div>
-                <div class="text-center">
-                    <span class="text-3xl font-extrabold text-[#1e293b] block">{{ availablePackages }}</span>
-                    <span class="uppercase text-sm tracking-wide text-[#64748b]">Available</span>
-                </div>
-            </div>
         </header>
 
         <!-- Search & Filter -->
