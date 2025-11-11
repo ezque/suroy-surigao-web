@@ -133,14 +133,29 @@
                     v-if="activeTab === 'reviews'"
                     :spotId="spot.id"
                 />
-
             </div>
+            <div class="mt-8">
+                <h2 class="text-2xl font-semibold text-[#1a3c5a] mb-3">📍 Location Map</h2>
+                <div class="w-full h-[400px] rounded-xl overflow-hidden shadow-md border border-gray-200">
+                    <iframe
+                        v-if="spot.location"
+                        :src="mapUrl"
+                        class="w-full h-full"
+                        style="border:0;"
+                        allowfullscreen=""
+                        loading="lazy"
+                        referrerpolicy="no-referrer-when-downgrade"
+                    ></iframe>
+                </div>
+            </div>
+
+
         </div>
     </div>
 </template>
 
 <script setup>
-    import { ref, onMounted, onUnmounted } from "vue";
+    import { ref, onMounted, onUnmounted, computed } from "vue";
     import axios from "axios";
 
     import Overview from "./Overview.vue";
@@ -231,6 +246,10 @@
             }, 4000);
         }
     });
-
+    const mapUrl = computed(() => {
+        if (!props.spot.location) return "";
+        const encodedLocation = encodeURIComponent(props.spot.location);
+        return `https://www.google.com/maps?q=${encodedLocation}&output=embed`;
+    });
 
 </script>

@@ -20,10 +20,10 @@
             <!-- Status Badge -->
             <div
                 class="absolute top-3 left-3 px-3 py-1.5 rounded-full text-white text-xs font-bold tracking-wider shadow-lg flex items-center gap-1"
-                :class="spot.status === '1' ? 'bg-emerald-500' : 'bg-rose-500'"
+                :class="spot.status === 'active' ? 'bg-emerald-500' : 'bg-rose-500'"
             >
                 <i class="fas" :class="spot.status === '1' ? 'fa-check-circle' : 'fa-times-circle'"></i>
-                {{ spot.status === '1' ? 'Active' : 'Inactive' }}
+                {{ spot.status === 'active' ? 'Active' : 'Inactive' }}
             </div>
         </div>
 

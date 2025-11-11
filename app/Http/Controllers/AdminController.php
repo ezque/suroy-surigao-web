@@ -10,6 +10,7 @@ use App\Models\Agency;
 use App\Models\Spot;
 use App\Models\SpotImage;
 use App\Models\Blog;
+use App\Models\Notification;
 
 class AdminController extends Controller
 {
@@ -54,8 +55,6 @@ class AdminController extends Controller
 
     public function addSpot(Request $request)
     {
-        \Log::info('Incoming request data:', $request->all());
-
         try {
             $request->validate([
                 'spot_name'   => 'required|string|max:255',
@@ -66,7 +65,7 @@ class AdminController extends Controller
             ]);
             \Log::info('Validation passed.');
 
-            // Create spot
+            // ✅ Create the spot
             $spot = Spot::create([
                 'spot_name'   => $request->spot_name,
                 'description' => $request->description,
@@ -76,7 +75,7 @@ class AdminController extends Controller
             ]);
             \Log::info('Spot created successfully:', $spot->toArray());
 
-            // Save images if available
+            // ✅ Save images if available
             if ($request->hasFile('images')) {
                 \Log::info('Images found:', ['count' => count($request->file('images'))]);
 
@@ -85,13 +84,28 @@ class AdminController extends Controller
                     \Log::info('Image stored:', ['path' => $path]);
 
                     SpotImage::create([
-                        'spot_id'     => $spot->id,
+                        'spot_id'    => $spot->id,
                         'spot_image' => $path
                     ]);
                 }
             } else {
                 \Log::info('No images uploaded.');
             }
+
+            $users = User::whereIn('role', ['user', 'agency'])->get();
+
+            foreach ($users as $user) {
+                Notification::create([
+                    'user_ID'     => $user->id,
+                    'sender_id'   => auth()->id() ?? null,
+                    'receiver_id' => $user->id,
+                    'message'     => "A new spot named '{$spot->spot_name}' has been added!",
+                    'status'      => 'unread',
+                    'type'        => 'spot_created',
+                ]);
+            }
+
+            \Log::info('Notifications sent to all non-admin users.');
 
             return response()->json(['message' => 'Spot created successfully!'], 201);
 

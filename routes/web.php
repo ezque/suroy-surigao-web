@@ -53,4 +53,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/user-password', [UserSettings::class, 'updatePassword']);
     Route::post('/agency-information', [UserSettings::class, 'updateAgencyInformation']);
     Route::get('/agency-information', [UserSettings::class , 'getAgencyInformation']);
+    Route::get('/notifications', [UserSettings::class , 'getUserNotifications']);
 });

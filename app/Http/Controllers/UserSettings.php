@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 use App\Models\UserInfo;
+use App\Models\Notification;
 
 class UserSettings extends Controller
 {
@@ -95,6 +96,16 @@ class UserSettings extends Controller
         $user->save();
 
         return response()->json(['message' => 'Password updated successfully']);
+    }
+    public function getUserNotifications(Request $request)
+    {
+        $userId = $request->user()->id;
+
+        $notifications = Notification::where('receiver_id', $userId)
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json($notifications);
     }
 
 }
