@@ -9,6 +9,7 @@
                 :alt="spot.spot_name"
                 class="w-full h-full object-cover transition-transform duration-500 hover:scale-110"
             />
+
             <div
                 class="absolute inset-0 flex items-center justify-center bg-gradient-to-b from-transparent to-black/80 opacity-0 hover:opacity-100 transition"
             >
@@ -24,7 +25,7 @@
 
         <div class="p-5">
             <h3 class="text-lg font-bold text-gray-800 mb-3">{{ spot.spot_name }}</h3>
-
+            <p>{{ spot.category }}</p>
             <!-- ⭐ Rating + Location -->
             <div class="flex justify-between text-gray-500 text-sm mb-3">
                 <div class="flex items-center gap-1">

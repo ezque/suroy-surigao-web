@@ -1,5 +1,6 @@
 <template>
-    <div class="user-body-container">
+    <div class="flex w-full h-screen overflow-hidden">
+        <!-- Sidebar -->
         <Sidebar
             :userRole="userRole"
             :userInformation="userInformation"
@@ -7,10 +8,10 @@
             :currentPage="activePage"
         />
 
-        <div class="user-main-body">
+        <!-- Main content -->
+        <div class="flex flex-col w-[85%] overflow-y-auto">
             <Header
                 :userInformation="userInformation"
-                @logout="handleLogout"
             />
 
             <Home
@@ -49,11 +50,11 @@
                 :saveSpots="saveSpots"
                 @navigate="navigate"
             />
+
             <UserSettings v-if="activePage === 'settings'" />
         </div>
     </div>
 </template>
-
 
 <script setup>
     import { ref, computed } from "vue";
@@ -63,7 +64,7 @@
 
     import Home from "./userDashboard.vue";
     import Spots from "./spots.vue";
-    import ExploreSpots from "./ExploreSpot.vue"; //exploreSpots.vue ExploreSpot.vue
+    import ExploreSpots from "./ExploreSpot.vue";
     import TourAgenciesPanel from "./tourAgencies.vue";
     import ExploreTourAgencies from "./exploreTourAgencies.vue";
     import Favorites from "./favorites.vue";
@@ -84,20 +85,17 @@
         },
         activePackages: {
             type: Array,
-            required: true
+            required: true,
         },
         blogsURL: {
             type: Array,
-            required: true
+            required: true,
         },
         saveSpots: {
             type: Array,
             required: true,
         },
-
     });
-
-    console.log(props.savedUnsaved)
 
     const userRole = computed(() => props.userInformation.role);
     const activePage = ref("userDashboard");
@@ -120,27 +118,7 @@
                 selectedAgency.value = null;
                 break;
         }
-
         activePage.value = page;
-    };
-    const handleLogout = () => {
-        console.log("Logging out...");
     };
 </script>
 
-
-<style scoped>
-.user-body-container {
-  display: flex;
-  width: 100%;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.user-main-body {
-  width: 85%;
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto;
-}
-</style>

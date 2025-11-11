@@ -1,5 +1,5 @@
 <template>
-    <header class="w-full h-16 md:h-20 bg-white flex justify-between items-center px-4 md:px-8 shadow-sm border-b border-gray-200 relative z-50">
+    <div class="w-full h-16 md:h-20 bg-white flex justify-between items-center px-4 md:px-8 shadow-sm border-b border-gray-200 relative z-50">
         <!-- Left Section: Logo -->
         <div class="flex items-center gap-3 md:gap-8">
             <div class="flex items-center gap-3 md:gap-3 font-bold text-lg md:text-xl text-blue-500">
@@ -71,7 +71,7 @@
 
         <!-- Overlay -->
         <div v-if="showNotifications" @click="closeAllDropdowns" class="fixed inset-0 bg-transparent z-40"></div>
-    </header>
+    </div>
 </template>
 
 <script setup>
