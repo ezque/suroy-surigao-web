@@ -101,7 +101,7 @@ class AdminController extends Controller
                     'receiver_id' => $user->id,
                     'message'     => "A new spot named '{$spot->spot_name}' has been added!",
                     'status'      => 'unread',
-                    'type'        => 'spot_created',
+                    'type'        => 'spotCreated',
                 ]);
             }
 

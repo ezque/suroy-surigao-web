@@ -14,6 +14,7 @@ use App\Models\Reservation;
 use App\Models\Package;
 use App\Models\Rating;
 use App\Models\Review;
+use App\Models\Notification;
 
 
 class UserController extends Controller
@@ -147,7 +148,6 @@ class UserController extends Controller
     }
     public function addReservation(Request $request)
     {
-        // Validation
         $validator = Validator::make($request->all(), [
             'package_id' => 'required|integer|exists:package,id',
             'number_of_people' => 'required|integer|min:1',
@@ -170,7 +170,6 @@ class UserController extends Controller
             ], 422);
         }
 
-        // Fetch the package
         $package = Package::find($request->package_id);
 
         // Check if enough slots are available
@@ -181,10 +180,8 @@ class UserController extends Controller
             ], 400);
         }
 
-        // Use authenticated user's ID
         $userId = Auth::id();
 
-        // Begin transaction
         DB::beginTransaction();
         try {
             // Create reservation
@@ -208,11 +205,23 @@ class UserController extends Controller
             $package->available_slot -= $request->number_of_people;
             $package->save();
 
+            // ✅ Create Notification for the agency
+            $agencyId = $package->user_id; // assuming the package table has a user_id that represents the agency
+
+            Notification::create([
+                'user_ID' => $userId, // the customer who made the reservation
+                'sender_id' => $userId,
+                'receiver_id' => $agencyId,
+                'message' => 'A new reservation has been made for your package: ' . $package->package_name,
+                'status' => 'unread',
+                'type' => 'reservationAdded',
+            ]);
+
             DB::commit();
 
             return response()->json([
                 'success' => true,
-                'message' => 'Reservation created successfully',
+                'message' => 'Reservation created successfully and agency notified.',
                 'reservation' => $reservation
             ]);
 
