@@ -2,12 +2,15 @@
     <div class="flex flex-col w-full h-full overflow-y-auto bg-gradient-to-br from-[#00b4db] to-[#0083b0]">
         <!-- Hero Section -->
         <div class="relative text-center text-white overflow-hidden bg-gradient-to-br from-[#1ef5e2] to-[#f1a8a8] py-20 px-6">
-            <div class="relative z-10">
-                <h1 class="text-5xl font-extrabold mb-4 drop-shadow-lg animate-fadeInUp">Ali na sa Surigao!</h1>
-                <p class="max-w-xl mx-auto text-lg font-light opacity-95 animate-fadeInUp delay-100">
+           <div class="relative z-10 -translate-y-13">
+                <h1 class="text-5xl font-extrabold mb-4 drop-shadow-lg animate-fadeInUp">
+                    Ali na sa Surigao!
+                </h1>
+                <p class="max-w-xl mx-auto  text-lg font-light opacity-95 animate-fadeInUp delay-100">
                     Discover the most beautiful spots in Surigao del Norte
                 </p>
             </div>
+
 
             <div class="absolute bottom-0 left-0 w-full overflow-hidden leading-none">
                 <svg viewBox="0 0 1200 120" preserveAspectRatio="none" class="block w-[calc(100%+1.3px)] h-20">

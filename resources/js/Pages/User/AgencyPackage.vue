@@ -9,76 +9,21 @@
             >
                 ← Back to Agencies
             </button>
-
-            <div class="flex gap-3">
-                <button class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white shadow-sm hover:shadow-md transition-all">
-                    📤 Share
-                </button>
-                <button
-                    @click.stop="props.toggleLike(props.agency)"
-                    class="flex items-center gap-2 px-4 py-2 border border-gray-300 rounded-lg bg-white shadow-sm hover:shadow-md transition-all"
-                >
-                    <span>{{ props.isLiked(props.agency.id) ? '❤️' : '🤍' }}</span>
-                    {{ props.isLiked(props.agency.id) ? 'Favorites' : 'Favorite' }}
-                </button>
-            </div>
         </div>
 
         <!-- Agency Hero -->
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10 hover:shadow-2xl transition-all duration-300">
             <div class="relative h-[300px]">
                 <img src="/public/images/logo/logo.png" alt="Agency image" class="w-full h-full object-cover"/>
-                <div class="absolute bottom-4 left-4 bg-white/90 backdrop-blur-md px-4 py-2 rounded-full flex items-center gap-2 shadow-md">
-                    <div class="flex gap-1 text-yellow-400">
-                        <span v-for="n in 5" :key="n">⭐</span>
-                    </div>
-                    <span class="text-sm font-semibold text-gray-700">0/5</span>
-                </div>
+                
             </div>
 
             <div class="p-8">
                 <h1 class="text-4xl font-extrabold mb-4 text-gray-900">{{ props.agency.agency?.agency_name }}</h1>
                 <p class="text-gray-600 mb-6">{{ props.agency.agency?.description || 'Professional and adventurous agency.' }}</p>
-
-                <div class="flex flex-wrap gap-6 text-gray-500">
-                    <div class="flex items-center gap-2">📅 Est. {{ established }}</div>
-                    <div class="flex items-center gap-2">🚌 100+ Tours</div>
-                    <div class="flex items-center gap-2">💬 Response: 20</div>
-                </div>
             </div>
         </div>
 
-        <!-- Stats Section -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-10">
-            <div class="bg-gradient-to-br from-blue-50 to-blue-100 p-6 rounded-xl flex items-center gap-4 shadow hover:scale-105 transition-transform">
-                <span class="text-3xl">🏢</span>
-                <div>
-                    <div class="text-2xl font-bold text-gray-800">0</div>
-                    <div class="text-gray-500 text-sm">Tour Packages</div>
-                </div>
-            </div>
-            <div class="bg-gradient-to-br from-yellow-50 to-yellow-100 p-6 rounded-xl flex items-center gap-4 shadow hover:scale-105 transition-transform">
-                <span class="text-3xl">⭐</span>
-                <div>
-                    <div class="text-2xl font-bold text-gray-800">N/A</div>
-                    <div class="text-gray-500 text-sm">Rating</div>
-                </div>
-            </div>
-            <div class="bg-gradient-to-br from-green-50 to-green-100 p-6 rounded-xl flex items-center gap-4 shadow hover:scale-105 transition-transform">
-                <span class="text-3xl">👥</span>
-                <div>
-                    <div class="text-2xl font-bold text-gray-800">500+</div>
-                    <div class="text-gray-500 text-sm">Customers</div>
-                </div>
-            </div>
-            <div class="bg-gradient-to-br from-purple-50 to-purple-100 p-6 rounded-xl flex items-center gap-4 shadow hover:scale-105 transition-transform">
-                <span class="text-3xl">📍</span>
-                <div>
-                    <div class="text-2xl font-bold text-gray-800">Surigao</div>
-                    <div class="text-gray-500 text-sm">Location</div>
-                </div>
-            </div>
-        </div>
 
         <!-- Packages Section -->
         <div>
@@ -182,7 +127,7 @@
                             @click="openReservationForm(pkg)"
                         >
               <span v-if="pkg.available_slot > 0" class="flex items-center gap-2">
-                💬 Inquire / Reserve Now
+                Reserve Now
                 <span class="bg-white/20 px-2 py-1 rounded text-sm">₱{{ pkg.price.toLocaleString() }}</span>
               </span>
                             <span v-else class="flex items-center gap-2">🔒 Fully Booked</span>

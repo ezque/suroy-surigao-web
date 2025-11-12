@@ -22,7 +22,7 @@
                 <input
                     v-model="searchQuery"
                     type="text"
-                    placeholder="Search Agencies or Packages..."
+                    placeholder="Search Agencies"
                     class="w-full pl-12 pr-12 py-3 rounded-xl border-2 border-[#e2e8f0] text-base bg-white shadow-sm transition-all duration-300 focus:ring-2 focus:ring-[#3b82f6]/30 focus:border-[#3b82f6] outline-none"
                 />
                 <span class="absolute left-4 top-1/2 -translate-y-1/2 text-[#94a3b8]">🔍</span>
