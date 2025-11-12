@@ -53,38 +53,7 @@
       </div>
     </div>
 
-    <!-- Quick Stats -->
-    <div class="quick-stats">
-          <div class="stat-card">
-            <div class="stat-icon">🏢</div>
-            <div class="stat-info">
-              <div class="stat-value">{{ agency.packages?.length || 0 }}</div>
-              <div class="stat-label">Tour Packages</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">⭐</div>
-            <div class="stat-info">
-              <div class="stat-value">{{ agency.rating || 'N/A' }}</div>
-              <div class="stat-label">Rating</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">👥</div>
-            <div class="stat-info">
-              <div class="stat-value">{{ agency.totalCustomers?.toLocaleString() || '500+' }}</div>
-              <div class="stat-label">Customers</div>
-            </div>
-          </div>
-          <div class="stat-card">
-            <div class="stat-icon">📍</div>
-            <div class="stat-info">
-              <div class="stat-value">{{ agency.location || 'Surigao' }}</div>
-              <div class="stat-label">Location</div>
-            </div>
-          </div>
-    </div>
-
+    
     <!-- Packages Section -->
     <div class="packages-section">
       <div class="section-header">

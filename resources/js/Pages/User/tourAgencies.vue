@@ -124,9 +124,6 @@
                                 <span class="badge packages">{{ agency.packages.length }} Packages</span>
                             </div>
                         </div>
-                        <div class="favorite-btn" @click.stop="toggleFavorite(agency)">
-                            <span class="heart-icon">{{ isFavorite(agency.id) ? '❤️' : '🤍' }}</span>
-                        </div>
                     </div>
 
                     <!-- Agency Content -->

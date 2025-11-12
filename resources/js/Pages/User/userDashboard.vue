@@ -3,9 +3,7 @@
         <!-- Welcome Header -->
         <header class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
             <div class="flex items-center gap-4">
-                <div class="w-14 h-14 md:w-16 md:h-16 rounded-full bg-gradient-to-br from-teal-700 to-teal-900 flex items-center justify-center shadow-lg">
-                    <span class="text-2xl md:text-3xl">User</span>
-                </div>
+                
                 <div class="max-w-lg">
                     <h1 class="text-2xl md:text-3xl lg:text-4xl font-extrabold text-teal-900">Welcome back, Traveler!</h1>
                     <p class="text-sm md:text-base text-gray-700 mt-1">
