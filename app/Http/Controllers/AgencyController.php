@@ -129,6 +129,34 @@ class AgencyController extends Controller
             ], 500);
         }
     }
+    public function deletePackage($id)
+    {
+        try {
+            $package = Package::find($id);
+
+            if (!$package) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Package not found.'
+                ], 404);
+            }
+
+            $package->delete();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Package deleted successfully.'
+            ], 200);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while deleting the package.',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
 
 
 

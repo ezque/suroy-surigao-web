@@ -54,4 +54,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/agency-information', [UserSettings::class, 'updateAgencyInformation']);
     Route::get('/agency-information', [UserSettings::class , 'getAgencyInformation']);
     Route::get('/notifications', [UserSettings::class , 'getUserNotifications']);
+    Route::delete('/packages/{id}', [AgencyController::class, 'deletePackage']);
+
 });

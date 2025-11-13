@@ -15,7 +15,6 @@ class SpotController extends Controller
     {
         $userId = auth()->id();
 
-        // Get all spots with related data (images, ratings, reviews, etc.)
         $spots = Spot::withCount('reviews')
             ->with([
                 'images',

@@ -121,6 +121,7 @@
 <script setup>
     import { ref, computed } from "vue";
     import AddPackages from "./addPackages.vue";
+    import axios from "axios";
 
     const props = defineProps({
         usePageNavigation: Boolean,
@@ -175,16 +176,35 @@
     };
 
     // --- Package Actions ---
-    const deletePackage = (id) => {
-        if (
-            confirm(
-                "Are you sure you want to delete this package? This action cannot be undone."
-            )
-        ) {
-            // TODO: call API for delete
-            console.log("Deleting package with id", id);
+    const deletePackage = async (id) => {
+        if (confirm("Are you sure you want to delete this package? This action cannot be undone.")) {
+            try {
+                // Retrieve token (assuming stored in localStorage)
+                const token = localStorage.getItem("access_token"); // or from AsyncStorage if in React Native
+
+                const response = await axios.delete(`/packages/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                        Accept: "application/json",
+                    },
+                });
+
+                if (response.data.success) {
+                    alert("Package deleted successfully!");
+                    // Remove from list on frontend
+                    const index = props.allPackages.findIndex(p => p.id === id);
+                    if (index !== -1) props.allPackages.splice(index, 1);
+                } else {
+                    alert(response.data.message || "Failed to delete package.");
+                }
+
+            } catch (error) {
+                console.error(error);
+                alert(error.response?.data?.message || "An error occurred while deleting the package.");
+            }
         }
     };
+
 
     // --- Computed Properties ---
     const filteredPackages = computed(() =>
