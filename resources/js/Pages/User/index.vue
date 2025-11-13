@@ -60,7 +60,7 @@
     import { ref, computed } from "vue";
 
     import Sidebar from "@/Components/Sidebar.vue";
-    import Header from "@/Components/User/Header.vue";
+    import Header from "../../Components/Header.vue";
 
     import Home from "./userDashboard.vue";
     import Spots from "./spots.vue";

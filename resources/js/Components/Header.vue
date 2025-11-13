@@ -10,9 +10,8 @@
 
         <!-- Right Section: Notifications -->
         <div class="relative flex items-center gap-4">
-            <!-- Notification Icon -->
-            <div @click="toggleNotifications" class="relative cursor-pointer">
-                <div class="w-12 h-12 md:w-12 md:h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg border-2 border-transparent">
+            <div @click="toggleNotifications" class="relative cursor-pointer notification-wrapper">
+                <div class="w-12 h-12 rounded-lg bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-blue-500 hover:text-white transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg border-2 border-transparent">
                     <i class="material-icons text-xl">notifications_none</i>
                     <div v-if="unreadCount > 0" class="absolute -top-1 -right-1 w-5 h-5 min-w-[20px] rounded-full bg-gradient-to-br from-red-400 to-red-600 text-white text-xs font-bold flex items-center justify-center border-2 border-white animate-pulse">
                         {{ unreadCount }}
@@ -20,7 +19,7 @@
                 </div>
 
                 <!-- Dropdown -->
-                <div v-if="showNotifications" class="absolute right-0 top-14 md:top-16 w-80 md:w-96 max-h-[500px] bg-white rounded-xl shadow-xl z-50 overflow-hidden border border-gray-200 animate-fade-in">
+                <div v-if="showNotifications" class="absolute right-0 top-14 md:top-16 w-80 md:w-96 max-h-[500px] bg-white rounded-xl shadow-xl z-50 overflow-hidden border border-gray-200 animate-fade-in notif-dropdown">
                     <!-- Dropdown Header -->
                     <div class="flex justify-between items-center px-5 py-4 bg-gradient-to-br from-gray-100 to-blue-100 border-b border-gray-200">
                         <h3 class="text-gray-800 font-semibold text-base md:text-lg">Notifications</h3>
@@ -42,7 +41,7 @@
                         </div>
 
                         <div v-else class="flex flex-col divide-y divide-gray-100">
-                            <div v-for="(notif, index) in notifications" :key="index"
+                            <div v-for="(notif, index) in notifications" :key="notif.id"
                                  :class="['flex items-start justify-between p-4 gap-3 transition-all', notif.unread ? 'bg-blue-50 border-l-4 border-blue-500' : 'bg-white hover:bg-gray-50']">
                                 <div class="flex-1 min-w-0">
                                     <p class="text-gray-800 font-medium text-sm md:text-base">{{ notif.message }}</p>
@@ -87,22 +86,29 @@ const emit = defineEmits(['selectPage', 'logout']);
 const notifications = ref([]);
 const showNotifications = ref(false);
 
+const BASE_URL = "http://localhost:8000/api"; // Laravel API URL
+
 const fetchNotifications = async () => {
     try {
-        const response = await axios.get("/notifications", {
+        const token = localStorage.getItem('authToken');
+        if (!token) return;
+
+        const response = await axios.get(`${BASE_URL}/notifications`, {
             headers: {
-                Authorization: `Bearer ${localStorage.getItem('access_token')}`,
-            }
+                Authorization: `Bearer ${token}`,
+                Accept: 'application/json',
+            },
         });
+
         notifications.value = response.data.map(n => ({
             id: n.id,
             message: n.message,
-            unread: n.status === "unread",
-            time: new Date(n.created_at).toLocaleString(),
-            category: n.category || "general"
+            unread: n.unread,
+            time: n.time,
+            category: n.type || "general"
         }));
     } catch (error) {
-        console.error("Error fetching notifications:", error);
+        console.error("Error fetching notifications:", error.response || error);
     }
 };
 
@@ -129,33 +135,15 @@ const handleClickOutside = (event) => {
     }
 };
 
-const toggleNotifications = () => {
-    showNotifications.value = !showNotifications.value;
-};
-
-const closeAllDropdowns = () => {
-    showNotifications.value = false;
-};
-
+const toggleNotifications = () => { showNotifications.value = !showNotifications.value; };
+const closeAllDropdowns = () => { showNotifications.value = false; };
 const unreadCount = computed(() => notifications.value.filter(n => n.unread).length);
-
-const markAsRead = (index) => {
-    notifications.value[index].unread = false;
-};
-
-const markAllAsRead = () => {
-    notifications.value.forEach(n => n.unread = false);
-};
-
-const viewAllNotifications = () => {
-    console.log("Redirect to full notifications page");
-};
+const markAsRead = (index) => { notifications.value[index].unread = false; };
+const markAllAsRead = () => { notifications.value.forEach(n => n.unread = false); };
+const viewAllNotifications = () => { console.log("Redirect to full notifications page"); };
 </script>
 
 <style scoped>
-@keyframes fade-in {
-    from { opacity: 0; transform: translateY(-10px) scale(0.95); }
-    to { opacity: 1; transform: translateY(0) scale(1); }
-}
+@keyframes fade-in { from { opacity: 0; transform: translateY(-10px) scale(0.95); } to { opacity: 1; transform: translateY(0) scale(1); } }
 .animate-fade-in { animation: fade-in 0.2s ease-out; }
 </style>
