@@ -97,37 +97,45 @@
                     <i class="fas fa-eye text-xs"></i>
                     View
                 </button>
+
+                <button
+                    @click="$emit('delete', spot)"
+                    class="flex items-center justify-center gap-1.5 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-lg flex-1 group cursor-pointer"
+                >
+                    <i class="fas fa-trash text-xs"></i>
+                    Delete
+                </button>
             </div>
         </div>
     </div>
 </template>
 
-<script setup>
-import { computed } from 'vue'
+        <script setup>
+        import { computed } from 'vue'
 
-const props = defineProps({
-    spot: {
-        type: Object,
-        required: true,
-    },
-})
+        const props = defineProps({
+            spot: {
+                type: Object,
+                required: true,
+            },
+        })
 
-// Compute average rating safely
-const averageRating = computed(() => {
-    const rating = parseFloat(props.spot.average_rating)
-    return isNaN(rating) ? 0 : rating
-})
+        // Compute average rating safely
+        const averageRating = computed(() => {
+            const rating = parseFloat(props.spot.average_rating)
+            return isNaN(rating) ? 0 : rating
+        })
 
-// Determine full and half stars
-const fullStars = computed(() => Math.floor(averageRating.value))
-const hasHalfStar = computed(() => averageRating.value - fullStars.value >= 0.5)
-</script>
+        // Determine full and half stars
+        const fullStars = computed(() => Math.floor(averageRating.value))
+        const hasHalfStar = computed(() => averageRating.value - fullStars.value >= 0.5)
+        </script>
 
-<style scoped>
-.line-clamp-1 {
-    overflow: hidden;
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
-}
-</style>
+        <style scoped>
+        .line-clamp-1 {
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 1;
+            -webkit-box-orient: vertical;
+        }
+        </style>
