@@ -66,6 +66,26 @@ class Spot extends Model
             });
     }
 
+    protected static function booted()
+    {
+        static::deleting(function ($spot) {
+            // Delete images
+            $spot->images()->each(function ($img) {
+                if (file_exists(storage_path('app/public/' . $img->spot_image))) {
+                    unlink(storage_path('app/public/' . $img->spot_image));
+                }
+                $img->delete();
+            });
 
+            // Delete ratings
+            $spot->ratings()->delete();
+
+            // Delete reviews
+            $spot->reviews()->delete();
+
+            // Delete saved entries
+            $spot->isSavedByUser()->delete();
+        });
+    }
 
 }

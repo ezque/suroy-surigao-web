@@ -198,6 +198,36 @@ class AdminController extends Controller
         ]);
     }
 
+    public function deleteSpot($id)
+    {
+        $spot = Spot::find($id);
+        if (!$spot) {
+            return response()->json(['message' => 'Spot not found'], 404);
+        }
+
+        // Delete related images
+        foreach ($spot->images as $img) {
+            if (file_exists(storage_path('app/public/' . $img->spot_image))) {
+                unlink(storage_path('app/public/' . $img->spot_image));
+            }
+            $img->delete();
+        }
+
+        // Delete ratings
+        $spot->ratings()->delete();
+
+        // Delete reviews
+        $spot->reviews()->delete();
+
+        // Delete saved entries
+        $spot->isSavedByUser()->delete();
+
+        // Finally, delete the spot itself
+        $spot->delete();
+
+        return response()->json(['message' => 'Spot and all related data deleted successfully']);
+    }
+
 
 
 
