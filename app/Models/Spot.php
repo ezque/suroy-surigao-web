@@ -27,5 +27,45 @@ class Spot extends Model
     {
         return $this->hasMany(Review::class, 'spot_id');
     }
+    public function isSavedByUser()
+    {
+        return $this->hasOne(IsSave::class, 'spot_id')->where('user_id', auth()->id())->where('is_save', '1');
+    }
+    public function agencies()
+    {
+        return User::where('role', 'agency')
+            ->whereHas('packages', function ($query) {
+                $query->whereJsonContains('tour_destination', $this->id)
+                    ->where('status', '1');
+            })
+            ->with('agency') // eager load agency info
+            ->with(['packages' => function ($query) {
+                $query->where('status', '1')
+                    ->select([
+                        'id', 'userID', 'package_name', 'description',
+                        'price', 'capacity', 'available_slot',
+                        'start_date', 'end_date', 'start_time', 'end_time',
+                        'pickup_point', 'tour_destination', 'status'
+                    ]);
+            }])
+            ->withCount(['packages' => function ($query) {
+                $query->where('status', '1');
+            }])
+            ->get()
+            ->map(function ($agency) {
+                $agency->packages->transform(function ($pkg) {
+                    $spotIds = json_decode($pkg->tour_destination, true) ?? [];
+
+                    $pkg->tour_destinations = Spot::whereIn('id', $spotIds)
+                        ->get(['id', 'spot_name']);
+
+                    return $pkg;
+                });
+
+                return $agency;
+            });
+    }
+
+
 
 }
