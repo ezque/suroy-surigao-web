@@ -206,7 +206,7 @@ class UserController extends Controller
             $package->save();
 
             // ✅ Create Notification for the agency
-            $agencyId = $package->user_id; // assuming the package table has a user_id that represents the agency
+            $agencyId = $package->userID;
 
             Notification::create([
                 'user_ID' => $userId, // the customer who made the reservation

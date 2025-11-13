@@ -32,7 +32,7 @@ class SpotsServices
             ->with([
                 'spot' => function ($query) {
                     $query->with(['images', 'ratings', 'reviews.user'])
-                        ->withCount('reviews') // ✅ This adds total reviews as 'reviews_count'
+                        ->withCount('reviews')
                         ->addSelect([
                             'average_rating' => Rating::selectRaw('ROUND(COALESCE(AVG(rating), 0), 1)')
                                 ->whereColumn('spot_id', 'spots.id')
@@ -42,12 +42,14 @@ class SpotsServices
             ])
             ->get()
             ->pluck('spot')
+            ->filter()
             ->map(function ($spot) {
-                // Rename 'reviews_count' to something cleaner if you want
-                $spot->total_reviews = $spot->reviews_count;
+                $spot->total_reviews = $spot->reviews_count ?? 0;
                 unset($spot->reviews_count);
                 return $spot;
-            });
+            })
+            ->values(); // ✅ Reindex numeric keys so it becomes a proper array
+
     }
 
 

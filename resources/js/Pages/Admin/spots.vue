@@ -85,11 +85,9 @@ function viewSpot(spot) {
         try {
             await axios.delete(`/delete-spot/${spot.id}`, {
                 headers: {
-                    Authorization: `Bearer ${localStorage.getItem('authToken')}` // if using auth
+                    Authorization: `Bearer ${localStorage.getItem('authToken')}`
                 }
             });
-
-            // Remove from local array so UI updates immediately
             const index = props.allSpots.findIndex(s => s.id === spot.id);
             if (index !== -1) props.allSpots.splice(index, 1);
 
