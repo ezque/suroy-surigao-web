@@ -26,7 +26,7 @@
             {{ errors.password[0] }}
         </span>
 
-    
+
         <button @click="handleLogin" :disabled="loading">Sign in</button>
 
         <p>
@@ -69,16 +69,31 @@
             if (response.data.redirect) {
                 window.location.href = response.data.redirect;
             }
+
         } catch (error) {
-            if (error.response?.status === 422) {
+
+            // ❌ Account is blocked
+            if (error.response?.status === 423) {
                 errors.value = error.response.data.errors;
-            } else {
+
+                alert(error.response.data.errors.email[0]);
+                // Example popup: "Your account is blocked. Please contact support."
+            }
+
+            // ❌ Invalid credentials or validation errors
+            else if (error.response?.status === 422) {
+                errors.value = error.response.data.errors;
+            }
+
+            else {
                 console.error("Unexpected login error:", error);
             }
-        } finally {
+        }
+        finally {
             loading.value = false;
         }
     };
+
 </script>
 
 

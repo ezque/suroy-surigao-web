@@ -2,7 +2,7 @@
   <div class="add-agency-body">
     <div class="header-section">
       <h2>Add New Agency</h2>
-      <button class="back-btn" @click="$emit('selectPage', 'agency')">
+      <button class="back-btn" @click="goBack">
         <i class="material-icons">arrow_back</i> Back to Manage Agencies
       </button>
     </div>
@@ -91,7 +91,7 @@ const form = reactive({
 
 const errors = reactive({});
 const submitted = ref(false);
-
+const goBack = () => emit("back");
 const validateForm = () => {
   errors.agency_name = form.agency_name ? "" : "Agency name is required.";
   errors.contact_number = form.contact_number ? "" : "Contact information is required.";
