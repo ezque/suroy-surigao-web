@@ -15,6 +15,7 @@ class ReservationController extends Controller
 {
     public function addReservation(Request $request)
     {
+        // Validation
         $validator = Validator::make($request->all(), [
             'package_id' => 'required|integer|exists:package,id',
             'number_of_people' => 'required|integer|min:1',
@@ -39,6 +40,13 @@ class ReservationController extends Controller
 
         $package = Package::find($request->package_id);
 
+        if (!$package) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Package not found.'
+            ], 404);
+        }
+
         if ($package->available_slot < $request->number_of_people) {
             return response()->json([
                 'success' => false,
@@ -50,6 +58,7 @@ class ReservationController extends Controller
 
         DB::beginTransaction();
         try {
+            // Create reservation
             $reservation = Reservation::create([
                 'user_id' => $userId,
                 'package_id' => $request->package_id,
@@ -66,19 +75,23 @@ class ReservationController extends Controller
                 'status' => $request->status ?? 'pending',
             ]);
 
+            // Reduce available slots
             $package->available_slot -= $request->number_of_people;
             $package->save();
 
-            $agencyId = $package->user_id;
+            // Notify package owner
+            $receiverId = $package->user?->id; // get owner of the package
 
-            Notification::create([
-                'user_ID' => $userId,
-                'sender_id' => $userId,
-                'receiver_id' => $agencyId,
-                'message' => 'A new reservation has been made for your package: ' . $package->package_name,
-                'status' => 'unread',
-                'type' => 'reservationAdded',
-            ]);
+            if ($receiverId) {
+                Notification::create([
+                    'user_ID' => $userId,
+                    'sender_id' => $userId,
+                    'receiver_id' => $receiverId,
+                    'message' => 'A new reservation has been made for your package: ' . $package->package_name,
+                    'status' => 'unread',
+                    'type' => 'reservationAdded',
+                ]);
+            }
 
             DB::commit();
 
