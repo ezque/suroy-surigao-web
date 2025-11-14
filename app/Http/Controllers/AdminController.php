@@ -118,8 +118,6 @@ class AdminController extends Controller
     }
     public function updateSpot(Request $request, $id)
     {
-        \Log::info('Incoming update request for spot ID: ' . $id, $request->all());
-
         try {
             $request->validate([
                 'spot_name'   => 'required|string|max:255',
@@ -130,6 +128,7 @@ class AdminController extends Controller
             ]);
 
             $spot = Spot::findOrFail($id);
+
             $spot->update([
                 'spot_name'   => $request->spot_name,
                 'description' => $request->description,
@@ -137,7 +136,20 @@ class AdminController extends Controller
                 'category'    => $request->category,
             ]);
 
-            // If new images are uploaded, save them
+            // Remove selected images
+            if ($request->has('removed_images')) {
+                foreach ($request->removed_images as $imgId) {
+                    $img = SpotImage::find($imgId);
+                    if ($img) {
+                        if (file_exists(storage_path('app/public/' . $img->spot_image))) {
+                            unlink(storage_path('app/public/' . $img->spot_image));
+                        }
+                        $img->delete();
+                    }
+                }
+            }
+
+            // Save new images
             if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     $path = $image->store('spots', 'public');
@@ -152,12 +164,13 @@ class AdminController extends Controller
             return response()->json(['message' => 'Spot updated successfully!']);
 
         } catch (\Exception $e) {
-            \Log::error('Error updating spot: '.$e->getMessage(), [
+            \Log::error('Error updating spot: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString()
             ]);
             return response()->json(['error' => 'Something went wrong. Check logs for details.'], 500);
         }
     }
+
 
 
     public function updateUserStatus(Request $request)

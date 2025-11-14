@@ -34,11 +34,12 @@ class Spot extends Model
     public function agencies()
     {
         return User::where('role', 'agency')
+            ->where('status', '!=', '2')
             ->whereHas('packages', function ($query) {
                 $query->whereJsonContains('tour_destination', $this->id)
                     ->where('status', '1');
             })
-            ->with('agency') // eager load agency info
+            ->with('agency')
             ->with(['packages' => function ($query) {
                 $query->where('status', '1')
                     ->select([

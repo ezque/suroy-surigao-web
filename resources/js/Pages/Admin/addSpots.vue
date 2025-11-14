@@ -65,13 +65,13 @@
                 <label>Upload Images <span class="required">*</span></label>
 
                 <div class="image-upload-container">
-                    <!-- Preview thumbnails -->
+                    <!-- Existing + Preview Thumbnails -->
                     <div v-for="(preview, index) in imagePreviews" :key="index" class="image-thumb">
-                        <img :src="preview" alt="Preview" />
+                        <img :src="preview.url" alt="Preview" />
                         <button class="remove-btn" @click="removeImage(index)">×</button>
                     </div>
 
-                    <!-- Upload box -->
+                    <!-- Upload box for new images -->
                     <label class="upload-box">
                         <span>+</span>
                         <input type="file" accept="image/*" multiple @change="handleFileUpload" />
@@ -100,107 +100,135 @@
 </template>
 
 <script setup>
-    import { ref, reactive } from "vue";
-    import axios from "axios";
+import { ref, reactive } from "vue";
+import axios from "axios";
 
-    const props = defineProps({
-        editingSpot: Object
-    });
-    const emit = defineEmits(["selectPage"]);
+const props = defineProps({
+    editingSpot: Object
+});
+const emit = defineEmits(["selectPage"]);
 
-    const form = reactive({
-        spot_name: props.editingSpot?.spot_name || "",
-        description: props.editingSpot?.description || "",
-        location: props.editingSpot?.location || "",
-        category: props.editingSpot?.category || "",
-        images: [],
-    });
+const form = reactive({
+    spot_name: props.editingSpot?.spot_name || "",
+    description: props.editingSpot?.description || "",
+    location: props.editingSpot?.location || "",
+    category: props.editingSpot?.category || "",
+    images: [], // new uploads
+});
 
-    const imagePreviews = ref(
-        props.editingSpot?.images?.map(img => `/storage/${img.spot_image}`) || []
-    );
+// Track existing images
+const existingImages = props.editingSpot?.images?.map(img => ({
+    id: img.id,
+    url: `/storage/${img.spot_image}`
+})) || [];
 
-    const errors = reactive({});
-    const submitted = ref(false);
-    const loading = ref(false);
+// Track removed image IDs
+const removedImages = ref([]);
 
-    const handleFileUpload = (event) => {
-        const files = Array.from(event.target.files);
-        const validImages = files.filter((file) => file.type.startsWith("image/"));
+// Combine existing + new previews
+const imagePreviews = ref([...existingImages]);
 
-        if (validImages.length) {
-            validImages.forEach((file) => {
-                form.images.push(file);
-                imagePreviews.value.push(URL.createObjectURL(file));
+const errors = reactive({});
+const submitted = ref(false);
+const loading = ref(false);
+
+// Handle new uploads
+const handleFileUpload = (event) => {
+    const files = Array.from(event.target.files);
+    const validImages = files.filter(file => file.type.startsWith("image/"));
+
+    if (validImages.length) {
+        validImages.forEach(file => {
+            form.images.push(file);
+            imagePreviews.value.push({ url: URL.createObjectURL(file), isNew: true, file });
+        });
+        errors.images = "";
+    } else {
+        errors.images = "Please upload valid image files.";
+    }
+
+    event.target.value = "";
+};
+
+// Remove image
+const removeImage = (index) => {
+    const img = imagePreviews.value[index];
+
+    // If it's an existing image, track it for removal
+    if (!img.isNew) {
+        removedImages.value.push(img.id);
+    } else {
+        // If it's a new image, remove from form.images
+        form.images.splice(form.images.indexOf(img.file), 1);
+    }
+
+    imagePreviews.value.splice(index, 1);
+};
+
+// Validate form
+const validateForm = () => {
+    errors.spot_name = form.spot_name ? "" : "Spot name is required.";
+    if (!props.editingSpot) {
+        errors.images = imagePreviews.value.length ? "" : "At least one image is required.";
+    }
+    return !errors.spot_name && !errors.images;
+};
+
+// Submit form
+const store = async () => {
+    if (!validateForm() || loading.value) return;
+    loading.value = true;
+
+    try {
+        let formData = new FormData();
+        formData.append("spot_name", form.spot_name);
+        formData.append("description", form.description);
+        formData.append("location", form.location);
+        formData.append("category", form.category);
+
+        // Append new images
+        form.images.forEach((file, index) => {
+            formData.append(`images[${index}]`, file);
+        });
+
+        // Append removed images
+        removedImages.value.forEach((id, idx) => {
+            formData.append(`removed_images[${idx}]`, id);
+        });
+
+        if (props.editingSpot) {
+            await axios.post(`/update-spot/${props.editingSpot.id}`, formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-            errors.images = "";
         } else {
-            errors.images = "Please upload valid image files.";
-        }
-
-        event.target.value = "";
-    };
-
-    const removeImage = (index) => {
-        form.images.splice(index, 1);
-        imagePreviews.value.splice(index, 1);
-    };
-
-    const validateForm = () => {
-        errors.spot_name = form.spot_name ? "" : "Spot name is required.";
-        if (!props.editingSpot) {
-            errors.images = form.images.length ? "" : "At least one image is required.";
-        }
-        return !errors.spot_name && !errors.images;
-    };
-
-    const store = async () => {
-        if (!validateForm() || loading.value) return;
-        loading.value = true;
-
-        try {
-            let formData = new FormData();
-            formData.append("spot_name", form.spot_name);
-            formData.append("description", form.description);
-            formData.append("location", form.location);
-            formData.append("category", form.category);
-
-            form.images.forEach((file, index) => {
-                formData.append(`images[${index}]`, file);
+            await axios.post("/add-new-spot", formData, {
+                headers: { "Content-Type": "multipart/form-data" },
             });
-
-            if (props.editingSpot) {
-                await axios.post(`/update-spot/${props.editingSpot.id}`, formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
-            } else {
-                await axios.post("/add-new-spot", formData, {
-                    headers: { "Content-Type": "multipart/form-data" },
-                });
-            }
-
-            submitted.value = true;
-            setTimeout(() => (submitted.value = false), 3000);
-
-            if (!props.editingSpot) resetForm();
-        } catch (err) {
-            if (err.response?.status === 422) {
-                Object.assign(errors, err.response.data.errors);
-            }
-        } finally {
-            loading.value = false;
         }
-    };
 
-    const resetForm = () => {
-        form.spot_name = "";
-        form.description = "";
-        form.location = "";
-        form.category = "";
-        form.images = [];
-        imagePreviews.value = [];
-        Object.keys(errors).forEach((key) => (errors[key] = ""));
-    };
+        submitted.value = true;
+        setTimeout(() => (submitted.value = false), 3000);
+
+    } catch (err) {
+        if (err.response?.status === 422) {
+            Object.assign(errors, err.response.data.errors);
+        }
+    } finally {
+        loading.value = false;
+    }
+};
+
+// Reset form (optional)
+const resetForm = () => {
+    form.spot_name = "";
+    form.description = "";
+    form.location = "";
+    form.category = "";
+    form.images = [];
+    imagePreviews.value = [];
+    removedImages.value = [];
+    Object.keys(errors).forEach((key) => (errors[key] = ""));
+};
 </script>
 
 
