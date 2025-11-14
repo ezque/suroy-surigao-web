@@ -7,6 +7,8 @@ use App\Http\Controllers\Mobile\SpotController;
 use App\Http\Controllers\Mobile\ReservationController;
 use App\Http\Controllers\Mobile\UserSettings;
 use App\Http\Controllers\Mobile\NotificationController;
+use App\Http\Controllers\Mobile\ReviewsController;
+
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
@@ -19,4 +21,9 @@ Route::middleware('auth:sanctum')->get('/notification', [NotificationController:
 Route::middleware('auth:sanctum')->post('/save-unsave-spot', [SpotController::class, 'saveUnsaveSpot']);
 Route::middleware('auth:sanctum')->post('/add-reservation', [ReservationController::class, 'addReservation']);
 Route::middleware('auth:sanctum')->put('/update-profile', [UserSettings::class, 'updatePersonalInformation']);
+
+Route::middleware('auth:sanctum')->get('/reviews/{spotId}', [ReviewsController::class, 'getAllReviews']);
+Route::middleware('auth:sanctum')->post('/reviews/{id}', [ReviewsController::class, 'addReview']);
+
+
 

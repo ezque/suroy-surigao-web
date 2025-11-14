@@ -101,9 +101,6 @@ class UserController extends Controller
         return response()->json($likedAgencies);
     }
 
-
-
-
     public function getSpotSavedStatus($id)
     {
         $userId = auth()->id();
