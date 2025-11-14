@@ -59,10 +59,6 @@
 
                     <!-- Dropdown Footer -->
                     <div class="p-4 bg-gray-100 border-t border-gray-200 text-center">
-                        <button @click.stop="viewAllNotifications" class="w-full flex items-center justify-center gap-2 text-white bg-gradient-to-r from-blue-400 to-blue-700 font-semibold text-sm md:text-base px-4 py-2 rounded-lg hover:shadow-lg hover:-translate-y-0.5 transition-all">
-                            <i class="material-icons text-sm md:text-base">list_alt</i>
-                            View Notification History
-                        </button>
                     </div>
                 </div>
             </div>
