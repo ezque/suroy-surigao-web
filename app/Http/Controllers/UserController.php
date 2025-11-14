@@ -120,6 +120,7 @@ class UserController extends Controller
     public function getAgenciesByPackageAndSpot($spotId)
     {
         $agencies = User::where('role', 'agency')
+            ->where('status', '!=', '2')
             ->whereHas('packages', function ($query) use ($spotId) {
                 $query->whereJsonContains('tour_destination', (int) $spotId)
                     ->where('status', '1');

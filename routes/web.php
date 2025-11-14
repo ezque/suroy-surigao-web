@@ -24,8 +24,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/add-new-spot', [AdminController::class, 'addSpot']);
     Route::post('/update-spot/{id}', [AdminController::class, 'updateSpot']);
 
+    Route::get('/totalPackage', [AgencyController::class, 'agencyTotalPackages']);
+    Route::get('/totalRevenue', [AgencyController::class, 'agencyTotalRevenue']);
+    Route::get('/totalReservation', [AgencyController::class, 'agencyTotalReservations']);
     Route::post('/add-package', [AgencyController::class, 'addPackage']);
     Route::post('/update-package/{id}', [AgencyController::class, 'updatePackage']);
+    Route::post('/update-reservation/{id}', [AgencyController::class, 'updateReservation']);
+    Route::delete('/packages/{id}', [AgencyController::class, 'deletePackage']);
 
     Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
     Route::post('/add-blog', [AdminController::class, 'addBlog']);
@@ -42,7 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/like-unlike-agency', [UserController::class, 'likeUnlikeAgency']);
     Route::get('/get-spots', [UserController::class, 'getSpots']);
     Route::post('/add-reservation', [UserController::class, 'addReservation']);
-    Route::post('/update-reservation/{id}', [AgencyController::class, 'updateReservation']);
+
 
     Route::post('/spots/{id}/rate', [UserController::class, 'rating']);
     Route::get('/spots/{id}/rating', [UserController::class, 'getRatings']);
@@ -56,6 +61,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/agency-information', [UserSettings::class, 'updateAgencyInformation']);
     Route::get('/agency-information', [UserSettings::class , 'getAgencyInformation']);
     Route::get('/notifications', [UserSettings::class , 'getUserNotifications']);
-    Route::delete('/packages/{id}', [AgencyController::class, 'deletePackage']);
+
 
 });

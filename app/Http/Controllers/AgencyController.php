@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Package;
 use App\Models\Reservation;
+use App\Models\Notification;
+use Illuminate\Support\Facades\Auth;
 
 
 class AgencyController extends Controller
@@ -104,9 +107,8 @@ class AgencyController extends Controller
     public function updateReservation(Request $request, $id)
     {
         try {
-            // Validate the incoming status
             $request->validate([
-                'status' => 'required|string|in:pending,confirmed,rejected',
+                'status' => 'required|string|in:pending,confirmed,rejected,completed,cancelled',
             ]);
 
             $reservation = Reservation::findOrFail($id);
@@ -115,7 +117,26 @@ class AgencyController extends Controller
                 'status' => $request->status,
             ]);
 
+            $statusMessage = match ($request->status) {
+                'pending'   => 'Your reservation is now pending.',
+                'confirmed' => 'Your reservation has been confirmed!',
+                'rejected'  => 'Your reservation has been rejected.',
+                'completed' => 'Your reservation has been completed. Thank you!',
+                'cancelled' => 'Your reservation has been cancelled.',
+                default     => 'Your reservation status has been updated.',
+            };
 
+            $receiverId = $reservation->user_id; // the user who made the reservation
+            $senderId = auth()->id(); // the admin or staff who updated it
+
+            Notification::create([
+                'user_ID'     => $receiverId,  // make sure the column name matches your DB
+                'sender_id'   => $senderId,
+                'receiver_id' => $receiverId,
+                'message'     => $statusMessage,
+                'type'        => 'reservation',
+                'status'      => 'unread',
+            ]);
 
             return response()->json([
                 'message' => 'Reservation updated successfully',
@@ -123,12 +144,15 @@ class AgencyController extends Controller
             ], 200);
 
         } catch (\Exception $e) {
+
             return response()->json([
                 'message' => 'Failed to update reservation',
                 'error' => $e->getMessage(),
             ], 500);
         }
     }
+
+
     public function deletePackage($id)
     {
         try {
@@ -156,6 +180,50 @@ class AgencyController extends Controller
             ], 500);
         }
     }
+
+    public function agencyTotalPackages()
+    {
+        $user = Auth::user();
+
+        if (!$user) {
+            return response()->json(['message' => 'Unauthorized'], 401);
+        }
+
+        $totalPackages = $user->packages()->count();
+
+        return response()->json([
+            'total_packages' => $totalPackages
+        ]);
+    }
+    public function agencyTotalReservations()
+    {
+        $user = Auth::user();
+
+        $totalReservations = Reservation::whereHas('package', function ($query) use ($user) {
+            $query->where('userID', $user->id);
+        })->count();
+
+        return response()->json([
+            'total_reservations' => $totalReservations
+        ]);
+    }
+
+    public function agencyTotalRevenue()
+    {
+        $user = Auth::user();
+
+        $packageIds = Package::where('userID', $user->id)->pluck('id');
+
+        $totalRevenue = Reservation::whereIn('package_id', $packageIds)
+            ->where('status', 'completed')
+            ->sum('total_amount');
+
+        return response()->json([
+            'total_revenue' => $totalRevenue
+        ]);
+    }
+
+
 
 
 
