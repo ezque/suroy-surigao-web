@@ -227,6 +227,51 @@ class AdminController extends Controller
 
         return response()->json(['message' => 'Spot and all related data deleted successfully']);
     }
+    public function deleteBlog($id)
+    {
+        $blog = Blog::find($id);
+
+        if (!$blog) {
+            return response()->json(['message' => 'Blog not found'], 404);
+        }
+
+        $blog->delete();
+
+        return response()->json([
+            'message' => 'Blog deleted successfully'
+        ]);
+    }
+    public function editBlog(Request $request, $id)
+    {
+        // Validate only the fields that are present
+        $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'url'   => 'sometimes|required|string|max:1000',
+        ]);
+
+        // Find blog
+        $blog = Blog::find($id);
+
+        if (!$blog) {
+            return response()->json(['message' => 'Blog not found'], 404);
+        }
+
+        // Update only existing fields
+        if ($request->has('title')) {
+            $blog->title = $request->title;
+        }
+
+        if ($request->has('url')) {
+            $blog->url = $request->url;
+        }
+
+        $blog->save();
+
+        return response()->json([
+            'message' => 'Blog updated successfully!',
+            'blog' => $blog
+        ], 200);
+    }
 
 
 

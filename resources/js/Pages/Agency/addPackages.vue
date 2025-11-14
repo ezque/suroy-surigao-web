@@ -51,7 +51,11 @@
                 <div class="form-grid">
                     <label>
                         Start Date
-                        <input type="date" v-model="startDate" />
+                        <input
+                            type="date"
+                            v-model="startDate"
+                            @change="onStartDateChange"
+                        />
                     </label>
                     <label>
                         Start Time
@@ -59,7 +63,12 @@
                     </label>
                     <label>
                         End Date
-                        <input type="date" v-model="endDate" />
+                        <input
+                            type="date"
+                            v-model="endDate"
+                            :min="startDate"
+                            :disabled="!startDate"
+                        />
                     </label>
                     <label>
                         End Time
@@ -67,6 +76,7 @@
                     </label>
                 </div>
             </section>
+
 
             <!-- TOUR INFORMATION -->
             <section class="form-section">
@@ -143,6 +153,12 @@
 
     const selectedSpot = ref("");
     const errors = reactive({});
+
+    const onStartDateChange = () => {
+        if (endDate.value && endDate.value < startDate.value) {
+            endDate.value = '';
+        }
+    }
 
     // Fill form if editing
     watch(

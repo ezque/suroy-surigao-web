@@ -29,6 +29,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
     Route::post('/add-blog', [AdminController::class, 'addBlog']);
+    Route::delete('/delete-blog/{id}', [AdminController::class, 'deleteBlog']);
+    Route::put('/update-blog/{id}', [AdminController::class, 'editBlog']);
     Route::delete('/delete-spot/{id}', [AdminController::class, 'deleteSpot']);
     Route::get('/agencies-by-spot/{spotId}', [UserController::class, 'getAgencyInSpots']);
 
