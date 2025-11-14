@@ -22,7 +22,7 @@
                 class="absolute top-3 left-3 px-3 py-1.5 rounded-full text-white text-xs font-bold tracking-wider shadow-lg flex items-center gap-1"
                 :class="spot.status === 'active' ? 'bg-emerald-500' : 'bg-rose-500'"
             >
-                <i class="fas" :class="spot.status === '1' ? 'fa-check-circle' : 'fa-times-circle'"></i>
+                <i class="fas" :class="spot.status === 'active' ? 'fa-check-circle' : 'fa-times-circle'"></i>
                 {{ spot.status === 'active' ? 'Active' : 'Inactive' }}
             </div>
         </div>
@@ -42,26 +42,20 @@
                     <!-- Star Ratings -->
                     <div class="flex">
                         <template v-for="n in 5" :key="n">
-                            <!-- Full Star -->
                             <i
                                 v-if="n <= fullStars"
                                 class="material-icons text-yellow-400 text-base"
                             >star</i>
-
-                            <!-- Half Star -->
                             <i
                                 v-else-if="n === fullStars + 1 && hasHalfStar"
                                 class="material-icons text-yellow-400 text-base"
                             >star_half</i>
-
-                            <!-- Empty Star -->
                             <i
                                 v-else
                                 class="material-icons text-gray-300 text-base"
                             >star</i>
                         </template>
                     </div>
-
                     <span class="ml-1.5 font-semibold text-gray-800">
                         {{ averageRating.toFixed(1) }}
                     </span>
@@ -110,32 +104,32 @@
     </div>
 </template>
 
-        <script setup>
-        import { computed } from 'vue'
+<script setup>
+import { computed } from 'vue';
 
-        const props = defineProps({
-            spot: {
-                type: Object,
-                required: true,
-            },
-        })
+const props = defineProps({
+    spot: {
+        type: Object,
+        required: true
+    }
+});
 
-        // Compute average rating safely
-        const averageRating = computed(() => {
-            const rating = parseFloat(props.spot.average_rating)
-            return isNaN(rating) ? 0 : rating
-        })
+// Compute average rating safely
+const averageRating = computed(() => {
+    const rating = parseFloat(props.spot.average_rating);
+    return isNaN(rating) ? 0 : rating;
+});
 
-        // Determine full and half stars
-        const fullStars = computed(() => Math.floor(averageRating.value))
-        const hasHalfStar = computed(() => averageRating.value - fullStars.value >= 0.5)
-        </script>
+// Determine full and half stars
+const fullStars = computed(() => Math.floor(averageRating.value));
+const hasHalfStar = computed(() => averageRating.value - fullStars.value >= 0.5);
+</script>
 
-        <style scoped>
-        .line-clamp-1 {
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 1;
-            -webkit-box-orient: vertical;
-        }
-        </style>
+<style scoped>
+    .line-clamp-1 {
+        overflow: hidden;
+        display: -webkit-box;
+        -webkit-line-clamp: 1;
+        -webkit-box-orient: vertical;
+    }
+</style>

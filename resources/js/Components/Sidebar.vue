@@ -4,7 +4,7 @@
     <div class="border-b border-white/10 bg-white/5 p-5 text-center backdrop-blur-sm">
       <div class="relative mx-auto mb-4 h-20 w-20">
         <img
-          src="/public/images/logo/logo.png"
+          src="/public/images/logo/logo5.png"
           alt="avatar"
           class="h-full w-full rounded-full border-4 border-white/20 object-cover"
         />

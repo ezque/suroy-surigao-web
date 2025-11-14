@@ -102,6 +102,49 @@
                     </tr>
                     </tbody>
                 </table>
+                <div
+                    v-if="showEditModal"
+                    class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+                >
+                    <div class="bg-white w-full max-w-md p-6 rounded-xl shadow-xl">
+                        <h2 class="text-xl font-bold mb-4 text-teal-800">
+                            Edit Blog Post
+                        </h2>
+
+                        <!-- Title -->
+                        <label class="block text-sm font-medium mb-1">Title</label>
+                        <input
+                            v-model="editForm.title"
+                            type="text"
+                            class="w-full border border-gray-300 rounded-lg p-2 mb-3"
+                        />
+
+                        <!-- URL -->
+                        <label class="block text-sm font-medium mb-1">URL</label>
+                        <input
+                            v-model="editForm.url"
+                            type="text"
+                            class="w-full border border-gray-300 rounded-lg p-2 mb-3"
+                        />
+
+                        <!-- Buttons -->
+                        <div class="flex justify-end gap-2">
+                            <button
+                                @click="closeEditModal"
+                                class="px-4 py-2 bg-gray-300 hover:bg-gray-400 rounded-lg"
+                            >
+                                Cancel
+                            </button>
+
+                            <button
+                                @click="updatePost"
+                                class="px-4 py-2 bg-teal-700 text-white hover:bg-teal-600 rounded-lg"
+                            >
+                                Save Changes
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -109,7 +152,7 @@
 
 <script setup>
     import { computed, ref } from 'vue';
-
+    import axios from "axios";
     // Props
     const props = defineProps({
         allBlogs: { type: Array, default: () => [] },
@@ -118,18 +161,63 @@
 
     // Emits
     const emit = defineEmits(['selectPage']);
-
+    const showEditModal = ref(false);
     const goToAddPost = () => emit('selectPage', 'addPost');
 
     const editPost = (post) => {
-        console.log('Editing post:', post);
-        // emit('selectPage', 'editPost', post);
+        editForm.value = { ...post };
+        showEditModal.value = true;
+    };
+    const editForm = ref({
+        id: null,
+        title: "",
+        url: "",
+    });
+    const closeEditModal = () => {
+        showEditModal.value = false;
+    };
+    const updatePost = async () => {
+        try {
+            await axios.put(`/update-blog/${editForm.value.id}`, editForm.value);
+
+            // Update table instantly
+            const index = props.allBlogs.findIndex(
+                (b) => b.id === editForm.value.id
+            );
+            if (index !== -1) {
+                props.allBlogs[index] = { ...editForm.value };
+            }
+
+            alert("Post updated successfully!");
+            closeEditModal();
+        } catch (error) {
+            console.error(error);
+            alert("Failed to update post.");
+        }
     };
 
-    const deletePost = (id) => {
-        if (confirm('Are you sure you want to delete this post?')) {
-            console.log('Deleting post ID:', id);
-            // await axios.delete(`/api/posts/${id}`);
+    const deletePost = async (id) => {
+        if (!confirm('Are you sure you want to delete this post?')) {
+            return;
+        }
+
+        try {
+            await axios.delete(`/delete-blog/${id}`,{
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            // Remove deleted blog from the table
+            props.allBlogs.splice(
+                props.allBlogs.findIndex(blog => blog.id === id),
+                1
+            );
+
+            alert("Blog deleted successfully!");
+        } catch (error) {
+            console.error(error);
+            alert("Failed to delete blog.");
         }
     };
 </script>

@@ -198,6 +198,81 @@ class AdminController extends Controller
         ]);
     }
 
+    public function deleteSpot($id)
+    {
+        $spot = Spot::find($id);
+        if (!$spot) {
+            return response()->json(['message' => 'Spot not found'], 404);
+        }
+
+        // Delete related images
+        foreach ($spot->images as $img) {
+            if (file_exists(storage_path('app/public/' . $img->spot_image))) {
+                unlink(storage_path('app/public/' . $img->spot_image));
+            }
+            $img->delete();
+        }
+
+        // Delete ratings
+        $spot->ratings()->delete();
+
+        // Delete reviews
+        $spot->reviews()->delete();
+
+        // Delete saved entries
+        $spot->isSavedByUser()->delete();
+
+        // Finally, delete the spot itself
+        $spot->delete();
+
+        return response()->json(['message' => 'Spot and all related data deleted successfully']);
+    }
+    public function deleteBlog($id)
+    {
+        $blog = Blog::find($id);
+
+        if (!$blog) {
+            return response()->json(['message' => 'Blog not found'], 404);
+        }
+
+        $blog->delete();
+
+        return response()->json([
+            'message' => 'Blog deleted successfully'
+        ]);
+    }
+    public function editBlog(Request $request, $id)
+    {
+        // Validate only the fields that are present
+        $request->validate([
+            'title' => 'sometimes|required|string|max:255',
+            'url'   => 'sometimes|required|string|max:1000',
+        ]);
+
+        // Find blog
+        $blog = Blog::find($id);
+
+        if (!$blog) {
+            return response()->json(['message' => 'Blog not found'], 404);
+        }
+
+        // Update only existing fields
+        if ($request->has('title')) {
+            $blog->title = $request->title;
+        }
+
+        if ($request->has('url')) {
+            $blog->url = $request->url;
+        }
+
+        $blog->save();
+
+        return response()->json([
+            'message' => 'Blog updated successfully!',
+            'blog' => $blog
+        ], 200);
+    }
+
 
 
 

@@ -23,6 +23,7 @@
             />
             <AgencyAddForm
                 v-else-if="activePage === 'agencyAddForm'"
+                @back="activePage = 'agency'"
             />
             <Spots
                 v-else-if="activePage === 'spots'"

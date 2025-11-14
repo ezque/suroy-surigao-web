@@ -8,21 +8,21 @@
                 class="group bg-white rounded-2xl overflow-hidden shadow-[0_4px_20px_rgba(0,0,0,0.05)] hover:shadow-[0_8px_30px_rgba(0,0,0,0.1)] transition-all duration-300 hover:-translate-y-1"
             >
                 <!-- Image -->
-                <div class="relative">
-                    <img
-                        src="/public/images/logo/logo.png"
-                        alt="Agency image"
-                        class="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-                    <div class="absolute inset-0 bg-gradient-to-b from-transparent to-black/50"></div>
-                </div>
+                <img
+                    :src="agency.agency?.image_path
+                    ? `/storage/${agency.agency.image_path}`
+                    : '/images/logo/logo.png'"
+                    alt="Agency image"
+                    class="w-full h-52 object-cover transition-transform duration-500 group-hover:scale-105"
+                />
+
 
                 <!-- Content -->
                 <div class="p-5">
                     <div class="flex justify-between items-start mb-2">
                         <h3 class="text-lg font-bold text-[#1e293b] capitalize">
                             {{ agency.agency?.agency_name || "No Data found" }}
-                        </h3>  
+                        </h3>
                     </div>
 
                     <p class="text-[#64748b] text-sm leading-relaxed mb-4">

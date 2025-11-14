@@ -99,7 +99,6 @@ class UserSettings extends Controller
     }
     public function getUserNotifications(Request $request)
     {
-        // Get the currently authenticated user's ID
         $userId = $request->user()->id;
 
         // Fetch notifications where the user is the receiver
@@ -113,8 +112,8 @@ class UserSettings extends Controller
                 'id' => $notif->id,
                 'message' => $notif->message,
                 'unread' => $notif->status === 'unread', // true if unread
-                'type' => $notif->type ?? 'general',
-                'time' => $notif->created_at->diffForHumans(), // human-readable time
+                'type' => $notif->type,
+                'time' => $notif->created_at->diffForHumans(),
             ];
         });
 

@@ -482,9 +482,11 @@
             });
 
             if (response.data.success) {
-                // show success message and emit event (keeps existing behavior)
                 reservationSuccess.value = true;
-                emit('reservation-completed', response.data.reservation);
+                emit('spots');
+
+                // ✅ Show a pop-up alert
+                alert('🎉 Your reservation was successful! Thank you for booking.');
             }
         } catch (error) {
             console.error(error.response?.data || error);

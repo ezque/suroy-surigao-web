@@ -14,8 +14,13 @@
         <!-- Agency Hero -->
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10 hover:shadow-2xl transition-all duration-300">
             <div class="relative h-[300px]">
-                <img src="/public/images/logo/logo.png" alt="Agency image" class="w-full h-full object-cover"/>
-                
+                <img :src="agency.agency?.image_path
+                    ? `/storage/${agency.agency.image_path}`
+                    : '/images/logo/logo.png'"
+                     alt="Agency image"
+                     class="w-full h-full object-cover"
+                />
+
             </div>
 
             <div class="p-8">

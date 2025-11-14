@@ -206,7 +206,7 @@ class UserController extends Controller
             $package->save();
 
             // ✅ Create Notification for the agency
-            $agencyId = $package->user_id; // assuming the package table has a user_id that represents the agency
+            $agencyId = $package->userID;
 
             Notification::create([
                 'user_ID' => $userId, // the customer who made the reservation
@@ -284,15 +284,34 @@ class UserController extends Controller
             'user_id' => Auth::id(),
             'review' => $request->review,
         ]);
+        // Fetch spot name
+        $spot = Spot::find($id);
 
         $review = Review::with('user.userInfo:id,user_ID,firstName,lastName')
             ->find($review->id);
+
+        // ✅ Notify admin
+        $admin = User::where('role', 'admin')->first();
+
+        if ($admin) {
+            Notification::create([
+                'user_ID' => Auth::id(),
+                'sender_id' => Auth::id(),
+                'receiver_id' => $admin->id,
+                'message' => Auth::user()->userInfo->firstName
+                    . " added a new review in "
+                    . $spot->spot_name . ".",
+                'status' => 'unread',                 // unread
+                'type' => 'review',            // notification category
+            ]);
+        }
 
         return response()->json([
             'message' => 'Review added successfully!',
             'review' => $review
         ]);
     }
+
 
     public function getReviews($id)
     {

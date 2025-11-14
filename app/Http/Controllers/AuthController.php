@@ -24,25 +24,37 @@ class AuthController extends Controller
             'password' => 'required',
         ]);
 
-        $credentials = $request->only('email', 'password');
+        $user = User::where('email', $request->email)->first();
 
-        if (Auth::attempt($credentials)) {
-            $request->session()->regenerate();
-
-            $user = Auth::user();
-
-            $redirect = match ($user->role ?? 'user') {
-                'admin' => '/admin-dashboard',
-                'agency' => '/agency-dashboard',
-                default => '/user-dashboard',
-            };
-
-            return response()->json(['redirect' => $redirect]);
+        if (!$user) {
+            return response()->json([
+                'errors' => ['email' => ['Invalid credentials.']],
+            ], 422);
         }
 
-        return response()->json([
-            'errors' => ['email' => ['Invalid credentials.']],
-        ], 422);
+        if ($user->status === '2') {
+            return response()->json([
+                'errors' => ['email' => ['Your account is blocked. Please contact support.']],
+            ], 423);
+        }
+
+        // Validate password
+        if (!Auth::attempt($request->only('email', 'password'))) {
+            return response()->json([
+                'errors' => ['email' => ['Invalid credentials.']],
+            ], 422);
+        }
+
+        $request->session()->regenerate();
+        $user = Auth::user();
+
+        $redirect = match ($user->role ?? 'user') {
+            'admin' => '/admin-dashboard',
+            'agency' => '/agency-dashboard',
+            default => '/user-dashboard',
+        };
+
+        return response()->json(['redirect' => $redirect]);
     }
 
     public function registerPost(Request $request)

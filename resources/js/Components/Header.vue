@@ -86,18 +86,11 @@ const emit = defineEmits(['selectPage', 'logout']);
 const notifications = ref([]);
 const showNotifications = ref(false);
 
-const BASE_URL = "http://localhost:8000/api"; // Laravel API URL
 
 const fetchNotifications = async () => {
     try {
-        const token = localStorage.getItem('authToken');
-        if (!token) return;
-
-        const response = await axios.get(`${BASE_URL}/notifications`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-                Accept: 'application/json',
-            },
+        const response = await axios.get('/notifications', {
+            headers: { "Content-Type": "multipart/form-data" },
         });
 
         notifications.value = response.data.map(n => ({
