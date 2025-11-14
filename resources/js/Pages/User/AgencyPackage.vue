@@ -11,7 +11,7 @@
             </button>
         </div>
 
-        <!-- Agency Hero -->
+            <!-- Agency Hero -->
         <div class="bg-white rounded-2xl shadow-xl overflow-hidden mb-10 hover:shadow-2xl transition-all duration-300">
             <div class="relative h-[300px]">
                 <img :src="agency.agency?.image_path
