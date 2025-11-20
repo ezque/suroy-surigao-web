@@ -37,7 +37,7 @@
 
         </section>
 
-       
+
         <!-- Loading -->
         <div v-if="loading" class="text-center py-20">
             <div class="w-10 h-10 border-4 border-[#e2e8f0] border-t-[#3b82f6] rounded-full animate-spin mx-auto mb-5"></div>
@@ -47,7 +47,7 @@
         <!-- Agencies -->
         <UserAgency
             v-if="!selectedAgency"
-            :filteredAgencies="filteredAgencies"
+            :agencies="filteredAgencies"
             :loading="loading"
             :searchQuery="searchQuery"
             :isLiked="isLiked"
@@ -79,7 +79,6 @@
     import AgencyPackage from "./AgencyPackage.vue";
 
     const props = defineProps({
-        agencies: Array,
         activePackages: Array,
         spotId: Number,
     });
@@ -92,14 +91,27 @@
     const priceRange = ref([0, 10000]);
     const likedAgencies = ref([]);
     const selectedAgency = ref(null);
+    const isLiked = (agencyID) => likedAgencies.value.includes(agencyID);
 
-    // Fetch agencies
+    const clearSearch = () => {
+        searchQuery.value = "";
+    };
+
+    const openAgencyDetails = (agency) => {
+        selectedAgency.value = agency;
+        console.log("Selected agency:", agency);
+    }
+    const closeAgencyDetails = () => {
+        selectedAgency.value = null;
+    }
+
     const fetchAgencies = async () => {
         if (!props.spotId) return;
         loading.value = true;
         try {
             const response = await axios.get(`/agencies-by-spot/${props.spotId}`);
             agencies.value = response.data;
+
         } catch (error) {
             console.error(error);
         } finally {
@@ -107,20 +119,15 @@
         }
     };
 
-    // Fetch liked agencies
     const fetchLikedAgencies = async () => {
         try {
             const response = await axios.get("/check-if-agency-is-liked");
-            likedAgencies.value = response.data; // array of IDs
+            likedAgencies.value = response.data;
         } catch (error) {
             console.error(error);
         }
     };
 
-    // Check if agency is liked
-    const isLiked = (agencyID) => likedAgencies.value.includes(agencyID);
-
-    // Toggle like/unlike
     const toggleLike = async (agency) => {
         try {
             const response = await axios.post("/like-unlike-agency", { agencyID: agency.id });
@@ -134,21 +141,13 @@
         }
     };
 
-    onMounted(() => {
-        fetchAgencies();
-        fetchLikedAgencies();
-    });
+    const startingPrice = (agency) => {
+        if (!agency.packages || agency.packages.length === 0) return 0;
+        const availablePackages = agency.packages.filter(pkg => pkg.available_slot > 0);
+        if (availablePackages.length === 0) return 0;
+        return Math.min(...availablePackages.map(pkg => Number(pkg.price)));
+    };
 
-    watch(() => props.spotId, fetchAgencies);
-
-    // Computed totals
-    const totalAgencies = computed(() => agencies.value?.length || 0);
-    const totalPackages = computed(() => props.activePackages?.length || 0);
-    const availablePackages = computed(() =>
-        props.activePackages?.filter(pkg => pkg.status === "1").length || 0
-    );
-
-    // Filtered agencies
     const filteredAgencies = computed(() => {
         if (!searchQuery.value) {
             console.log("Filtered (no search):", agencies.value);
@@ -159,51 +158,14 @@
             (a.agency?.agency_name?.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
                 a.agency?.description?.toLowerCase().includes(searchQuery.value.toLowerCase()))
         );
-
         console.log("Filtered (with search):", result);
         return result;
     });
 
-    // Sorting
-    const sortAgencies = () => {
-        if (sortBy.value === "name") {
-            agencies.value.sort((a, b) =>
-                (a.agency?.agency_name || "").localeCompare(b.agency?.agency_name || "")
-            );
-        } else if (sortBy.value === "packages") {
-            agencies.value.sort((a, b) => (b.packages?.length || 0) - (a.packages?.length || 0));
-        } else if (sortBy.value === "availability") {
-            agencies.value.sort((a, b) => {
-                const aAvailable = a.packages?.filter(pkg => pkg.status === "1").length || 0;
-                const bAvailable = b.packages?.filter(pkg => pkg.status === "1").length || 0;
-                return bAvailable - aAvailable;
-            });
-        }
-    };
 
-    const startingPrice = (agency) => {
-        if (!agency.packages || agency.packages.length === 0) return 0;
-
-        // Only consider available packages if needed
-        const availablePackages = agency.packages.filter(pkg => pkg.available_slot > 0);
-
-        if (availablePackages.length === 0) return 0;
-
-        // Find the minimum price
-        return Math.min(...availablePackages.map(pkg => Number(pkg.price)));
-    };
-
-
-    // Clear search
-    const clearSearch = () => {
-        searchQuery.value = "";
-    };
-
-    const openAgencyDetails = (agency) => {
-        selectedAgency.value = agency;
-        console.log("Selected agency:", agency);
-    }
-    const closeAgencyDetails = () => {
-        selectedAgency.value = null;
-    }
+    watch(() => props.spotId, fetchAgencies);
+    onMounted(() => {
+        fetchAgencies();
+        fetchLikedAgencies();
+    });
 </script>

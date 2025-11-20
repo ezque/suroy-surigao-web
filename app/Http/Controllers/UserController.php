@@ -15,6 +15,7 @@ use App\Models\Package;
 use App\Models\Rating;
 use App\Models\Review;
 use App\Models\Notification;
+use App\Models\AgencyRating;
 
 
 class UserController extends Controller
@@ -136,8 +137,16 @@ class UserController extends Controller
             }])
             ->get();
 
+        // Add average_rating
+        $agencies->each(function ($agency) {
+            $agency->agency->average_rating = \App\Models\AgencyRating::where('agency_id', $agency->id)->avg('rating') ?? 0;
+        });
+
         return response()->json($agencies);
     }
+
+
+
     public function getSpots()
     {
         $spots = Spot::all();
@@ -321,10 +330,43 @@ class UserController extends Controller
         return response()->json($reviews);
     }
 
+    public function rateAgency(Request $request, $id)
+    {
+        $request->validate([
+            'rating' => 'required|numeric|min:1|max:5',
+        ]);
 
+        $user = auth()->user();
+        $agency = User::where('id', $id)
+            ->where('role', 'agency')
+            ->first();
 
+        if (!$agency) {
+            return response()->json(['error' => 'Agency not found.'], 404);
+        }
 
+        // Create or update rating
+        $rating = AgencyRating::updateOrCreate(
+            [
+                'user_id' => $user->id,
+                'agency_id' => $agency->id,
+            ],
+            [
+                'rating' => $request->rating,
+            ]
+        );
 
+        return response()->json(['message' => 'Rating submitted successfully.', 'rating' => $rating]);
+    }
+
+    public function getAgencyRatings($agencyId)
+    {
+        $rating = AgencyRating::where('agency_id', $agencyId)
+            ->where('user_id', auth()->id())
+            ->first();
+
+        return response()->json($rating);
+    }
 
 
 

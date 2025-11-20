@@ -33,12 +33,6 @@
                 @navigate="navigate"
             />
 
-            <TourAgenciesPanel
-                v-if="activePage === 'tourAgencies'"
-                :agencies="agencies"
-                @navigate="navigate"
-            />
-
             <ExploreTourAgencies
                 v-if="activePage === 'exploreTourAgencies'"
                 :agency="selectedAgency"
@@ -65,7 +59,6 @@
     import Home from "./userDashboard.vue";
     import Spots from "./spots.vue";
     import ExploreSpots from "./ExploreSpot.vue";
-    import TourAgenciesPanel from "./tourAgencies.vue";
     import ExploreTourAgencies from "./exploreTourAgencies.vue";
     import Favorites from "./favorites.vue";
     import UserSettings from "./settings.vue";

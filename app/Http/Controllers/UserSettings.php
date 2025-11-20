@@ -101,7 +101,6 @@ class UserSettings extends Controller
     {
         $userId = $request->user()->id;
 
-        // Fetch notifications where the user is the receiver
         $notifications = Notification::where('receiver_id', $userId)
             ->orderBy('created_at', 'desc')
             ->get(['id', 'sender_id', 'message', 'status', 'type', 'created_at']);

@@ -50,6 +50,19 @@ class User extends Authenticatable
     {
         return $this->hasMany(IsSave::class, 'user_id');
     }
+    public function givenRatings()
+    {
+        return $this->hasMany(AgencyRating::class, 'user_id', 'id');
+    }
+    public function receivedRatings()
+    {
+        return $this->hasMany(AgencyRating::class, 'agency_id', 'id');
+    }
+    public function agencyRatings()
+    {
+        return $this->hasMany(AgencyRating::class, 'agency_id');
+    }
+
 
 
 

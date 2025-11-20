@@ -51,6 +51,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::post('/spots/{id}/rate', [UserController::class, 'rating']);
     Route::get('/spots/{id}/rating', [UserController::class, 'getRatings']);
+    Route::post('/rate-agency/{agencyId}', [UserController::class, 'rateAgency']);
+    Route::get('/agency/{agencyId}/rating', [UserController::class, 'getAgencyRatings']);
+
 
     Route::get('/spots/{id}/reviews', [UserController::class, 'getReviews']);
     Route::post('/spots/{id}/reviews', [UserController::class, 'addReview']);

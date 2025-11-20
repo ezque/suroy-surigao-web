@@ -55,7 +55,10 @@
                 </div>
             </div>
         </div>
+        <!-- Top 3 Spots  -->
+        <div class="flex-1 bg-gray-100 p-10">
 
+        </div>
         <!-- Spots Grid -->
         <div class="flex-1 bg-gray-100 p-10">
             <div v-if="filteredSpots.length > 0" class="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-8 max-w-6xl mx-auto">
