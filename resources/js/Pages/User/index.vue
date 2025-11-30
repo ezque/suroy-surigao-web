@@ -30,6 +30,7 @@
                 :spot="selectedSpot"
                 :agencies="agencies"
                 :activePackages="activePackages"
+                :userInformation="userInformation"
                 @navigate="navigate"
             />
 
@@ -45,7 +46,9 @@
                 @navigate="navigate"
             />
 
-            <UserSettings v-if="activePage === 'settings'" />
+            <UserSettings
+                v-if="activePage === 'settings'"
+            />
         </div>
     </div>
 </template>

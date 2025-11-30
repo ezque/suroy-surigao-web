@@ -128,6 +128,7 @@
                     :agencies="agencies"
                     :activePackages="activePackages"
                     :spotId="spot.id"
+                    :userInformation="userInformation"
                 />
                 <Review
                     v-if="activeTab === 'reviews'"
@@ -166,6 +167,7 @@
         spot: Object,
         agencies: Array,
         activePackages: Array,
+        userInformation: Object,
     });
 
     const emit = defineEmits(["navigate"]);

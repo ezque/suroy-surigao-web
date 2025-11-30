@@ -61,6 +61,7 @@
             :agency="selectedAgency"
             :isLiked="isLiked"
             :toggleLike="toggleLike"
+            :userInformation="userInformation"
             @goBack="closeAgencyDetails"
         />
 
@@ -81,6 +82,7 @@
     const props = defineProps({
         activePackages: Array,
         spotId: Number,
+        userInformation: Object,
     });
 
     const agencies = ref([]);

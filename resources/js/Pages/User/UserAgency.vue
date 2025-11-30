@@ -95,9 +95,6 @@
             console.error("Error fetching ratings:", error);
         }
     };
-    const userRating = (agencyId) => {
-        return agencyRatings.value[agencyId] || 0;
-    };
 
     const rateAgency = async (agencyId, rating) => {
         try {

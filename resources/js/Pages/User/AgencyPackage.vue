@@ -55,17 +55,18 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div v-for="pkg in filteredPackages" :key="pkg.id"
                      :class="[
-                'bg-white rounded-2xl p-6 shadow-md transition-all duration-300',
-                pkg.available_slot === 0 ? 'opacity-70 border border-gray-200' : 'hover:-translate-y-1 hover:shadow-xl'
-              ]"
+                        'bg-white rounded-2xl p-6 shadow-md transition-all duration-300',
+                        pkg.available_slot === 0 ? 'opacity-70 border border-gray-200' : 'hover:-translate-y-1 hover:shadow-xl'
+                    ]"
                 >
                     <!-- Package Info (Header, Description, Quick Info, Schedule, Destinations, Inclusions/Exclusions) -->
                     <div class="flex justify-between items-start mb-4">
                         <h3 class="text-xl font-semibold text-gray-800">{{ pkg.package_name }}</h3>
                         <span class="px-3 py-1 rounded-full text-sm font-medium"
-                              :class="pkg.available_slot > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'">
-              {{ pkg.available_slot > 0 ? `${pkg.available_slot} slots left` : 'Fully Booked' }}
-            </span>
+                              :class="pkg.available_slot > 0 ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'"
+                        >
+                            {{ pkg.available_slot > 0 ? `${pkg.available_slot} slots left` : 'Fully Booked' }}
+                        </span>
                     </div>
 
                     <p class="text-gray-600 mb-4">{{ pkg.description }}</p>
@@ -98,13 +99,13 @@
                     <div class="mb-4">
                         <h4 class="font-semibold text-gray-800 mb-2 flex items-center gap-2">🏖️ Destinations</h4>
                         <div class="flex flex-wrap gap-2">
-              <span
-                  v-for="destinationId in JSON.parse(pkg.tour_destination)"
-                  :key="destinationId"
-                  class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"
-              >
-                {{ getSpotName(destinationId) }}
-              </span>
+                            <span
+                                v-for="destinationId in JSON.parse(pkg.tour_destination)"
+                                :key="destinationId"
+                                class="px-3 py-1 rounded-full text-sm bg-blue-100 text-blue-700"
+                            >
+                                {{ getSpotName(destinationId) }}
+                            </span>
                         </div>
                     </div>
 
@@ -123,19 +124,23 @@
                     <div class="flex justify-end">
                         <button
                             :class="[
-                'px-6 py-3 rounded-xl font-semibold text-white transition-all flex items-center gap-2',
-                pkg.available_slot === 0
-                  ? 'bg-gray-400 cursor-not-allowed'
-                  : 'bg-gradient-to-br from-green-400 to-green-600 hover:from-green-600 hover:to-green-700 hover:-translate-y-1 hover:shadow-lg'
-              ]"
+                                'px-6 py-3 rounded-xl font-semibold text-white transition-all flex items-center gap-2',
+                                pkg.available_slot === 0
+                                ? 'bg-gray-400 cursor-not-allowed'
+                                : 'bg-gradient-to-br from-green-400 to-green-600 hover:from-green-600 hover:to-green-700 hover:-translate-y-1 hover:shadow-lg'
+                            ]"
                             :disabled="pkg.available_slot === 0"
                             @click="openReservationForm(pkg)"
                         >
-              <span v-if="pkg.available_slot > 0" class="flex items-center gap-2">
-                Reserve Now
-                <span class="bg-white/20 px-2 py-1 rounded text-sm">₱{{ pkg.price.toLocaleString() }}</span>
-              </span>
-                            <span v-else class="flex items-center gap-2">🔒 Fully Booked</span>
+                            <span v-if="pkg.available_slot > 0" class="flex items-center gap-2">
+                                Reserve Now
+                                <span class="bg-white/20 px-2 py-1 rounded text-sm">
+                                    ₱{{ pkg.price.toLocaleString() }}
+                                </span>
+                            </span>
+                            <span v-else class="flex items-center gap-2">
+                                🔒 Fully Booked
+                            </span>
                         </button>
                     </div>
                 </div>
@@ -152,7 +157,11 @@
         <!-- Reservation Modal -->
         <div v-if="showReservationForm" class="fixed inset-0 bg-black/70 flex items-center justify-center z-[1000] p-5 animate-fadeIn">
             <div class="bg-white rounded-[20px] max-w-[800px] w-full max-h-[90vh] overflow-y-auto shadow-[0_20px_60px_rgba(0,0,0,0.3)] animate-slideUp relative">
-                <ReservePackage :package="selectedPackage" @close="showReservationForm = false"/>
+                <ReservePackage
+                    :package="selectedPackage"
+                    :userInformation="userInformation"
+                    @close="showReservationForm = false"
+                />
             </div>
         </div>
 
@@ -168,6 +177,7 @@
         agency: Object,
         isLiked: Function,
         toggleLike: Function,
+        userInformation: Object,
     });
 
     const emit = defineEmits(["goBack"]);

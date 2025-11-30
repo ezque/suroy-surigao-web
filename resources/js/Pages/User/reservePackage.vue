@@ -364,11 +364,11 @@
                                 class="w-5 h-5 border-2 border-gray-300 rounded flex-shrink-0 mt-0.5 transition-all relative"
                                 :class="{ 'bg-blue-500 border-blue-500': formData.agreeToTerms }"
                             >
-              <span
-                  v-if="formData.agreeToTerms"
-                  class="absolute inset-0 flex items-center justify-center text-white text-xs"
-              >✓</span>
-            </span>
+                                <span
+                                    v-if="formData.agreeToTerms"
+                                    class="absolute inset-0 flex items-center justify-center text-white text-xs"
+                                >✓</span>
+                            </span>
                             I agree to the
                             <a href="#" class="text-blue-500 font-semibold hover:underline">Terms and Conditions</a> and
                             <a href="#" class="text-blue-500 font-semibold hover:underline">Cancellation Policy</a> *
@@ -385,10 +385,11 @@
                         :disabled="!formData.agreeToTerms || isSubmitting"
                         class="px-6 py-3 bg-blue-500 text-white rounded-lg font-semibold hover:bg-blue-600 disabled:bg-gray-400 disabled:cursor-not-allowed transition-all flex items-center gap-2"
                     >
-          <span
-              v-if="isSubmitting"
-              class="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"
-          ></span>
+                        <span
+                            v-if="isSubmitting"
+                            class="w-4 h-4 border-2 border-t-transparent border-white rounded-full animate-spin"
+                        >
+                        </span>
                         {{ isSubmitting ? 'Processing...' : 'Confirm Reservation' }}
                     </button>
                 </div>
@@ -398,19 +399,28 @@
 </template>
 
 <script setup>
-    import { ref, computed } from 'vue';
+    import { ref, computed, watch } from 'vue';
     import axios from "axios";
 
     const props = defineProps({
         agency: Object,
-        package: Object
+        package: Object,
+        userInformation: Object,
     });
+
+    console.log(props.userInformation)
 
     const emit = defineEmits(['close', 'reservation-completed']);
 
     const currentStep = ref(1);
     const isSubmitting = ref(false);
-    const reservationSuccess = ref(false); // <-- NEW: tracks if reservation succeeded
+    const reservationSuccess = ref(false);
+
+    const fullName = computed(() => {
+        const info = props.userInformation?.user_info || {};
+        return `${info.firstName || ''} ${info.lastName || ''}`.trim();
+    });
+
 
     const formData = ref({
         numberOfPeople: 1,
@@ -494,4 +504,17 @@
             isSubmitting.value = false;
         }
     };
+    watch(
+        () => props.userInformation,
+        (newVal) => {
+            if (newVal?.user_info) {
+                formData.value.contactInfo.firstName = newVal.user_info.firstName || "";
+                formData.value.contactInfo.lastName = newVal.user_info.lastName || "";
+                formData.value.contactInfo.email = newVal.email || "";
+                formData.value.contactInfo.phone = newVal.user_info.phone_num || "";
+            }
+        },
+        { immediate: true }
+    );
+
 </script>
