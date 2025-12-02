@@ -1,6 +1,5 @@
 <template>
   <div class="flex h-screen w-72 flex-col bg-gradient-to-br from-[#009FB7] to-[#007A8A] shadow-2xl">
-    <!-- Profile Section -->
     <div class="border-b border-white/10 bg-white/5 p-5 text-center backdrop-blur-sm">
       <div class="relative mx-auto mb-4 h-20 w-20">
         <img
@@ -34,9 +33,7 @@
       </div>
     </div>
 
-    <!-- Navigation -->
     <nav class="flex-1 space-y-1 overflow-y-auto p-4 scrollbar-thin scrollbar-thumb-white/30 scrollbar-track-white/10">
-      <!-- ADMIN -->
       <template v-if="userRole === 'admin'">
         <button
           v-for="item in adminMenu"
@@ -50,7 +47,6 @@
         </button>
       </template>
 
-      <!-- AGENCY -->
       <template v-else-if="userRole === 'agency'">
         <button
           v-for="item in agencyMenu"
@@ -64,7 +60,6 @@
         </button>
       </template>
 
-      <!-- USER -->
       <template v-else>
         <button
           v-for="item in userMenu"
@@ -79,7 +74,6 @@
       </template>
     </nav>
 
-    <!-- Logout -->
     <div class="border-t border-white/10 bg-black/10 p-4">
       <button
         @click="handleLogout"
@@ -140,6 +134,7 @@ const agencyMenu = [
 
 const userMenu = [
   { label: 'Home', icon: 'home', page: 'userDashboard' },
+  { label: 'Reservation', icon: 'event_note', page: 'userReservation' },
   { label: 'Spots', icon: 'place', page: 'spots' },
   { label: 'Favorites', icon: 'favorite', page: 'favorites' },
   { label: 'Settings', icon: 'settings', page: 'settings' },

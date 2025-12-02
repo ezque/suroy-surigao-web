@@ -1,6 +1,5 @@
 <template>
     <div class="flex w-full h-screen overflow-hidden">
-        <!-- Sidebar -->
         <Sidebar
             :userRole="userRole"
             :userInformation="userInformation"
@@ -8,7 +7,6 @@
             :currentPage="activePage"
         />
 
-        <!-- Main content -->
         <div class="flex flex-col w-[85%] overflow-y-auto">
             <Header
                 :userInformation="userInformation"
@@ -17,6 +15,12 @@
             <Home
                 v-if="activePage === 'userDashboard'"
                 :blogsURL="blogsURL"
+            />
+
+            <UserReservations
+                v-if="activePage === 'userReservation'"
+                :userInformation="userInformation"
+                @navigate="navigate"
             />
 
             <Spots
@@ -65,6 +69,8 @@
     import ExploreTourAgencies from "./exploreTourAgencies.vue";
     import Favorites from "./favorites.vue";
     import UserSettings from "./settings.vue";
+    // ADDED: Import the reservation component
+    import UserReservations from "./userReservation.vue";
 
     const props = defineProps({
         userInformation: {
@@ -113,8 +119,10 @@
             case "tourAgencies":
                 selectedAgency.value = null;
                 break;
+            // You can add a case here if you need to clear data when going to reservations
+            case "userReservation":
+                break;
         }
         activePage.value = page;
     };
 </script>
-
