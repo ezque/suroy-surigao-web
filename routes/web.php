@@ -27,10 +27,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/totalPackage', [AgencyController::class, 'agencyTotalPackages']);
     Route::get('/totalRevenue', [AgencyController::class, 'agencyTotalRevenue']);
     Route::get('/totalReservation', [AgencyController::class, 'agencyTotalReservations']);
+    Route::get('/topSellingPackages', [AgencyController::class, 'topSellingPackages']);
+    Route::get('/recentReservations', [AgencyController::class, 'recentReservations']);
     Route::post('/add-package', [AgencyController::class, 'addPackage']);
     Route::post('/update-package/{id}', [AgencyController::class, 'updatePackage']);
     Route::post('/update-reservation/{id}', [AgencyController::class, 'updateReservation']);
     Route::delete('/packages/{id}', [AgencyController::class, 'deletePackage']);
+
 
     Route::post('/update-user-status', [AdminController::class, 'updateUserStatus']);
     Route::post('/add-blog', [AdminController::class, 'addBlog']);

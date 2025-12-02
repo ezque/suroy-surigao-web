@@ -218,9 +218,86 @@ class AgencyController extends Controller
             ->where('status', 'completed')
             ->sum('total_amount');
 
+        $monthlyRevenue = Reservation::selectRaw('MONTH(created_at) as month, SUM(total_amount) as amount')
+            ->whereIn('package_id', $packageIds)
+            ->where('status', 'completed')
+            ->whereYear('created_at', now()->year)
+            ->groupByRaw('MONTH(created_at)')
+            ->orderBy('month')
+            ->get();
+
+        $monthlyRevenue = collect(range(1, 12))->map(function($monthNum) use ($monthlyRevenue) {
+            $item = $monthlyRevenue->firstWhere('month', $monthNum);
+            return [
+                'month' => date('M', mktime(0, 0, 0, $monthNum, 1)),
+                'amount' => $item->amount ?? 0
+            ];
+        });
+
         return response()->json([
-            'total_revenue' => $totalRevenue
+            'total_revenue' => $totalRevenue,
+            'monthly_revenue' => $monthlyRevenue
         ]);
+    }
+
+    public function topSellingPackages()
+    {
+        $user = Auth::user();
+
+        // Get top 5 packages of this user, ordered by number of reservations
+        $topPackages = Package::where('userID', $user->id)
+            ->withCount(['reservations' => function($query) {
+                $query->where('status', 'completed'); // count only completed reservations
+            }])
+            ->orderByDesc('reservations_count')
+            ->limit(5)
+            ->get(['id', 'package_name']);
+
+        // Format the result for frontend
+        $topPackages = $topPackages->map(function($pkg) {
+            return [
+                'id' => $pkg->id,
+                'name' => $pkg->package_name,
+                'sales' => $pkg->reservations_count,
+                'percentage' => 0
+            ];
+        });
+
+        $maxSales = $topPackages->max('sales') ?: 1;
+        $topPackages = $topPackages->map(function($pkg) use ($maxSales) {
+            $pkg['percentage'] = round(($pkg['sales'] / $maxSales) * 100);
+            return $pkg;
+        });
+
+        return response()->json($topPackages);
+    }
+
+
+    public function recentReservations()
+    {
+        $user = Auth::user();
+
+        // Get package IDs that belong to this user
+        $packageIds = Package::where('userID', $user->id)->pluck('id');
+
+        // Get top 3 most recent reservations
+        $recentReservations = Reservation::with('package')
+            ->whereIn('package_id', $packageIds)
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get()
+            ->map(function ($res) {
+                return [
+                    'id' => $res->id,
+                    'customer' => $res->full_name,
+                    'package' => $res->package->package_name ?? 'Unknown',
+                    'date' => $res->created_at->format('M d, Y'),
+                    'amount' => $res->total_amount,
+                    'status' => $res->status,
+                ];
+            });
+
+        return response()->json($recentReservations);
     }
 
 
